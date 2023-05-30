@@ -1,9 +1,9 @@
-## payment-system
+## 💰 payment-system
 여러 pg사들과 연동한 결제 시스템
 
 <br>
 
-### 기술 스택
+### 📌 기술 스택
 * for Application : `Java 11` `Spring boot` `MySQL` `JPA` `QueryDSL` `Junit5` `redis`
 
 * for CI&CD : `Docker` `Jenkins`
@@ -12,7 +12,7 @@
 
 <br>
 
-### 주요 기능
+### 📌 주요 기능
 
 1) 회원가입
 - 아래 두 가지 방식 모두 제공합니다.
@@ -38,7 +38,8 @@
 
 <br>
 
-### 프로젝트를 통해 얻고 싶은 기술 역량
+### 📌 프로젝트를 통해 얻고 싶은 기술 역량
+
 
 - 신뢰성 있는 결제 시스템을 위한 동시성 이슈 고려, 성능과 신뢰성 적절한 범위 내에서 trade-off 관계 고민하기
 - 로드밸런싱을 통한 분산 처리 시스템에서 적절한 로그인 세션 처리 방법 고민
