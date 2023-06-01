@@ -4,7 +4,7 @@
 <br>
 
 ### 📌 기술 스택
-* for Application : `Java 11` `Spring boot` `MySQL` `JPA` `QueryDSL` `Junit5` `redis`
+* for Application : `Java 17` `Spring boot` `MySQL` `JPA` `QueryDSL` `Junit5` `redis`
 
 * for CI&CD : `Docker` `Jenkins`
 
