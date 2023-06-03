@@ -81,6 +81,10 @@
 
 <br>
 
-### 📌 api 설계 
+### 📌 api & db 설계
 
 :clipboard:[api설계](https://closed-glade-095.notion.site/flab-d83ee2e4bd5d4f0cb3645f597ec53f2f)
+
+- db 설계
+
+![image](https://github.com/f-lab-edu/payment-system/assets/98700133/836a7e58-1478-4efe-b7f5-5693baa1000e)
