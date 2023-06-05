@@ -1,1 +1,17 @@
+spring:
+  profiles:
+    active: prod
+  mvc:
+    dispatch-options-request: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${DB_URL}/${DB_DATABASE}?useUnicode=true&characterEncoding=utf8&serverTimezone=${TIMEZONE}&useLegacyDatetimeCode=false
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
 
+
+timezone: ${TIMEZONE}
