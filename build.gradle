@@ -44,6 +44,28 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+// checkStyle 추가 시작
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+tasks.withType(Checkstyle) {
+    reports {
+        xml.required = true
+        html.required = true
+    }
+}
+
+checkstyle {
+    configFile = file("config/naver-checkstyle-rules.xml")
+    configProperties = ["suppressionFile": "config/naver-checkstyle-suppressions.xml"]
+    sourceSets = [sourceSets.main]
+}
+
+checkstyleMain.source = fileTree('src/main/java')
+
+// checkStyle 추가 끝
+
+
 //querydsl 추가 시작
 def querydslDir = "$buildDir/generated/querydsl"
 
