@@ -12,6 +12,23 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+  mail:
+    host: ${SMTP_HOST}
+    port: 465
+    username: ${SMTP_ID}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+            trust: ${SMTP_HOST}
+logging:
+  level:
+    root: debug
 
 
 timezone: ${TIMEZONE}
+smtp-id: ${SMTP_ID}
+
