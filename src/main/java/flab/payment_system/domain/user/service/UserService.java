@@ -1,5 +1,6 @@
 package flab.payment_system.domain.user.service;
 
+import flab.payment_system.domain.mail.service.MailService;
 import flab.payment_system.domain.user.domain.User;
 import flab.payment_system.domain.user.domain.UserVerification;
 import flab.payment_system.domain.user.dto.UserConfirmVerificationNumberDto;
@@ -11,37 +12,24 @@ import flab.payment_system.domain.user.exception.UserVerificationEMailBadRequest
 import flab.payment_system.domain.user.exception.UserVerificationIdBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationNumberBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationUnauthorizedException;
-import flab.payment_system.domain.user.exception.UserVerifyUserEmailException;
 import flab.payment_system.domain.user.repository.UserRepository;
 import flab.payment_system.domain.user.repository.UserVerificationRepository;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.InternetAddress;
-import jakarta.mail.internet.MimeMessage;
-import java.io.UnsupportedEncodingException;
 import java.util.Optional;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
-import org.thymeleaf.spring6.SpringTemplateEngine;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
+	private final MailService mailService;
+
 	private final UserRepository userRepository;
 	private final UserVerificationRepository userVerificationRepository;
 	private final PasswordEncoder passwordEncoder;
-	private final JavaMailSender javaMailSender;
-	private final SpringTemplateEngine templateEngine;
 	private final Random random;
-	@Value("${smtp-id}")
-	private String smtpId;
-
-
 
 	// 회원가입
 	public void signUpUser(UserSignUpDto userSignUpDto) {
@@ -102,37 +90,18 @@ public class UserService {
 
 	// 회원가입 전 유저 인증을 위한 인증메일 발송
 	public int sendVerificationNumberToUserEmail(UserDto userDto) {
-		MimeMessage message = javaMailSender.createMimeMessage();
 
 		random.setSeed(System.currentTimeMillis());
 
 		int verificationNumber = (random.nextInt(900000) + 100000) % 1000000;
 
-		try {
-			// 수신자
-			message.addRecipients(MimeMessage.RecipientType.TO, userDto.eMail());
-			// 메일 제목
-			message.setSubject("[payment_system] 회원가입을 위한 인증번호 메일입니다.");
-			message.setText(setContext(String.valueOf(verificationNumber)), "utf-8",
-				"html");
-			message.setFrom(new InternetAddress(smtpId,
-				"ps project"));
+		mailService.sendMail(userDto.eMail(),
+			"[payment_system] 회원가입을 위한 인증번호 메일입니다.",
+			mailService.setContextForSendValidationNumber(String.valueOf(verificationNumber)));
 
-			// 메일 발송
-			javaMailSender.send(message);
-		} catch (MessagingException | UnsupportedEncodingException exception) {
-			throw new UserVerifyUserEmailException();
-		}
 		return verificationNumber;
-
 	}
 
-	// 인증메일로 보낼 내용
-	private String setContext(String verificationNumber) {
-		Context context = new Context();
-		context.setVariable("verificationNumber", verificationNumber);
-		return templateEngine.process("mail", context);
-	}
 
 	// 회원가입을 전 발송한 인증메일의 인증번호 확인
 	public boolean confirmVerificationNumber(
