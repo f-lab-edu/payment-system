@@ -13,7 +13,6 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
-@ComponentScan(basePackages = "flab.payment_system")
 public class SecurityConfig {
 
 	@Bean

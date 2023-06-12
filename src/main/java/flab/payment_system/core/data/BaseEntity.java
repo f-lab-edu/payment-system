@@ -15,12 +15,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class BaseEntity {
 
 	@CreatedDate
-	@Column(name = "created_at", nullable = false, updatable = false, insertable = false,
-		columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	private OffsetDateTime created_at;
+	@Column(name = "created_at", nullable = false, updatable = false
+		, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
+	private OffsetDateTime createdAt;
 
 	@LastModifiedDate
-	@Column(name = "updated_at", nullable = false, updatable = false, insertable = false,
+	@Column(name = "updated_at", nullable = false,
 		columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-	private OffsetDateTime updated_at;
+	private OffsetDateTime updatedAt;
 }

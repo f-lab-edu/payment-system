@@ -2,14 +2,12 @@ package flab.payment_system.config;
 
 import flab.payment_system.core.interceptor.IpAddressRangeCheckControllerInterceptor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @RequiredArgsConstructor
-@ComponentScan(basePackages = "flab.payment_system")
 public class WebMvcConfiguration implements WebMvcConfigurer {
 
 	private final IpAddressRangeCheckControllerInterceptor ipAddressRangeCheckControllerInterceptor;

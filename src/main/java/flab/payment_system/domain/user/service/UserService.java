@@ -16,6 +16,7 @@ import flab.payment_system.domain.user.repository.UserRepository;
 import flab.payment_system.domain.user.repository.UserVerificationRepository;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -29,7 +30,6 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final UserVerificationRepository userVerificationRepository;
 	private final PasswordEncoder passwordEncoder;
-	private final Random random;
 
 	// 회원가입
 	public void signUpUser(UserSignUpDto userSignUpDto) {
@@ -90,7 +90,7 @@ public class UserService {
 
 	// 회원가입 전 유저 인증을 위한 인증메일 발송
 	public int sendVerificationNumberToUserEmail(UserDto userDto) {
-
+		ThreadLocalRandom random = ThreadLocalRandom.current();
 		random.setSeed(System.currentTimeMillis());
 
 		int verificationNumber = (random.nextInt(900000) + 100000) % 1000000;

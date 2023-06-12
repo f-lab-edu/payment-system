@@ -23,10 +23,13 @@ repositories {
 
 dependencies {
 
+    // spring boot init
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    // log
     implementation 'org.bgee.log4jdbc-log4j2:log4jdbc-log4j2-jdbc4'
 
     // data
