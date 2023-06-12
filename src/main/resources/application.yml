@@ -24,6 +24,9 @@ spring:
           ssl:
             enable: true
             trust: ${SMTP_HOST}
+server:
+  shutdown: graceful
+
 logging:
   level:
     root: debug
