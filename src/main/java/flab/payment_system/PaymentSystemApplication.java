@@ -5,9 +5,7 @@ import java.util.TimeZone;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 
-@EnableJpaAuditing
 @SpringBootApplication
 public class PaymentSystemApplication {
 
@@ -22,5 +20,4 @@ public class PaymentSystemApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(PaymentSystemApplication.class, args);
 	}
-
 }
