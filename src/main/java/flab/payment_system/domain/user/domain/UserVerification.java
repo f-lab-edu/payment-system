@@ -30,16 +30,16 @@ public class UserVerification extends BaseEntity {
 
 	@NonNull
 	@Column(name = "e-mail", columnDefinition = "VARCHAR(350)")
-	private String eMail;
+	private String email;
 
 	@NonNull
 	@Column(columnDefinition = "boolean default false")
 	private boolean isVerified;
 
 	@Builder
-	public UserVerification(Long userId, String eMail, Integer verificationNumber,
+	public UserVerification(Long userId, String email, Integer verificationNumber,
 		boolean isVerified) {
-		this.eMail = eMail;
+		this.email = email;
 		this.verificationNumber = verificationNumber;
 		this.isVerified = isVerified;
 	}

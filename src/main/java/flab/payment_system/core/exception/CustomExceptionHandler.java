@@ -1,7 +1,8 @@
 package flab.payment_system.core.exception;
 
+import flab.payment_system.domain.user.exception.UserEmailAlreadyExistConflictException;
 import flab.payment_system.domain.user.exception.UserSignUpBadRequestException;
-import flab.payment_system.domain.user.exception.UserVerificationEMailBadRequestException;
+import flab.payment_system.domain.user.exception.UserVerificationEmailBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationIdBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationNumberBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationUnauthorizedException;
@@ -19,7 +20,7 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 @RestControllerAdvice
 public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
-	// 요청한 인증 정보가 없을 때 발생한 예외 처리,
+	// 요청한 인증 정보가 없을 때 발생한 예외 처리
 	@ExceptionHandler(UserVerificationIdBadRequestException.class)
 	public ResponseEntity<ExceptionMessage> handleUserVerificationBadRequestException() {
 
@@ -45,8 +46,8 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	}
 
 	// 이메일 발송 후 유저가 입력한 인증번호가 올바르지 않을 때
-	@ExceptionHandler(UserVerificationEMailBadRequestException.class)
-	public ResponseEntity<ExceptionMessage> handleUserEMailBadRequestException() {
+	@ExceptionHandler(UserVerificationEmailBadRequestException.class)
+	public ResponseEntity<ExceptionMessage> handleUserEmailBadRequestException() {
 
 		ExceptionMessage exceptionMessage = ExceptionMessage.builder()
 			.message(
@@ -63,11 +64,22 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 	public ResponseEntity<ExceptionMessage> handleUserVerificationUnauthorizedException() {
 
 		ExceptionMessage exceptionMessage = ExceptionMessage.builder()
-			.message(HttpStatus.UNAUTHORIZED + " : not_verified_e-mail")
+			.message(HttpStatus.UNAUTHORIZED + " : not_verified_email")
 			.code(HttpStatus.UNAUTHORIZED.value()).build();
 
 		return new ResponseEntity<>
 			(exceptionMessage, HttpStatus.UNAUTHORIZED);
+	}
+	// 이미 존재하는 유저 이메일로 회원가입 요청했을 때 발생한 예외처리
+	@ExceptionHandler(UserEmailAlreadyExistConflictException.class)
+	public ResponseEntity<ExceptionMessage> handleUserEmailAlreadyExistConflictException() {
+
+		ExceptionMessage exceptionMessage = ExceptionMessage.builder()
+			.message(HttpStatus.CONFLICT + " : already_exist_user_email")
+			.code(HttpStatus.CONFLICT.value()).build();
+
+		return new ResponseEntity<>
+			(exceptionMessage, HttpStatus.CONFLICT);
 	}
 
 	// 비밀번호와 비밀번호 확인이 일치하지 않았을 때 발생한 예외처리

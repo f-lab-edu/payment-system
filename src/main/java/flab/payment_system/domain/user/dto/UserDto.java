@@ -2,7 +2,7 @@ package flab.payment_system.domain.user.dto;
 
 
 public record UserDto(
-	String eMail,
+	String email,
 	String password
 ) {
 

@@ -26,15 +26,15 @@ public class User extends BaseEntity {
 
 	@NonNull
 	@Column(name = "e-mail", columnDefinition = "VARCHAR(350)")
-	private String eMail;
+	private String email;
 
 	@NonNull
 	@Column(columnDefinition = "CHAR(60)")
 	private String password;
 
 	@Builder
-	public User(String eMail, String password) {
-		this.eMail = eMail;
+	public User(String email, String password) {
+		this.email = email;
 		this.password = password;
 	}
 }

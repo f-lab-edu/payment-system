@@ -7,15 +7,15 @@ import flab.payment_system.domain.user.dto.UserConfirmVerificationNumberDto;
 import flab.payment_system.domain.user.dto.UserDto;
 import flab.payment_system.domain.user.dto.UserSignUpDto;
 import flab.payment_system.domain.user.dto.UserVerificationDto;
+import flab.payment_system.domain.user.exception.UserEmailAlreadyExistConflictException;
 import flab.payment_system.domain.user.exception.UserSignUpBadRequestException;
-import flab.payment_system.domain.user.exception.UserVerificationEMailBadRequestException;
+import flab.payment_system.domain.user.exception.UserVerificationEmailBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationIdBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationNumberBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationUnauthorizedException;
 import flab.payment_system.domain.user.repository.UserRepository;
 import flab.payment_system.domain.user.repository.UserVerificationRepository;
 import java.util.Optional;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,6 +33,8 @@ public class UserService {
 
 	// 회원가입
 	public void signUpUser(UserSignUpDto userSignUpDto) {
+		Optional<User> optionalUser = userRepository.findByEmail(userSignUpDto.email());
+		if(optionalUser.isPresent()) throw new UserEmailAlreadyExistConflictException();
 
 		// 이메일 인증된 유저인지 확인
 		boolean isAuthorized = confirmUserIsAuthorized(userSignUpDto);
@@ -47,7 +49,7 @@ public class UserService {
 		}
 
 		userRepository.save(User.builder()
-			.eMail(userSignUpDto.eMail())
+			.email(userSignUpDto.email())
 			.password(passwordEncoder.encode(userSignUpDto.password())).build());
 
 	}
@@ -80,22 +82,21 @@ public class UserService {
 
 		UserVerification userVerification = userVerificationRepository.save(
 			UserVerification.builder()
-				.eMail(userDto.eMail())
+				.email(userDto.email())
 				.verificationNumber(verificationNumber).build());
 
 		return new UserVerificationDto(
 			userVerification.getVerificationId(), verificationNumber,
-			userVerification.getEMail(), userVerification.isVerified());
+			userVerification.getEmail(), userVerification.isVerified());
 	}
 
 	// 회원가입 전 유저 인증을 위한 인증메일 발송
 	public int sendVerificationNumberToUserEmail(UserDto userDto) {
 		ThreadLocalRandom random = ThreadLocalRandom.current();
-		random.setSeed(System.currentTimeMillis());
 
 		int verificationNumber = (random.nextInt(900000) + 100000) % 1000000;
 
-		mailService.sendMail(userDto.eMail(),
+		mailService.sendMail(userDto.email(),
 			"[payment_system] 회원가입을 위한 인증번호 메일입니다.",
 			mailService.setContextForSendValidationNumber(String.valueOf(verificationNumber)));
 
@@ -112,8 +113,8 @@ public class UserService {
 		UserVerification userVerification = optionalUserVerification.orElseThrow(
 			UserVerificationIdBadRequestException::new);
 
-		if (!(userVerification.getEMail().equals(userConfirmVerificationNumberDto.eMail()))) {
-			throw new UserVerificationEMailBadRequestException();
+		if (!(userVerification.getEmail().equals(userConfirmVerificationNumberDto.email()))) {
+			throw new UserVerificationEmailBadRequestException();
 		}
 
 		if (!(userVerification.getVerificationNumber()
