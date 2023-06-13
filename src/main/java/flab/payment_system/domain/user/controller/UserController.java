@@ -4,7 +4,9 @@ import flab.payment_system.domain.user.dto.UserConfirmVerificationNumberDto;
 import flab.payment_system.domain.user.dto.UserDto;
 import flab.payment_system.domain.user.dto.UserSignUpDto;
 import flab.payment_system.domain.user.dto.UserVerificationDto;
+import flab.payment_system.domain.user.dto.UserVerifyEmailDto;
 import flab.payment_system.domain.user.service.UserService;
+import jakarta.validation.Valid;
 import java.net.URI;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +25,7 @@ public class UserController {
 	// TODO bcrypt 암호화 후 비교
 	// 회원가입
 	@PostMapping("/sign-up")
-	public ResponseEntity<Object> signUpUser(@RequestBody UserSignUpDto userSignUpDto) {
+	public ResponseEntity<Object> signUpUser(@RequestBody @Valid UserSignUpDto userSignUpDto) {
 
 		userService.signUpUser(userSignUpDto);
 
@@ -32,9 +34,10 @@ public class UserController {
 
 	// 회원가입을 위한 인증메일 발송
 	@PostMapping("/e-mail")
-	public ResponseEntity<UserVerificationDto> verifyUserEmail(@RequestBody UserDto userDto) {
+	public ResponseEntity<UserVerificationDto> verifyUserEmail(
+		@RequestBody @Valid UserVerifyEmailDto userVerifyEmailDto) {
 
-		UserVerificationDto userVerificationDto = userService.verifyUserEmail(userDto);
+		UserVerificationDto userVerificationDto = userService.verifyUserEmail(userVerifyEmailDto);
 
 		return ResponseEntity.ok().body(userVerificationDto);
 	}
@@ -42,7 +45,7 @@ public class UserController {
 	// 인증번호 확인
 	@PostMapping("/e-mail/verification-number")
 	public ResponseEntity<Object> confirmVerificationNumber(
-		@RequestBody UserConfirmVerificationNumberDto userConfirmVerificationNumberDto) {
+		@RequestBody @Valid UserConfirmVerificationNumberDto userConfirmVerificationNumberDto) {
 
 		userService.confirmVerificationNumber(userConfirmVerificationNumberDto);
 

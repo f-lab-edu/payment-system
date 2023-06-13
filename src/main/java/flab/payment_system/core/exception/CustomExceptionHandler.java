@@ -8,17 +8,22 @@ import flab.payment_system.domain.user.exception.UserVerificationNumberBadReques
 import flab.payment_system.domain.user.exception.UserVerificationUnauthorizedException;
 import jakarta.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.HttpMediaTypeNotAcceptableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 // AOP : 예외 처리
 @RequiredArgsConstructor
 @RestControllerAdvice
-public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
+public class CustomExceptionHandler {
 
 	// 요청한 인증 정보가 없을 때 발생한 예외 처리
 	@ExceptionHandler(UserVerificationIdBadRequestException.class)
@@ -70,6 +75,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>
 			(exceptionMessage, HttpStatus.UNAUTHORIZED);
 	}
+
 	// 이미 존재하는 유저 이메일로 회원가입 요청했을 때 발생한 예외처리
 	@ExceptionHandler(UserEmailAlreadyExistConflictException.class)
 	public ResponseEntity<ExceptionMessage> handleUserEmailAlreadyExistConflictException() {
@@ -116,5 +122,36 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return new ResponseEntity<>
 			(exceptionMessage, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+	}
+
+	// 유효하지 않을때 발생하는 예외 처리
+	@Order(Ordered.HIGHEST_PRECEDENCE)
+	@ExceptionHandler(MethodArgumentNotValidException.class)
+	protected ResponseEntity<Object> handleMethodArgumentNotValidException(
+		MethodArgumentNotValidException ex) {
+
+		List<String> errors = ex.getBindingResult()
+			.getFieldErrors()
+			.stream()
+			.map(x -> x.getDefaultMessage()).toList();
+
+		ExceptionMessage exceptionMessage = ExceptionMessage.builder()
+			.message(HttpStatus.BAD_REQUEST + " : " + errors)
+			.code(HttpStatus.BAD_REQUEST.value()).build();
+
+		return new ResponseEntity<>
+			(exceptionMessage, HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	protected ResponseEntity<Object> handleHttpMessageNotReadableException(
+		Exception ex) {
+
+		ExceptionMessage exceptionMessage = ExceptionMessage.builder()
+			.message(HttpStatus.BAD_REQUEST + " : " + ex.getMessage())
+			.code(HttpStatus.BAD_REQUEST.value()).build();
+
+		return new ResponseEntity<>
+			(exceptionMessage, HttpStatus.BAD_REQUEST);
 	}
 }
