@@ -7,8 +7,8 @@ import flab.payment_system.domain.user.dto.UserConfirmVerificationNumberDto;
 import flab.payment_system.domain.user.dto.UserDto;
 import flab.payment_system.domain.user.dto.UserSignUpDto;
 import flab.payment_system.domain.user.dto.UserVerificationDto;
+import flab.payment_system.domain.user.dto.UserVerifyEmailDto;
 import flab.payment_system.domain.user.exception.UserEmailAlreadyExistConflictException;
-import flab.payment_system.domain.user.exception.UserSignUpBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationEmailBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationIdBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationNumberBadRequestException;
@@ -34,19 +34,16 @@ public class UserService {
 	// 회원가입
 	public void signUpUser(UserSignUpDto userSignUpDto) {
 		Optional<User> optionalUser = userRepository.findByEmail(userSignUpDto.email());
-		if(optionalUser.isPresent()) throw new UserEmailAlreadyExistConflictException();
+		// 이미 가입된 이메일
+		if (optionalUser.isPresent()) {
+			throw new UserEmailAlreadyExistConflictException();
+		}
 
 		// 이메일 인증된 유저인지 확인
-		boolean isAuthorized = confirmUserIsAuthorized(userSignUpDto);
-		if (!isAuthorized) {
-			throw new UserVerificationUnauthorizedException();
-		}
+		confirmUserIsAuthorized(userSignUpDto);
 
 		// 비밀번호와 비밀번호 확인이 일치하는지 확인
-		boolean isMatched = comparePasswordAndConfirmPassword(userSignUpDto);
-		if (!isMatched) {
-			throw new UserSignUpBadRequestException();
-		}
+		comparePasswordAndConfirmPassword(userSignUpDto);
 
 		userRepository.save(User.builder()
 			.email(userSignUpDto.email())
@@ -61,28 +58,30 @@ public class UserService {
 	}
 
 	// 회원가입을 위해 유저 인증 여부 확인 (유저가 인증메일을 받고, 인증까지 마쳤는지 확인)
-	public boolean confirmUserIsAuthorized(UserSignUpDto userSignUpDto) {
+	public void confirmUserIsAuthorized(UserSignUpDto userSignUpDto) {
 		Optional<UserVerification> optionalUserVerification = userVerificationRepository.findById(
 			userSignUpDto.verificationId());
 
 		UserVerification userVerification = optionalUserVerification.orElseThrow(
 			UserVerificationIdBadRequestException::new);
 
+		if (!userVerification.getEmail().equals(userSignUpDto.email())) {
+			throw new UserVerificationEmailBadRequestException();
+		}
+
 		if (!userVerification.isVerified()) {
 			throw new UserVerificationUnauthorizedException();
 		}
-
-		return true;
 	}
 
 	// 회원가입 전 유저 인증을 위한 인증메일 발송
-	public UserVerificationDto verifyUserEmail(UserDto userDto) {
+	public UserVerificationDto verifyUserEmail(UserVerifyEmailDto userVerifyEmailDto) {
 
-		int verificationNumber = sendVerificationNumberToUserEmail(userDto);
+		int verificationNumber = sendVerificationNumberToUserEmail(userVerifyEmailDto);
 
 		UserVerification userVerification = userVerificationRepository.save(
 			UserVerification.builder()
-				.email(userDto.email())
+				.email(userVerifyEmailDto.email())
 				.verificationNumber(verificationNumber).build());
 
 		return new UserVerificationDto(
@@ -91,12 +90,12 @@ public class UserService {
 	}
 
 	// 회원가입 전 유저 인증을 위한 인증메일 발송
-	public int sendVerificationNumberToUserEmail(UserDto userDto) {
+	public int sendVerificationNumberToUserEmail(UserVerifyEmailDto userVerifyEmailDto) {
 		ThreadLocalRandom random = ThreadLocalRandom.current();
 
 		int verificationNumber = (random.nextInt(900000) + 100000) % 1000000;
 
-		mailService.sendMail(userDto.email(),
+		mailService.sendMail(userVerifyEmailDto.email(),
 			"[payment_system] 회원가입을 위한 인증번호 메일입니다.",
 			mailService.setContextForSendValidationNumber(String.valueOf(verificationNumber)));
 
