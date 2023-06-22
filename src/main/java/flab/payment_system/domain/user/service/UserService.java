@@ -1,5 +1,10 @@
 package flab.payment_system.domain.user.service;
 
+import static org.springframework.http.HttpHeaders.SET_COOKIE;
+
+import flab.payment_system.core.utils.CookieUtil;
+import flab.payment_system.domain.jwt.enums.Token;
+import flab.payment_system.domain.jwt.service.JwtService;
 import flab.payment_system.domain.mail.service.MailService;
 import flab.payment_system.domain.user.domain.User;
 import flab.payment_system.domain.user.domain.UserVerification;
@@ -8,7 +13,11 @@ import flab.payment_system.domain.user.dto.UserDto;
 import flab.payment_system.domain.user.dto.UserSignUpDto;
 import flab.payment_system.domain.user.dto.UserVerificationDto;
 import flab.payment_system.domain.user.dto.UserVerifyEmailDto;
+import flab.payment_system.domain.user.exception.UserAlreadySignInConflictException;
 import flab.payment_system.domain.user.exception.UserEmailAlreadyExistConflictException;
+import flab.payment_system.domain.user.exception.UserEmailNotExistBadRequestException;
+import flab.payment_system.domain.user.exception.UserPasswordFailBadRequestException;
+import flab.payment_system.domain.user.exception.UserSignUpBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationEmailBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationIdBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationNumberBadRequestException;
@@ -46,13 +55,23 @@ public class UserService {
 
 		confirmUserIsAuthorized(userSignUpDto);
 
+		boolean isPasswordConfirmed = comparePasswordAndConfirmPassword(
+			passwordEncoder.encode(userSignUpDto.password()), userSignUpDto.confirmPassword());
+
+		if (!isPasswordConfirmed) {
+			throw new UserSignUpBadRequestException();
+		}
 
 		userRepository.save(User.builder()
 			.email(userSignUpDto.email())
 			.password(passwordEncoder.encode(userSignUpDto.password())).build());
 
+
 	}
 
+	private boolean comparePasswordAndConfirmPassword(String hashedPassword,
+		String comparedPassword) {
+		return passwordEncoder.matches(comparedPassword, hashedPassword);
 	}
 
 	public void confirmUserIsAuthorized(UserSignUpDto userSignUpDto) {
@@ -72,6 +91,11 @@ public class UserService {
 	}
 
 	public UserVerificationDto verifyUserEmail(UserVerifyEmailDto userVerifyEmailDto) {
+		Optional<User> optionalUser = userRepository.findByEmail(userVerifyEmailDto.email());
+
+		if (optionalUser.isPresent()) {
+			throw new UserEmailAlreadyExistConflictException();
+		}
 
 		int verificationNumber = sendVerificationNumberToUserEmail(userVerifyEmailDto);
 
