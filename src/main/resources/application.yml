@@ -1,6 +1,12 @@
 spring:
   profiles:
     active: prod
+  data:
+    redis:
+      port: ${REDIS_PORT}
+      host: ${REDIS_HOST}
+      password: ${REDIS_PASSWORD}
+
   mvc:
     dispatch-options-request: true
   datasource:
@@ -35,4 +41,5 @@ logging:
 
 timezone: ${TIMEZONE}
 smtp-id: ${SMTP_ID}
+secret-key: ${SECRET_KEY}
 
