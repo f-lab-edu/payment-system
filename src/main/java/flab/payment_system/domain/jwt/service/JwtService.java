@@ -60,7 +60,6 @@ public class JwtService {
 				.parseClaimsJws(jwt).getBody();
 
 		} catch (Exception exception) {
-			System.out.println(exception.getMessage());
 			throw new JwtException();
 		}
 
@@ -75,8 +74,6 @@ public class JwtService {
 				.getBody()
 				.get("userId");
 		} catch (Exception exception) {
-
-			System.out.println(exception.getMessage());
 			throw new JwtException();
 		}
 	}
