@@ -5,7 +5,6 @@ import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import java.time.OffsetDateTime;
-import org.hibernate.annotations.UpdateTimestamp;
 
 @MappedSuperclass
 public class BaseEntity {

@@ -23,7 +23,6 @@ public class MailService {
 	private String smtpId;
 
 
-	// 메일
 	public void sendMail(String recipient, String subject,
 		String context) {
 		try {
@@ -44,7 +43,6 @@ public class MailService {
 		}
 	}
 
-	// 인증메일로 보낼 내용
 	public String setContextForSendValidationNumber(String verificationNumber) {
 		Context context = new Context();
 		context.setVariable("verificationNumber", verificationNumber);

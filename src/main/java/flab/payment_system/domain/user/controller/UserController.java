@@ -34,8 +34,6 @@ public class UserController {
 
 	private final UserService userService;
 
-	// TODO bcrypt 암호화 후 비교
-	// 회원가입
 	@PostMapping("/sign-up")
 	public ResponseEntity<Object> signUpUser(@RequestBody @Valid UserSignUpDto userSignUpDto) {
 
@@ -44,7 +42,6 @@ public class UserController {
 		return ResponseEntity.created(URI.create("/users/sign-up")).build();
 	}
 
-	// 회원가입을 위한 인증메일 발송
 	@PostMapping("/e-mail")
 	public ResponseEntity<UserVerificationDto> verifyUserEmail(
 		@RequestBody @Valid UserVerifyEmailDto userVerifyEmailDto) {
@@ -54,7 +51,6 @@ public class UserController {
 		return ResponseEntity.ok().body(userVerificationDto);
 	}
 
-	// 인증번호 확인
 	@PostMapping("/e-mail/verification-number")
 	public ResponseEntity<Object> confirmVerificationNumber(
 		@RequestBody @Valid UserConfirmVerificationNumberDto userConfirmVerificationNumberDto) {

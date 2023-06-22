@@ -38,19 +38,14 @@ public class UserService {
 	private final JwtService jwtService;
 	private final PasswordEncoder passwordEncoder;
 
-	// 회원가입
 	public void signUpUser(UserSignUpDto userSignUpDto) {
 		Optional<User> optionalUser = userRepository.findByEmail(userSignUpDto.email());
-		// 이미 가입된 이메일
 		if (optionalUser.isPresent()) {
 			throw new UserEmailAlreadyExistConflictException();
 		}
 
-		// 이메일 인증된 유저인지 확인
 		confirmUserIsAuthorized(userSignUpDto);
 
-		// 비밀번호와 비밀번호 확인이 일치하는지 확인
-		comparePasswordAndConfirmPassword(userSignUpDto);
 
 		userRepository.save(User.builder()
 			.email(userSignUpDto.email())
@@ -58,13 +53,8 @@ public class UserService {
 
 	}
 
-	// 회원가입을 위해 비밀번호와 비밀번호 확인이 일치하는지 확인
-	private boolean comparePasswordAndConfirmPassword(UserSignUpDto userSignUpDto) {
-		return passwordEncoder.matches(userSignUpDto.confirmPassword(),
-			passwordEncoder.encode(userSignUpDto.password()));
 	}
 
-	// 회원가입을 위해 유저 인증 여부 확인 (유저가 인증메일을 받고, 인증까지 마쳤는지 확인)
 	public void confirmUserIsAuthorized(UserSignUpDto userSignUpDto) {
 		Optional<UserVerification> optionalUserVerification = userVerificationRepository.findById(
 			userSignUpDto.verificationId());
@@ -81,7 +71,6 @@ public class UserService {
 		}
 	}
 
-	// 회원가입 전 유저 인증을 위한 인증메일 발송
 	public UserVerificationDto verifyUserEmail(UserVerifyEmailDto userVerifyEmailDto) {
 
 		int verificationNumber = sendVerificationNumberToUserEmail(userVerifyEmailDto);
@@ -96,7 +85,6 @@ public class UserService {
 			userVerification.getEmail(), userVerification.isVerified());
 	}
 
-	// 회원가입 전 유저 인증을 위한 인증메일 발송
 	public int sendVerificationNumberToUserEmail(UserVerifyEmailDto userVerifyEmailDto) {
 		ThreadLocalRandom random = ThreadLocalRandom.current();
 
@@ -110,7 +98,6 @@ public class UserService {
 	}
 
 
-	// 회원가입을 전 발송한 인증메일의 인증번호 확인
 	public boolean confirmVerificationNumber(
 		UserConfirmVerificationNumberDto userConfirmVerificationNumberDto) {
 		Optional<UserVerification> optionalUserVerification = userVerificationRepository.findById(
