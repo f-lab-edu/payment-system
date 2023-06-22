@@ -1,5 +1,11 @@
 package flab.payment_system.domain.user.exception;
 
-public class UserVerificationNumberBadRequestException extends RuntimeException {
+import flab.payment_system.core.exception.BadRequestException;
 
+public class UserVerificationNumberBadRequestException extends BadRequestException {
+
+	public UserVerificationNumberBadRequestException() {
+		super();
+		this.message = "do_not_match_verification_number_and_user_input";
+	}
 }
