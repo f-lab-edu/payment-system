@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-
-@Configuration
+/*
+//@Configuration
 @RequiredArgsConstructor
 public class WebMvcConfiguration implements WebMvcConfigurer {
-
+/*
 	private final IpAddressRangeCheckControllerInterceptor ipAddressRangeCheckControllerInterceptor;
 
 	@Override
@@ -19,4 +19,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 			.addPathPatterns("/users/sign-in")
 			.addPathPatterns("/users/e-mail");
 	}
+
 }
+
+	*/

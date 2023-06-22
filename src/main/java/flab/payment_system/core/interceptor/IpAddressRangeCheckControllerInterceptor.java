@@ -10,7 +10,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 @RequiredArgsConstructor
 public class IpAddressRangeCheckControllerInterceptor implements HandlerInterceptor {
-
+/*
 	private final MailService mailService;
 
 	@Override
@@ -27,6 +27,8 @@ public class IpAddressRangeCheckControllerInterceptor implements HandlerIntercep
 
 		return true;
 	}
+
+ */
 
 
 }
