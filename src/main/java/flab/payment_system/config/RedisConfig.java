@@ -1,6 +1,5 @@
 package flab.payment_system.config;
 
-import flab.payment_system.domain.jwt.enums.Token;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,7 +11,7 @@ import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSeriali
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
-@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 1209600)
+@EnableRedisHttpSession(maxInactiveIntervalInSeconds = 7200)
 @Configuration
 public class RedisConfig {
 

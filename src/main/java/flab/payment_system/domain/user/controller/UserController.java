@@ -3,24 +3,19 @@ package flab.payment_system.domain.user.controller;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 import flab.payment_system.core.utils.CookieUtil;
-import flab.payment_system.domain.jwt.enums.Token;
+import flab.payment_system.domain.session.enums.Token;
 import flab.payment_system.domain.user.dto.UserConfirmVerificationNumberDto;
 import flab.payment_system.domain.user.dto.UserDto;
 import flab.payment_system.domain.user.dto.UserSignUpDto;
 import flab.payment_system.domain.user.dto.UserVerificationDto;
 import flab.payment_system.domain.user.dto.UserVerifyEmailDto;
 import flab.payment_system.domain.user.service.UserService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.net.URI;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.session.SessionRepository;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 public class UserController {
 
 	private final UserService userService;
@@ -42,7 +37,7 @@ public class UserController {
 		return ResponseEntity.created(URI.create("/users/sign-up")).build();
 	}
 
-	@PostMapping("/e-mail")
+	@PostMapping("/email")
 	public ResponseEntity<UserVerificationDto> verifyUserEmail(
 		@RequestBody @Valid UserVerifyEmailDto userVerifyEmailDto) {
 
@@ -51,7 +46,7 @@ public class UserController {
 		return ResponseEntity.ok().body(userVerificationDto);
 	}
 
-	@PostMapping("/e-mail/verification-number")
+	@PostMapping("/email/verification-number")
 	public ResponseEntity<Object> confirmVerificationNumber(
 		@RequestBody @Valid UserConfirmVerificationNumberDto userConfirmVerificationNumberDto) {
 
@@ -61,32 +56,24 @@ public class UserController {
 	}
 
 
-	// 로그인
 	@PostMapping("/sign-in")
 	public ResponseEntity<Object> signInUser(@RequestBody UserDto userDto,
-		HttpSession httpSession, HttpServletResponse response) {
+		HttpSession session) {
 
-		Map<Token, ResponseCookie> tokenCookies = userService.signInUser(userDto, httpSession,
-			response);
+		String cookieValue = userService.signInUser(userDto, session);
 
-		response.addHeader(SET_COOKIE, tokenCookies.get(Token.AccessToken).toString());
-		response.addHeader(SET_COOKIE, tokenCookies.get(Token.RefreshToken).toString());
-
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.noContent()
+			.header(SET_COOKIE, CookieUtil.makeCookie(Token.Access_Token.getTokenType(),
+				cookieValue, Token.Access_Token.getMaxExpireSecond()).toString()).build();
 	}
 
 	@PostMapping("/sign-out")
-	public ResponseEntity<Object> signOutUser(@CookieValue("access_token") Cookie cookie,
-		HttpSession httpSession,
-		HttpServletResponse response) {
-		userService.signOutUser(cookie, httpSession);
+	public ResponseEntity<Object> signOutUser(HttpServletRequest request, HttpSession session) {
 
-		response.addHeader(SET_COOKIE,
-			CookieUtil.deleteCookie(Token.AccessToken.getTokenType()).toString());
-		response.addHeader(SET_COOKIE,
-			CookieUtil.deleteCookie(Token.RefreshToken.getTokenType()).toString());
+		userService.signOutUser(request, session);
 
-		return ResponseEntity.noContent().build();
+		return ResponseEntity.noContent()
+			.header(SET_COOKIE, CookieUtil.deleteCookie(Token.Access_Token.getTokenType()).toString()).build();
 	}
 
 	@GetMapping("/test")

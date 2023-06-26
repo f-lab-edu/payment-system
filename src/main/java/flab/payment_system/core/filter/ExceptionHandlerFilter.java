@@ -3,9 +3,7 @@ package flab.payment_system.core.filter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import flab.payment_system.core.exception.BaseException;
 import flab.payment_system.core.exception.ExceptionMessage;
-import flab.payment_system.domain.user.exception.UserForbiddenException;
 import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -26,10 +24,8 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 			filterChain.doFilter(request, response);
 		} catch (BaseException baseException) {
 			handleBaseException(baseException, response);
-		} catch (IOException | ServletException exception) {
-			handleBaseException(new UserForbiddenException(), response);
 		} catch (Exception exception) {
-			handleException(new RuntimeException(), response);
+			handleException(exception, response);
 		}
 	}
 
@@ -50,7 +46,8 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 		HttpServletResponse response) throws IOException {
 
 		ExceptionMessage exceptionMessage = ExceptionMessage.builder()
-			.message(String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR))
+			.message(
+				String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR) + " : " + exception.getMessage())
 			.code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 
 		byte[] responseToSend = restResponseBytes(exceptionMessage);

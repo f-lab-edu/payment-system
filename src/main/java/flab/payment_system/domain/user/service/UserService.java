@@ -3,8 +3,8 @@ package flab.payment_system.domain.user.service;
 import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
 import flab.payment_system.core.utils.CookieUtil;
-import flab.payment_system.domain.jwt.enums.Token;
-import flab.payment_system.domain.jwt.service.JwtService;
+import flab.payment_system.domain.session.enums.Token;
+import flab.payment_system.domain.session.service.SessionService;
 import flab.payment_system.domain.mail.service.MailService;
 import flab.payment_system.domain.user.domain.User;
 import flab.payment_system.domain.user.domain.UserVerification;
@@ -14,10 +14,12 @@ import flab.payment_system.domain.user.dto.UserSignUpDto;
 import flab.payment_system.domain.user.dto.UserVerificationDto;
 import flab.payment_system.domain.user.dto.UserVerifyEmailDto;
 import flab.payment_system.domain.user.exception.UserAlreadySignInConflictException;
+import flab.payment_system.domain.user.exception.UserAlreadySignOutConflictException;
 import flab.payment_system.domain.user.exception.UserEmailAlreadyExistConflictException;
 import flab.payment_system.domain.user.exception.UserEmailNotExistBadRequestException;
 import flab.payment_system.domain.user.exception.UserPasswordFailBadRequestException;
 import flab.payment_system.domain.user.exception.UserSignUpBadRequestException;
+import flab.payment_system.domain.user.exception.UserUnauthorizedException;
 import flab.payment_system.domain.user.exception.UserVerificationEmailBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationIdBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationNumberBadRequestException;
@@ -25,14 +27,13 @@ import flab.payment_system.domain.user.exception.UserVerificationUnauthorizedExc
 import flab.payment_system.domain.user.repository.UserRepository;
 import flab.payment_system.domain.user.repository.UserVerificationRepository;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseCookie;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,7 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final UserVerificationRepository userVerificationRepository;
-	private final JwtService jwtService;
+	private final SessionService sessionService;
 	private final PasswordEncoder passwordEncoder;
 
 	public void signUpUser(UserSignUpDto userSignUpDto) {
@@ -145,8 +146,7 @@ public class UserService {
 		return true;
 	}
 
-	public Map<Token, ResponseCookie> signInUser(UserDto userDto, HttpSession httpSession,
-		HttpServletResponse response) {
+	public String signInUser(UserDto userDto, HttpSession session) {
 		Optional<User> optionalUser = userRepository.findByEmail(userDto.email());
 
 		User user = optionalUser.orElseThrow(UserEmailNotExistBadRequestException::new);
@@ -158,29 +158,39 @@ public class UserService {
 			throw new UserPasswordFailBadRequestException();
 		}
 
-		String userId = String.valueOf(user.getUserId());
+		Long userId = user.getUserId();
+		Optional<Long> userSession = Optional.ofNullable(
+			sessionService.getByUserId(session, userId));
 
-		String userSession = (String) httpSession.getAttribute(userId);
-
-		if (userSession != null) {
-			httpSession.removeAttribute(userId);
-			response.addHeader(SET_COOKIE,
-				CookieUtil.deleteCookie(Token.AccessToken.getTokenType()).toString());
-			response.addHeader(SET_COOKIE,
-				CookieUtil.deleteCookie(Token.RefreshToken.getTokenType()).toString());
-
+		if (userSession.isPresent()) {
+			sessionService.invalidate(session);
 			throw new UserAlreadySignInConflictException();
 		}
 
-		httpSession.setAttribute(userId, userId);
+		sessionService.setByUserId(session, userId);
 
-		return jwtService.issueTokenCookies(userId);
+		return sessionService.getCookieKey(userId);
 	}
 
-	public void signOutUser(Cookie cookie, HttpSession httpSession) {
-		String accessToken = cookie.getValue();
-		String userId = jwtService.getUserIdFromJwt(accessToken);
+	public void signOutUser(HttpServletRequest request, HttpSession session) {
+		Cookie[] cookies = Optional.ofNullable(request.getCookies())
+			.orElseThrow(UserAlreadySignOutConflictException::new);
 
-		httpSession.removeAttribute(userId);
+		Optional<Cookie> accessTokenCookie = Arrays.stream(cookies)
+			.filter(cookie -> cookie.getName().equals(Token.Access_Token.getTokenType()))
+			.findFirst();
+
+		if (accessTokenCookie.isEmpty()) {
+			sessionService.invalidate(session);
+			throw new UserAlreadySignOutConflictException();
+		}
+
+		String accessToken = accessTokenCookie.get().getValue();
+
+		Optional.ofNullable(
+				sessionService.getByAccessToken(session, accessToken))
+			.orElseThrow(UserAlreadySignOutConflictException::new);
+
+		sessionService.invalidate(session);
 	}
 }
