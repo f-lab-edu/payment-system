@@ -10,7 +10,6 @@ public record UserSignUpDto(
 	@Email(regexp = "^([\\w\\.\\_\\-])*[a-zA-Z0-9]+([\\w\\.\\_\\-])*([a-zA-Z0-9])+([\\w\\.\\_\\-])+@([a-zA-Z0-9]+\\.)+[a-zA-Z0-9]{2,3}$", message = "invalid_email")
 	@Size(min = 2, max = 350, message = "invalid_email")
 	String email,
-	// 영문, 특수문자, 숫자 포함 8~16자리
 	@NotBlank(message = "invalid_password")
 	@Pattern(regexp = "^(?=.*[a-zA-Z])(?=.*\\d)(?=.*\\W).{8,16}$", message = "invalid_password")
 	String password,
