@@ -103,7 +103,7 @@ public class UserService {
 		UserVerification userVerification = userVerificationRepository.save(
 			UserVerification.builder()
 				.email(userVerifyEmailDto.email())
-				.verificationNumber(verificationNumber).build());
+				.verificationNumber(verificationNumber).isVerified(false).build());
 
 		return new UserVerificationDto(
 			userVerification.getVerificationId(), verificationNumber,
@@ -140,8 +140,12 @@ public class UserService {
 			throw new UserVerificationNumberBadRequestException();
 		}
 
-		userVerificationRepository.updateIsVerifiedByVerificationId(
-			userConfirmVerificationNumberDto);
+		userVerificationRepository.save(
+			UserVerification.builder()
+				.verificationId(userConfirmVerificationNumberDto.verificationId())
+				.email(userConfirmVerificationNumberDto.email())
+				.verificationNumber(userConfirmVerificationNumberDto.verificationNumber())
+				.isVerified(true).build());
 
 		return true;
 	}
