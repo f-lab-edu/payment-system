@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>인증메일</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: #333333;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    h1 {
+      font-size: 24px;
+      font-weight: 600;
+      margin: 0;
+    }
+    p {
+      margin: 10px 0;
+    }
+    .verify-number {
+      display: inline-block;
+      background-color: #0088cc;
+      color: #ffffff;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>인증메일</h1>
+  <p>안녕하세요. payment-system 입니다.</p>
+  <p>회원가입을 위한 인증번호 입니다.</p>
+  <p><a class="verify-number" th:text="${verificationNumber}"></a></p>
+  <p>만약 우리 사이트에 가입을 원치 않으면 해당 이메일을 무시해주세요.</p>
+  <p>좋은 하루 되세요.</p>
+  <p>from payment-system project.</p>
+</div>
+</body>
+</html>
