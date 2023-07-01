@@ -43,3 +43,9 @@ timezone: ${TIMEZONE}
 smtp-id: ${SMTP_ID}
 secret-key: ${SECRET_KEY}
 
+host: ${HOST}
+kakao-cid: TC0ONETIME
+kakao-host: https://kapi.kakao.com/v1/payment
+kakao-adminkey: ${KAKAO_ADMIN_KEY}
+
+
