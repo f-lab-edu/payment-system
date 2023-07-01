@@ -36,8 +36,7 @@ server:
 
 logging:
   level:
-    root: debug
-
+    root: info
 
 timezone: ${TIMEZONE}
 smtp-id: ${SMTP_ID}
