@@ -13,12 +13,9 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Service
 public class OrderService {
-
-	private final ProductService productService;
 	private final OrderRepository orderRepository;
 
 	public long orderProduct(OrderProductDto orderProductDto, long userId) {
-		productService.checkRemainStock(orderProductDto);
 		AtomicReference<Integer> installMonth = new AtomicReference<>(0);
 		Optional<Integer> optionalInstallMonth = orderProductDto.getInstallMonth();
 		optionalInstallMonth.ifPresent(installMonth::set);

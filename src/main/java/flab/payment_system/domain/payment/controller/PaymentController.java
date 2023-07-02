@@ -22,6 +22,7 @@ public class PaymentController {
 
 	private final PaymentService paymentService;
 	private final SessionService sessionService;
+	private final ProductService productService;
 
 	@GetMapping("/{pgCompany}/approved")
 	public ResponseEntity<PaymentApprovalDto> paymentApproved(
@@ -39,18 +40,20 @@ public class PaymentController {
 	}
 
 	@GetMapping("/{pgCompany}/cancel")
-	public ResponseEntity<ResponseMessage> paymentCancel(@PathVariable PaymentPgCompany pgCompany) {
+	public ResponseEntity<ResponseMessage> paymentCancel(@PathVariable PaymentPgCompany pgCompany,
+		@RequestParam("paymentId") Long paymentId, @RequestParam("productId") Long productId) {
 		paymentService.setStrategy(pgCompany);
-		// TODO 결제 상태 업데이트
-
+		paymentService.cancelPayment(paymentId);
+		productService.increaseStock(productId);
 		return ResponseEntity.ok().body(new ResponseMessage("cancel"));
 	}
 
 	@GetMapping("/{pgCompany}/fail")
-	public ResponseEntity<ResponseMessage> paymentFail(@PathVariable PaymentPgCompany pgCompany) {
+	public ResponseEntity<ResponseMessage> paymentFail(@PathVariable PaymentPgCompany pgCompany,
+		@RequestParam("paymentId") Long paymentId, @RequestParam("productId") Long productId) {
 		paymentService.setStrategy(pgCompany);
-		// TODO 결제 상태 업데이트
-
+		paymentService.failPayment(paymentId);
+		productService.increaseStock(productId);
 		return ResponseEntity.ok().body(new ResponseMessage("fail"));
 	}
 }

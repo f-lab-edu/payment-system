@@ -46,7 +46,7 @@ public class PaymentService {
 				.installMonth(orderProductDto.installMonth()).build());
 
 		PaymentReadyDto paymentReadyDto = paymentStrategy.createPayment(orderProductDto, userId,
-			requestUrl, orderId, payment.getPaymentId());
+			requestUrl, orderId, payment.getPaymentId(), orderProductDto.productId());
 
 		paymentRepository.updateTidByPaymentId(
 			payment.getPaymentId(), paymentReadyDto.getTid());
@@ -57,6 +57,16 @@ public class PaymentService {
 		long paymentId) {
 
 		return paymentStrategy.approvePayment(pgToken, orderId, userId, paymentId);
+	}
+
+	public void cancelPayment(Long paymentId) {
+		paymentRepository.updatePaymentStateByPaymentId(paymentId,
+			PaymentStateConstant.CANCEL.getValue());
+	}
+
+	public void failPayment(Long paymentId) {
+		paymentRepository.updatePaymentStateByPaymentId(paymentId,
+			PaymentStateConstant.FAIL.getValue());
 	}
 }
 

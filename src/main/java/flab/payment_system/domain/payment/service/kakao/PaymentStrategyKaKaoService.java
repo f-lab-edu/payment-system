@@ -58,11 +58,11 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 
 	@Override
 	public PaymentReadyDto createPayment(OrderProductDto orderProductDto, long userId,
-		String requestUrl, long orderId, long paymentId) {
+		String requestUrl, long orderId, long paymentId, long productId) {
 		HttpHeaders headers = getHeaders();
 
 		MultiValueMap<String, String> params = getParamsForCreatePayment(
-			orderProductDto, userId, requestUrl, orderId, paymentId);
+			orderProductDto, userId, requestUrl, orderId, paymentId, productId);
 
 		HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<>(params, headers);
 
@@ -84,8 +84,8 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 					PaymentKaKaoApprovalDtoImpl.class))
 			.orElseThrow(PaymentKaKaoServiceUnavailableException::new);
 
-		System.out.println(paymentApprovalDto);
-		paymentRepository.updatePaymentStateByOrderId(orderId);
+		paymentRepository.updatePaymentStateByPaymentId(paymentId,
+			PaymentStateConstant.APPROVED.getValue());
 
 		kakaoPaymentRepository.save(KakaoPayment.builder().paymentId(paymentId)
 			.paymentMethodType(paymentApprovalDto.getPaymentMethodType()).aid(
@@ -93,7 +93,6 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 			.cardInfo(paymentApprovalDto.getCardInfo())
 			.paymentMethodType(paymentApprovalDto.getPaymentMethodType()).build());
 
-		// TODO db 에 필요한 정보 남기기
 		return paymentApprovalDto;
 	}
 
@@ -106,7 +105,7 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 	}
 
 	private MultiValueMap<String, String> getParamsForCreatePayment(OrderProductDto orderProductDto,
-		long userId, String requestUrl, long orderId, long paymentId) {
+		long userId, String requestUrl, long orderId, long paymentId, long productId) {
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 		Optional<Integer> installMonth = orderProductDto.getInstallMonth();
 		installMonth.ifPresent(integer -> params.add("install_month", String.valueOf(integer)));
@@ -117,11 +116,11 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 				"/approved?orderId=" + orderId + "&paymentId=" + paymentId);
 		params.add("cancel_url",
 			requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
-				+ PaymentPgCompany.KAKAO.getName() + "/cancel?orderId=" + orderId + "&paymentId="
-				+ paymentId);
+				+ PaymentPgCompany.KAKAO.getName() + "/cancel?paymentId=" + paymentId + "&productId"
+				+ productId);
 		params.add("fail_url", requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
 			+ PaymentPgCompany.KAKAO.getName()
-			+ "/fail?orderId=" + orderId + "&paymentId=" + paymentId);
+			+ "/fail?paymentId=" + paymentId + "&productId" + productId);
 		params.add("partner_order_id", String.valueOf(orderId));
 		params.add("partner_user_id", String.valueOf(userId));
 		params.add("item_name", orderProductDto.productName());
@@ -139,8 +138,6 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 
 		Payment payment = paymentRepository.findByOrderId(orderId)
 			.orElseThrow(PaymentNotExistBadRequestException::new);
-		Order order = orderRepository.findByOrderId(orderId)
-			.orElseThrow(OrderNotExistBadRequestException::new);
 
 		params.add("cid", cid);
 		params.add("tid", payment.getTid());

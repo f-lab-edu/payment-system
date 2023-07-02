@@ -13,7 +13,7 @@ public class PaymentStrategyTossService implements PaymentStrategy {
 
 	@Override
 	public PaymentReadyDto createPayment(OrderProductDto orderProductDto, long userId,
-		String requestUrl, long orderId, long paymentId) {
+		String requestUrl, long orderId, long paymentId, long productId) {
 		return new PaymentKakaoReadyDtoImpl();
 	}
 

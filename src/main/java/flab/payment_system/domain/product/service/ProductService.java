@@ -24,9 +24,22 @@ public class ProductService {
 			product.getStock());
 	}
 
-	public void checkRemainStock(OrderProductDto orderProductDto) {
+	private void checkRemainStock(OrderProductDto orderProductDto) {
 		Product product = productRepository.findById(orderProductDto.productId()).orElseThrow(
 			ProductNotExistBadRequestException::new);
 		if (product.getStock() == 0) throw new ProductSoldOutException();
+	}
+
+	private void decreaseStock(OrderProductDto orderProductDto) {
+		productRepository.updateDecreaseStock(orderProductDto.productId());
+	}
+	public void increaseStock(long productId) {
+		productRepository.updateIncreaseStock(productId);
+	}
+
+	@Transactional
+	public void transactionDecreaseStock(OrderProductDto orderProductDto) {
+		checkRemainStock(orderProductDto);
+		decreaseStock(orderProductDto);
 	}
 }

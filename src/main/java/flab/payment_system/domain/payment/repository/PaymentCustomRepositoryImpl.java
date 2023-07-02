@@ -18,10 +18,10 @@ public class PaymentCustomRepositoryImpl implements PaymentCustomRepository {
 	@Override
 	@Transactional
 	@Modifying(clearAutomatically = true)
-	public long updatePaymentStateByOrderId(long orderId) {
+	public long updatePaymentStateByPaymentId(long paymentId, Integer state) {
 		return jpaQueryFactory.update(payment)
-			.set(payment.state, PaymentStateConstant.APPROVED.getValue())
-			.where(payment.orderId.eq(orderId)).execute();
+			.set(payment.state, state)
+			.where(payment.paymentId.eq(paymentId)).execute();
 	}
 
 	@Override

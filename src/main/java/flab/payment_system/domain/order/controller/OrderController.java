@@ -26,6 +26,7 @@ public class OrderController {
 	private final OrderService orderService;
 	private final PaymentService paymentService;
 	private final UserService userService;
+	private final ProductService productService;
 
 	@PostMapping("/{pgCompany}")
 	public ResponseEntity<PaymentReadyDto> orderProductRequest(
@@ -34,7 +35,10 @@ public class OrderController {
 		HttpServletRequest request, HttpSession session) {
 
 		long userId = userService.getUserIdByRequest(request, session);
+		productService.transactionDecreaseStock(orderProductDto);
+
 		long orderId = orderService.orderProduct(orderProductDto, userId);
+
 		paymentService.setStrategy(pgCompany);
 		PaymentReadyDto paymentReadyDto = paymentService.createPayment(orderProductDto, request,
 			userId,
