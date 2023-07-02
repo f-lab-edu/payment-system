@@ -5,12 +5,15 @@ import flab.payment_system.domain.payment.domain.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.enums.PaymentStateConstant;
 import flab.payment_system.domain.payment.repository.PaymentRepository;
-import flab.payment_system.domain.payment.response.kakao.PaymentApprovalDto;
-import flab.payment_system.domain.payment.response.kakao.PaymentReadyDto;
+import flab.payment_system.domain.payment.response.PaymentApprovalDto;
+import flab.payment_system.domain.payment.response.PaymentReadyDto;
+import flab.payment_system.domain.payment.service.kakao.PaymentStrategyKaKaoService;
+import flab.payment_system.domain.payment.service.toss.PaymentStrategyTossService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.annotation.RequestScope;
 
 
 @Service

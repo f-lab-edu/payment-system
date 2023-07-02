@@ -1,14 +1,11 @@
 package flab.payment_system.domain.order.controller;
 
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
-import flab.payment_system.core.utils.CookieUtil;
 import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.order.service.OrderService;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
-import flab.payment_system.domain.payment.response.kakao.PaymentReadyDto;
+import flab.payment_system.domain.payment.response.PaymentReadyDto;
 import flab.payment_system.domain.payment.service.PaymentService;
-import flab.payment_system.domain.session.enums.Token;
 import flab.payment_system.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;

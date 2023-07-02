@@ -1,7 +1,9 @@
 package flab.payment_system.domain.payment.response.kakao;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+import flab.payment_system.domain.payment.response.PaymentReadyDto;
 import lombok.Getter;
-import lombok.ToString;
 
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
