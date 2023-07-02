@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "payment")
@@ -32,10 +33,29 @@ public class Payment extends BaseEntity {
 	@Nonnull
 	private Integer state;
 
+	// 0 카카오, 1 토스
+	@NonNull
+	@Column(name = "pgCompany", columnDefinition = "TINYINT UNSIGNED")
+	private Integer pgCompany;
+
+	@Nonnull
+	private Integer totalAmount;
+
+	@Nonnull
+	private Integer taxFreeAmount;
+
+	@Nonnull
+	private Integer installMonth;
+
 	@Builder
-	public Payment(Long orderId, String tid, Integer state) {
+	public Payment(Long orderId, String tid, Integer state, Integer pgCompany, Integer totalAmount,
+		Integer taxFreeAmount, Integer installMonth) {
 		this.orderId = orderId;
 		this.tid = tid;
 		this.state = state;
+		this.pgCompany = pgCompany;
+		this.totalAmount = totalAmount;
+		this.taxFreeAmount = taxFreeAmount;
+		this.installMonth = installMonth;
 	}
 }

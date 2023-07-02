@@ -23,8 +23,7 @@ public class OrderService {
 	private final ProductService productService;
 	private final OrderRepository orderRepository;
 
-	public long orderProduct(OrderProductDto orderProductDto, long userId,
-		PaymentPgCompany paymentPgCompany) {
+	public long orderProduct(OrderProductDto orderProductDto, long userId) {
 		productService.checkRemainStock(orderProductDto);
 		AtomicReference<Integer> installMonth = new AtomicReference<>(0);
 		Optional<Integer> optionalInstallMonth = orderProductDto.getInstallMonth();
@@ -32,23 +31,8 @@ public class OrderService {
 
 		Order order = orderRepository.save(
 			Order.builder().productId(orderProductDto.productId()).userId(userId)
-				.pgCompany(paymentPgCompany.getValue())
-				.quantity(orderProductDto.quantity()).totalAmount(orderProductDto.totalAmount())
-				.taxFreeAmount(orderProductDto.taxFreeAmount())
-				.installMonth(installMonth.get()).build());
+				.quantity(orderProductDto.quantity()).build());
 		return order.getOrderId();
-	}
-
-	public long getOrderId(HttpServletRequest request) {
-		Cookie[] cookies = Optional.ofNullable(request.getCookies())
-			.orElseThrow(PaymentFailBadRequestException::new);
-
-		Optional<Cookie> optionalOrderId = Arrays.stream(cookies)
-			.filter(cookie -> cookie.getName().equals("orderId"))
-			.findFirst();
-
-		return Long.parseLong(optionalOrderId.orElseThrow(PaymentFailBadRequestException::new)
-			.getValue());
 	}
 }
 

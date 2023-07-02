@@ -31,32 +31,13 @@ public class Order extends BaseEntity {
 	@Column(name = "productId", columnDefinition = "BIGINT UNSIGNED")
 	private Long productId;
 
-	// 0 카카오, 1 토스
-	@NonNull
-	@Column(name = "pgCompany", columnDefinition = "TINYINT UNSIGNED")
-	private Integer pgCompany;
-
 	@Nonnull
 	private Integer quantity;
 
-	@Nonnull
-	private Integer totalAmount;
-
-	@Nonnull
-	private Integer taxFreeAmount;
-
-	@Nonnull
-	private Integer installMonth;
-
 	@Builder
-	public Order(long userId, long productId, Integer pgCompany,
-		Integer quantity, Integer totalAmount, Integer taxFreeAmount, Integer installMonth) {
+	public Order(long userId, long productId, Integer quantity) {
 		this.userId = userId;
 		this.productId = productId;
-		this.pgCompany = pgCompany;
 		this.quantity = quantity;
-		this.totalAmount = totalAmount;
-		this.taxFreeAmount = taxFreeAmount;
-		this.installMonth = installMonth;
 	}
 }

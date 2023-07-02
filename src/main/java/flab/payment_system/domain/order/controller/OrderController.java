@@ -37,16 +37,13 @@ public class OrderController {
 		HttpServletRequest request, HttpSession session) {
 
 		long userId = userService.getUserIdByRequest(request, session);
-		long orderId = orderService.orderProduct(orderProductDto, userId, pgCompany);
+		long orderId = orderService.orderProduct(orderProductDto, userId);
 		paymentService.setStrategy(pgCompany);
-		PaymentReadyDto paymentUrl = paymentService.createPayment(orderProductDto, request, userId,
-			orderId); //temp
+		PaymentReadyDto paymentReadyDto = paymentService.createPayment(orderProductDto, request,
+			userId,
+			orderId, pgCompany);
 
-		return ResponseEntity.ok().
-			header(SET_COOKIE, CookieUtil.makeCookie("orderId",
-				String.valueOf(orderId), 60 * 10).toString()).body(paymentUrl);
+		return ResponseEntity.ok().body(paymentReadyDto);
 	}
-
-
 }
 

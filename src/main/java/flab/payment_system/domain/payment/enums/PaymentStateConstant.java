@@ -11,5 +11,5 @@ public enum PaymentStateConstant {
 	APPROVED(1),
 	FAIL(2),
 	CANCEL(3);
-	private final int value;
+	private final Integer value;
 }

@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@RequestScope
 public class PaymentService {
 
 	private PaymentStrategy paymentStrategy;
@@ -31,22 +32,28 @@ public class PaymentService {
 	}
 
 	public PaymentReadyDto createPayment(OrderProductDto orderProductDto,
-		HttpServletRequest request, long userId, long orderId) {
+		HttpServletRequest request, long userId, long orderId, PaymentPgCompany paymentPgCompany) {
 		String requestUrl = request.getRequestURL().toString()
 			.replace(request.getRequestURI(), "");
 
-		PaymentReadyDto paymentReadyDto = paymentStrategy.createPayment(orderProductDto, userId,
-			requestUrl, orderId);
+		Payment payment = paymentRepository.save(
+			Payment.builder().orderId(orderId).state(PaymentStateConstant.ONGOING.getValue())
+				.pgCompany(paymentPgCompany.getValue()).totalAmount(orderProductDto.totalAmount())
+				.taxFreeAmount(orderProductDto.taxFreeAmount())
+				.installMonth(orderProductDto.installMonth()).build());
 
-		paymentRepository.save(
-			Payment.builder().tid(paymentReadyDto.getTid()).orderId(orderId).state(
-				PaymentStateConstant.ONGOING.getValue()).build());
+		PaymentReadyDto paymentReadyDto = paymentStrategy.createPayment(orderProductDto, userId,
+			requestUrl, orderId, payment.getPaymentId());
+
+		paymentRepository.updateTidByPaymentId(
+			payment.getPaymentId(), paymentReadyDto.getTid());
 		return paymentReadyDto;
 	}
 
-	public PaymentApprovalDto approvePayment(String pgToken, long orderId, long userId) {
+	public PaymentApprovalDto approvePayment(String pgToken, long orderId, long userId,
+		long paymentId) {
 
-		return paymentStrategy.approvePayment(pgToken, orderId, userId);
+		return paymentStrategy.approvePayment(pgToken, orderId, userId, paymentId);
 	}
 }
 

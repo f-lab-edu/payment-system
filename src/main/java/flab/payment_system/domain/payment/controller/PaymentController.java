@@ -23,17 +23,18 @@ public class PaymentController {
 
 	private final PaymentService paymentService;
 	private final SessionService sessionService;
-	private final OrderService orderService;
 
 	@GetMapping("/{pgCompany}/approved")
 	public ResponseEntity<PaymentApprovalDto> paymentApproved(
 		@PathVariable PaymentPgCompany pgCompany,
-		@RequestParam("pg_token") String pgToken, HttpServletRequest request, HttpSession session) {
+		@RequestParam("pg_token") String pgToken, @RequestParam("orderId") Long orderId,
+		@RequestParam("paymentId") Long paymentId, HttpServletRequest request,
+		HttpSession session) {
 		paymentService.setStrategy(pgCompany);
 		long userId = sessionService.getUserIdByRequest(request, session);
-		long orderId = orderService.getOrderId(request);
-		PaymentApprovalDto paymentApprovalDto = paymentService.approvePayment(pgToken, userId,
-			orderId);
+
+		PaymentApprovalDto paymentApprovalDto = paymentService.approvePayment(pgToken, orderId,
+			userId, paymentId);
 
 		return ResponseEntity.ok().body(paymentApprovalDto);
 	}

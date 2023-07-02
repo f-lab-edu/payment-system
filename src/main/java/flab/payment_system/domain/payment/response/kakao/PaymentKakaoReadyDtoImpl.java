@@ -4,14 +4,19 @@ import lombok.Getter;
 import lombok.ToString;
 
 @Getter
-@ToString
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PaymentKakaoReadyDtoImpl implements PaymentReadyDto {
 
 	private String tid;
-	private String next_redirect_app_url;
-	private String next_redirect_mobile_url;
-	private String next_redirect_pc_url;
-	private String android_app_scheme;
-	private String ios_app_scheme;
-	private String created_at;
+	private String nextRedirectAppUrl;
+	private String nextRedirectMobileUrl;
+	private String nextRedirectPcUrl;
+	private String androidAppScheme;
+	private String iosAppScheme;
+	private String createdAt;
+	private Long paymentId;
+
+	public void setPaymentId(Long paymentId) {
+		this.paymentId = paymentId;
+	}
 }

@@ -6,13 +6,16 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@ToString
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+@Embeddable
 public class Amount {
 
 	private int total;
-	private int tax_free;
+	@Column(name = "tax_free")
+	private int taxFree;
 	private int tax;
 	private int point;
 	private int discount;
-	private int green_deposit;
+	@Column(name = "green_deposit")
+	private int greenDeposit;
 }
