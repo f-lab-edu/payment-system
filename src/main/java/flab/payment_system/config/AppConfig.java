@@ -22,8 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class AppConfig {
-
-	private final SessionService jwtService;
+	private final SessionService sessionService;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -44,7 +43,7 @@ public class AppConfig {
 		FilterRegistrationBean<OncePerRequestFilter> bean = new FilterRegistrationBean<>();
 
 		bean.setFilter(
-			new SignInCheckFilter(jwtService));
+			new SignInCheckFilter(sessionService));
 		bean.setOrder(2);
 		bean.addUrlPatterns(
 			Constant.API_AND_VERSION.getValue() + "/users/test",

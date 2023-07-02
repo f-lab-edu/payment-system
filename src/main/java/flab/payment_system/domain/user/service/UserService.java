@@ -12,8 +12,10 @@ import flab.payment_system.domain.user.dto.UserVerifyEmailDto;
 import flab.payment_system.domain.user.exception.UserAlreadySignInConflictException;
 import flab.payment_system.domain.user.exception.UserEmailAlreadyExistConflictException;
 import flab.payment_system.domain.user.exception.UserEmailNotExistBadRequestException;
+import flab.payment_system.domain.user.exception.UserNotSignInedConflictException;
 import flab.payment_system.domain.user.exception.UserPasswordFailBadRequestException;
 import flab.payment_system.domain.user.exception.UserSignUpBadRequestException;
+import flab.payment_system.domain.user.exception.UserUnauthorizedException;
 import flab.payment_system.domain.user.exception.UserVerificationEmailBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationIdBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationNumberBadRequestException;
@@ -22,6 +24,7 @@ import flab.payment_system.domain.user.repository.UserRepository;
 import flab.payment_system.domain.user.repository.UserVerificationRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
@@ -141,7 +144,11 @@ public class UserService {
 		return true;
 	}
 
-	public String signInUser(UserDto userDto, HttpSession session) {
+	public void signInUser(UserDto userDto, HttpSession session) {
+		if (sessionService.getUserId(session).isPresent()) {
+			throw new UserAlreadySignInConflictException();
+		}
+
 		Optional<User> optionalUser = userRepository.findByEmail(userDto.email());
 
 		User user = optionalUser.orElseThrow(UserEmailNotExistBadRequestException::new);
@@ -153,27 +160,15 @@ public class UserService {
 			throw new UserPasswordFailBadRequestException();
 		}
 
-		Long userId = user.getUserId();
-		Optional<Long> userSession = Optional.ofNullable(
-			sessionService.getByUserId(session, userId));
-
-		if (userSession.isPresent()) {
-			sessionService.invalidate(session);
-			throw new UserAlreadySignInConflictException();
-		}
-
-		sessionService.setByUserId(session, userId);
-
-		return sessionService.getCookieKey(userId);
+		sessionService.setUserId(session, user.getUserId());
 	}
 
-	public void signOutUser(HttpServletRequest request, HttpSession session) {
-		sessionService.getUserIdByRequest(request, session);
-
+	public void signOutUser(HttpSession session) {
+		getUserId(session);
 		sessionService.invalidate(session);
 	}
 
-	public long getUserIdByRequest(HttpServletRequest request, HttpSession session) {
-		return sessionService.getUserIdByRequest(request, session);
+	public long getUserId(HttpSession session) {
+		return sessionService.getUserId(session).orElseThrow(UserNotSignInedConflictException::new);
 	}
 }

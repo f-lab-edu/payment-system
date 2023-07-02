@@ -35,7 +35,7 @@ public class OrderController {
 		@RequestBody OrderProductDto orderProductDto,
 		HttpServletRequest request, HttpSession session) {
 
-		long userId = userService.getUserIdByRequest(request, session);
+		long userId = userService.getUserId(session);
 		productService.transactionDecreaseStock(orderProductDto);
 
 		long orderId = orderService.orderProduct(orderProductDto, userId);

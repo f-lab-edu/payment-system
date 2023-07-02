@@ -1,14 +1,10 @@
 package flab.payment_system.core.exception;
 
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
 
-import flab.payment_system.core.utils.CookieUtil;
-import flab.payment_system.domain.session.enums.Token;
 import jakarta.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -27,17 +23,6 @@ public class CustomExceptionHandler {
 		ExceptionMessage exceptionMessage = ExceptionMessage.builder()
 			.message(baseException.getStatus() + " : " + baseException.getMessage())
 			.code(baseException.getCode()).build();
-
-		if (baseException.getClass().getSimpleName().equals("UserAlreadySignInConflictException")) {
-
-			HttpHeaders responseHeaders = new HttpHeaders();
-			responseHeaders.set(SET_COOKIE,
-				CookieUtil.deleteCookie(Token.Access_Token.getTokenType()).toString());
-
-			return new ResponseEntity<>
-				(exceptionMessage, responseHeaders,
-					HttpStatusCode.valueOf(baseException.getCode()));
-		}
 
 		return new ResponseEntity<>
 			(exceptionMessage, HttpStatusCode.valueOf(baseException.getCode()));
