@@ -6,9 +6,9 @@ import flab.payment_system.domain.product.dto.ProductDto;
 import flab.payment_system.domain.product.exception.ProductNotExistBadRequestException;
 import flab.payment_system.domain.product.exception.ProductSoldOutException;
 import flab.payment_system.domain.product.repository.ProductRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor

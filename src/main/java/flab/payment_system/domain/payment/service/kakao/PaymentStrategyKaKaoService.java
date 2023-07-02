@@ -8,6 +8,7 @@ import flab.payment_system.domain.order.repository.OrderRepository;
 import flab.payment_system.domain.payment.domain.kakao.KakaoPayment;
 import flab.payment_system.domain.payment.domain.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
+import flab.payment_system.domain.payment.enums.PaymentStateConstant;
 import flab.payment_system.domain.payment.exception.PaymentKaKaoServiceUnavailableException;
 import flab.payment_system.domain.payment.exception.PaymentNotExistBadRequestException;
 import flab.payment_system.domain.payment.repository.KakaoPaymentRepository;

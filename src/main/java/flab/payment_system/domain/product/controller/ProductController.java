@@ -2,6 +2,7 @@ package flab.payment_system.domain.product.controller;
 
 import flab.payment_system.domain.product.dto.ProductDto;
 import flab.payment_system.domain.product.service.ProductService;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
