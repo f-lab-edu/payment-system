@@ -5,7 +5,7 @@ import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.response.PaymentApprovalDto;
 import flab.payment_system.domain.payment.service.PaymentService;
 import flab.payment_system.domain.product.service.ProductService;
-import flab.payment_system.domain.session.service.SessionService;
+import flab.payment_system.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
 
 	private final PaymentService paymentService;
-	private final SessionService sessionService;
+	private final UserService userService;
 	private final ProductService productService;
 
 	@GetMapping("/{pgCompany}/approved")
@@ -32,7 +32,7 @@ public class PaymentController {
 		@RequestParam("paymentId") Long paymentId, HttpServletRequest request,
 		HttpSession session) {
 		paymentService.setStrategy(pgCompany);
-		long userId = sessionService.getUserIdByRequest(request, session);
+		long userId = userService.getUserId(session);
 
 		PaymentApprovalDto paymentApprovalDto = paymentService.approvePayment(pgToken, orderId,
 			userId, paymentId);

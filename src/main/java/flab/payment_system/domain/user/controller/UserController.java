@@ -1,9 +1,5 @@
 package flab.payment_system.domain.user.controller;
 
-import static org.springframework.http.HttpHeaders.SET_COOKIE;
-
-import flab.payment_system.core.utils.CookieUtil;
-import flab.payment_system.domain.session.enums.Token;
 import flab.payment_system.domain.user.dto.UserConfirmVerificationNumberDto;
 import flab.payment_system.domain.user.dto.UserDto;
 import flab.payment_system.domain.user.dto.UserSignUpDto;
@@ -57,23 +53,20 @@ public class UserController {
 
 
 	@PostMapping("/sign-in")
-	public ResponseEntity<Object> signInUser(@RequestBody UserDto userDto,
-		HttpSession session) {
+	public ResponseEntity<Object> signInUser(@RequestBody UserDto userDto, HttpSession session,
+		HttpServletRequest request) {
 
-		String cookieValue = userService.signInUser(userDto, session);
+		userService.signInUser(userDto, session);
 
-		return ResponseEntity.noContent()
-			.header(SET_COOKIE, CookieUtil.makeCookie(Token.Access_Token.getTokenType(),
-				cookieValue, Token.Access_Token.getMaxExpireSecond()).toString()).build();
+		return ResponseEntity.noContent().build();
 	}
 
 	@PostMapping("/sign-out")
-	public ResponseEntity<Object> signOutUser(HttpServletRequest request, HttpSession session) {
+	public ResponseEntity<Object> signOutUser(HttpSession session) {
 
-		userService.signOutUser(request, session);
+		userService.signOutUser(session);
 
-		return ResponseEntity.noContent()
-			.header(SET_COOKIE, CookieUtil.deleteCookie(Token.Access_Token.getTokenType()).toString()).build();
+		return ResponseEntity.noContent().build();
 	}
 
 	@GetMapping("/test")

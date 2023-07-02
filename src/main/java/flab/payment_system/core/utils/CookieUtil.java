@@ -1,11 +1,5 @@
 package flab.payment_system.core.utils;
 
-import flab.payment_system.domain.session.enums.Token;
-import flab.payment_system.domain.user.exception.UserNotSignInedConflictException;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.Optional;
 import org.springframework.http.ResponseCookie;
 
 public class CookieUtil {
