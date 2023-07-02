@@ -9,5 +9,4 @@ import org.springframework.stereotype.Repository;
 public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
 	private final JPAQueryFactory jpaQueryFactory;
-
 }

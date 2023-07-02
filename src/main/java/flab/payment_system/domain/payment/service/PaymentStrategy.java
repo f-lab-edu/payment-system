@@ -1,8 +1,8 @@
 package flab.payment_system.domain.payment.service;
 
 import flab.payment_system.domain.order.dto.OrderProductDto;
-import flab.payment_system.domain.payment.response.kakao.PaymentApprovalDto;
-import flab.payment_system.domain.payment.response.kakao.PaymentReadyDto;
+import flab.payment_system.domain.payment.response.PaymentApprovalDto;
+import flab.payment_system.domain.payment.response.PaymentReadyDto;
 
 public interface PaymentStrategy {
 
