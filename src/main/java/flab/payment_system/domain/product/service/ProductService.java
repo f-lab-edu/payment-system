@@ -27,12 +27,15 @@ public class ProductService {
 	private void checkRemainStock(OrderProductDto orderProductDto) {
 		Product product = productRepository.findById(orderProductDto.productId()).orElseThrow(
 			ProductNotExistBadRequestException::new);
-		if (product.getStock() == 0) throw new ProductSoldOutException();
+		if (product.getStock() == 0) {
+			throw new ProductSoldOutException();
+		}
 	}
 
 	private void decreaseStock(OrderProductDto orderProductDto) {
 		productRepository.updateDecreaseStock(orderProductDto.productId());
 	}
+
 	public void increaseStock(long productId) {
 		productRepository.updateIncreaseStock(productId);
 	}

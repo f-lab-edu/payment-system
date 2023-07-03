@@ -1,17 +1,19 @@
 package flab.payment_system.domain.payment.service;
 
+import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;
+import flab.payment_system.domain.payment.client.PaymentStrategy;
 import flab.payment_system.domain.payment.domain.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.enums.PaymentStateConstant;
-import flab.payment_system.domain.payment.exception.PaymentNotExistBadRequestException;
 import flab.payment_system.domain.payment.repository.PaymentRepository;
 import flab.payment_system.domain.payment.response.PaymentApprovalDto;
+import flab.payment_system.domain.payment.response.PaymentCancelDto;
+import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
 import flab.payment_system.domain.payment.response.PaymentReadyDto;
-import flab.payment_system.domain.payment.service.kakao.PaymentStrategyKaKaoService;
-import flab.payment_system.domain.payment.service.toss.PaymentStrategyTossService;
+import flab.payment_system.domain.payment.client.kakao.PaymentStrategyKaKaoClient;
+import flab.payment_system.domain.payment.client.toss.PaymentStrategyTossClient;
 import jakarta.servlet.http.HttpServletRequest;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
@@ -29,10 +31,10 @@ public class PaymentService {
 
 	public void setStrategy(PaymentPgCompany paymentPgCompany) {
 		if (paymentPgCompany == PaymentPgCompany.TOSS) {
-			this.paymentStrategy = applicationContext.getBean(PaymentStrategyTossService.class);
+			this.paymentStrategy = applicationContext.getBean(PaymentStrategyTossClient.class);
 		}
 		if (paymentPgCompany == PaymentPgCompany.KAKAO) {
-			this.paymentStrategy = applicationContext.getBean(PaymentStrategyKaKaoService.class);
+			this.paymentStrategy = applicationContext.getBean(PaymentStrategyKaKaoClient.class);
 		}
 	}
 
@@ -69,6 +71,14 @@ public class PaymentService {
 	public void failPayment(Long paymentId) {
 		paymentRepository.updatePaymentStateByPaymentId(paymentId,
 			PaymentStateConstant.FAIL.getValue());
+	}
+
+	public PaymentCancelDto orderCancel(OrderCancelDto orderCancelDto) {
+		return paymentStrategy.orderCancel(orderCancelDto);
+	}
+
+	public PaymentOrderDetailDto getOrderDetail(String tid) {
+		return paymentStrategy.getOrderDetail(tid);
 	}
 }
 

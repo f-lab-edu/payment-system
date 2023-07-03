@@ -1,9 +1,8 @@
-package flab.payment_system.domain.payment.service.kakao;
+package flab.payment_system.domain.payment.client.kakao;
 
 import flab.payment_system.core.enums.Constant;
-import flab.payment_system.domain.order.domain.Order;
+import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;
-import flab.payment_system.domain.order.exception.OrderNotExistBadRequestException;
 import flab.payment_system.domain.order.repository.OrderRepository;
 import flab.payment_system.domain.payment.domain.kakao.KakaoPayment;
 import flab.payment_system.domain.payment.domain.Payment;
@@ -14,10 +13,14 @@ import flab.payment_system.domain.payment.exception.PaymentNotExistBadRequestExc
 import flab.payment_system.domain.payment.repository.KakaoPaymentRepository;
 import flab.payment_system.domain.payment.repository.PaymentRepository;
 import flab.payment_system.domain.payment.response.PaymentApprovalDto;
+import flab.payment_system.domain.payment.response.PaymentCancelDto;
+import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
 import flab.payment_system.domain.payment.response.kakao.PaymentKaKaoApprovalDtoImpl;
+import flab.payment_system.domain.payment.response.kakao.PaymentKaKaoCancelDtoImpl;
+import flab.payment_system.domain.payment.response.kakao.PaymentKaKaoOrderDetailDtoImpl;
 import flab.payment_system.domain.payment.response.kakao.PaymentKakaoReadyDtoImpl;
 import flab.payment_system.domain.payment.response.PaymentReadyDto;
-import flab.payment_system.domain.payment.service.PaymentStrategy;
+import flab.payment_system.domain.payment.client.PaymentStrategy;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -30,7 +33,7 @@ import org.springframework.web.client.RestTemplate;
 
 
 @Component
-public class PaymentStrategyKaKaoService implements PaymentStrategy {
+public class PaymentStrategyKaKaoClient implements PaymentStrategy {
 
 	private final String cid;
 	private final String kakaoHost;
@@ -42,7 +45,7 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 	private final KakaoPaymentRepository kakaoPaymentRepository;
 	private final OrderRepository orderRepository;
 
-	public PaymentStrategyKaKaoService(@Value("${kakao-cid}") String cid,
+	public PaymentStrategyKaKaoClient(@Value("${kakao-cid}") String cid,
 		@Value("${kakao-host}") String kakaoHost, @Value("${kakao-adminkey}") String adminKey,
 		@Value("${host}") String host, RestTemplate restTemplate,
 		PaymentRepository paymentRepository, KakaoPaymentRepository kakaoPaymentRepository,
@@ -60,12 +63,9 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 	@Override
 	public PaymentReadyDto createPayment(OrderProductDto orderProductDto, long userId,
 		String requestUrl, long orderId, long paymentId, long productId) {
-		HttpHeaders headers = getHeaders();
 
-		MultiValueMap<String, String> params = getParamsForCreatePayment(
+		HttpEntity<MultiValueMap<String, String>> body = getBodyForCreatePayment(
 			orderProductDto, userId, requestUrl, orderId, paymentId, productId);
-
-		HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<>(params, headers);
 
 		return Optional.ofNullable(restTemplate.postForObject(kakaoHost + "/ready",
 			body, PaymentKakaoReadyDtoImpl.class)).orElseThrow(
@@ -75,9 +75,8 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 	@Override
 	public PaymentApprovalDto approvePayment(String pgToken, long orderId, long userId,
 		long paymentId) {
-		HttpHeaders headers = getHeaders();
-		MultiValueMap<String, String> params = getParamsForApprovePayment(pgToken, orderId, userId);
-		HttpEntity<MultiValueMap<String, String>> body = new HttpEntity<>(params, headers);
+		HttpEntity<MultiValueMap<String, String>> body = getBodyForApprovePayment(pgToken, orderId,
+			userId);
 
 		PaymentApprovalDto paymentApprovalDto = Optional.ofNullable(
 				restTemplate.postForObject(kakaoHost + "/approve",
@@ -97,6 +96,33 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 		return paymentApprovalDto;
 	}
 
+	@Override
+	public PaymentCancelDto orderCancel(OrderCancelDto orderCancelDto) {
+		HttpEntity<MultiValueMap<String, String>> body = getBodyForCancelPayment(orderCancelDto);
+
+		PaymentCancelDto paymentCancelDto = Optional.ofNullable(
+				restTemplate.postForObject(kakaoHost + "/cancel",
+					body,
+					PaymentKaKaoCancelDtoImpl.class))
+			.orElseThrow(PaymentKaKaoServiceUnavailableException::new);
+
+		paymentRepository.updatePaymentStateByOrderId(orderCancelDto.orderId(),
+			PaymentStateConstant.CANCEL.getValue());
+
+		return paymentCancelDto;
+	}
+
+	@Override
+	public PaymentOrderDetailDto getOrderDetail(String tid) {
+		HttpEntity<MultiValueMap<String, String>> body = getBodyForOrderDetail(tid);
+
+		return Optional.ofNullable(
+				restTemplate.postForObject(kakaoHost + "/order",
+					body,
+					PaymentKaKaoOrderDetailDtoImpl.class))
+			.orElseThrow(PaymentKaKaoServiceUnavailableException::new);
+	}
+
 
 	private HttpHeaders getHeaders() {
 		HttpHeaders headers = new HttpHeaders();
@@ -105,8 +131,11 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 		return headers;
 	}
 
-	private MultiValueMap<String, String> getParamsForCreatePayment(OrderProductDto orderProductDto,
+	private HttpEntity<MultiValueMap<String, String>> getBodyForCreatePayment(
+		OrderProductDto orderProductDto,
 		long userId, String requestUrl, long orderId, long paymentId, long productId) {
+		HttpHeaders headers = getHeaders();
+
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 		Optional<Integer> installMonth = orderProductDto.getInstallMonth();
 		installMonth.ifPresent(integer -> params.add("install_month", String.valueOf(integer)));
@@ -129,11 +158,13 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 		params.add("total_amount",
 			String.valueOf(orderProductDto.totalAmount()));
 		params.add("tax_free_amount", String.valueOf(orderProductDto.taxFreeAmount()));
-		return params;
+
+		return new HttpEntity<>(params, headers);
 	}
 
-	private MultiValueMap<String, String> getParamsForApprovePayment(String pgToken,
+	private HttpEntity<MultiValueMap<String, String>> getBodyForApprovePayment(String pgToken,
 		long orderId, long userId) {
+		HttpHeaders headers = getHeaders();
 
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 
@@ -146,7 +177,26 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 		params.add("partner_user_id", String.valueOf(userId));
 		params.add("pg_token", pgToken);
 		params.add("total_amount", String.valueOf(payment.getTotalAmount()));
-		return params;
+		return new HttpEntity<>(params, headers);
+	}
+
+	private HttpEntity<MultiValueMap<String, String>> getBodyForCancelPayment(
+		OrderCancelDto orderCancelDto) {
+		HttpHeaders headers = getHeaders();
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		params.add("cid", cid);
+		params.add("tid", String.valueOf(orderCancelDto.tid()));
+		params.add("cancel_amount", String.valueOf(orderCancelDto.cancelAmount()));
+		params.add("cancel_tax_free_amount", String.valueOf(orderCancelDto.cancelTaxFreeAmount()));
+		return new HttpEntity<>(params, headers);
+	}
+
+	private HttpEntity<MultiValueMap<String, String>> getBodyForOrderDetail(String tid) {
+		HttpHeaders headers = getHeaders();
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+		params.add("cid", cid);
+		params.add("tid", String.valueOf(tid));
+		return new HttpEntity<>(params, headers);
 	}
 
 }

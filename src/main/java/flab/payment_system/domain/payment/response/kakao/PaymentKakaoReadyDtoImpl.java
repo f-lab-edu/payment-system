@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class PaymentKakaoReadyDtoImpl implements PaymentReadyDto {
+public class PaymentKakaoReadyDtoImpl implements PaymentReadyDto, PaymentKaKao {
 
 	private String tid;
 	private String nextRedirectAppUrl;
