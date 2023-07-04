@@ -35,8 +35,11 @@ public class PaymentCustomRepositoryImpl implements PaymentCustomRepository {
 	@Override
 	@Transactional
 	@Modifying(clearAutomatically = true)
-	public long updateTidByPaymentId(long paymentId, String tid) {
-		return jpaQueryFactory.update(payment).set(payment.tid, tid)
+	public long updatePaymentKeyByPaymentId(long paymentId, String paymentKey) {
+		return jpaQueryFactory.update(payment)
+			.set(payment.paymentKey, paymentKey)
 			.where(payment.paymentId.eq(paymentId)).execute();
+
+
 	}
 }

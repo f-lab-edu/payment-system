@@ -22,6 +22,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class AppConfig {
+
 	private final SessionService sessionService;
 
 	@Bean
@@ -46,7 +47,7 @@ public class AppConfig {
 			new SignInCheckFilter(sessionService));
 		bean.setOrder(2);
 		bean.addUrlPatterns(
-			Constant.API_AND_VERSION.getValue() + "/users/test",
+			Constant.API_AND_VERSION.getValue() + "/order/*",
 			Constant.API_AND_VERSION.getValue() + "/payments/*");
 
 		return bean;
@@ -61,7 +62,7 @@ public class AppConfig {
 			new ExceptionHandlerFilter());
 		bean.setOrder(1);
 		bean.addUrlPatterns(
-			Constant.API_AND_VERSION.getValue() + "/users/test",
+			Constant.API_AND_VERSION.getValue() + "/order/*",
 			Constant.API_AND_VERSION.getValue() + "/payments/*");
 
 		return bean;

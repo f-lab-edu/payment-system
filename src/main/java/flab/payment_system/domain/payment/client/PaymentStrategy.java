@@ -1,7 +1,6 @@
 package flab.payment_system.domain.payment.client;
 
 import flab.payment_system.domain.order.dto.OrderCancelDto;
-import flab.payment_system.domain.order.dto.OrderDetailDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.payment.response.PaymentApprovalDto;
 import flab.payment_system.domain.payment.response.PaymentCancelDto;
@@ -15,7 +14,7 @@ public interface PaymentStrategy {
 
 	PaymentApprovalDto approvePayment(String pgToken, long orderId, long userId, long paymentId);
 
-	PaymentCancelDto orderCancel(OrderCancelDto orderCancelDto);
+	PaymentCancelDto cancelPayment(OrderCancelDto orderCancelDto);
 
-	PaymentOrderDetailDto getOrderDetail(String tid);
+	PaymentOrderDetailDto getOrderDetail(String paymentKey);
 }

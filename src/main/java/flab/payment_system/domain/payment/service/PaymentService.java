@@ -52,15 +52,22 @@ public class PaymentService {
 		PaymentReadyDto paymentReadyDto = paymentStrategy.createPayment(orderProductDto, userId,
 			requestUrl, orderId, payment.getPaymentId(), orderProductDto.productId());
 
-		paymentRepository.updateTidByPaymentId(
-			payment.getPaymentId(), paymentReadyDto.getTid());
+		paymentRepository.updatePaymentKeyByPaymentId(
+			payment.getPaymentId(), paymentReadyDto.getPaymentKey());
+
 		return paymentReadyDto;
 	}
 
 	public PaymentApprovalDto approvePayment(String pgToken, long orderId, long userId,
 		long paymentId) {
 
-		return paymentStrategy.approvePayment(pgToken, orderId, userId, paymentId);
+		PaymentApprovalDto paymentApprovalDto = paymentStrategy.approvePayment(pgToken, orderId,
+			userId, paymentId);
+
+		paymentRepository.updatePaymentStateByPaymentId(paymentId,
+			PaymentStateConstant.APPROVED.getValue());
+
+		return paymentApprovalDto;
 	}
 
 	public void cancelPayment(Long paymentId) {
@@ -74,11 +81,15 @@ public class PaymentService {
 	}
 
 	public PaymentCancelDto orderCancel(OrderCancelDto orderCancelDto) {
-		return paymentStrategy.orderCancel(orderCancelDto);
+		PaymentCancelDto paymentCancelDto = paymentStrategy.cancelPayment(orderCancelDto);
+
+		paymentRepository.updatePaymentStateByOrderId(orderCancelDto.orderId(),
+			PaymentStateConstant.CANCEL.getValue());
+		return paymentCancelDto;
 	}
 
-	public PaymentOrderDetailDto getOrderDetail(String tid) {
-		return paymentStrategy.getOrderDetail(tid);
+	public PaymentOrderDetailDto getOrderDetail(String paymentKey) {
+		return paymentStrategy.getOrderDetail(paymentKey);
 	}
 }
 

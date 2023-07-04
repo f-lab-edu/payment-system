@@ -6,7 +6,6 @@ import flab.payment_system.domain.payment.response.PaymentApprovalDto;
 import flab.payment_system.domain.payment.service.PaymentService;
 import flab.payment_system.domain.product.service.ProductService;
 import flab.payment_system.domain.user.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -29,7 +28,7 @@ public class PaymentController {
 	public ResponseEntity<PaymentApprovalDto> paymentApproved(
 		@PathVariable PaymentPgCompany pgCompany,
 		@RequestParam("pg_token") String pgToken, @RequestParam("orderId") Long orderId,
-		@RequestParam("paymentId") Long paymentId, HttpServletRequest request,
+		@RequestParam("paymentId") Long paymentId,
 		HttpSession session) {
 		paymentService.setStrategy(pgCompany);
 		long userId = userService.getUserId(session);

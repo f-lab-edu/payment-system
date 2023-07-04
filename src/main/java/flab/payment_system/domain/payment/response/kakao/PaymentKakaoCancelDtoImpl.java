@@ -11,7 +11,7 @@ import lombok.Getter;
 
 @Getter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class PaymentKaKaoCancelDtoImpl implements PaymentCancelDto, PaymentKaKao {
+public class PaymentKakaoCancelDtoImpl implements PaymentCancelDto, PaymentKakao {
 
 	private String cid;
 	private String tid;

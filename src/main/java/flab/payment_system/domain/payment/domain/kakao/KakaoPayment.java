@@ -25,30 +25,22 @@ public class KakaoPayment extends BaseEntity {
 	private Long kakaoPaymentId;
 
 	@Nonnull
-
 	@Column(name = "payment_id", columnDefinition = "BIGINT UNSIGNED")
 	private Long paymentId;
 
 	@Embedded
 	private CardInfo cardInfo;
 
-	@Embedded
-	private Amount amount;
-
-	@Nonnull
-
 	private String aid;
 
-	@Nonnull
-
+	@Column(name = "payment_method_type")
 	private String paymentMethodType;
 
 	@Builder
-	public KakaoPayment(Long paymentId, CardInfo cardInfo, Amount amount, String aid,
+	public KakaoPayment(Long paymentId, CardInfo cardInfo, String aid,
 		String paymentMethodType) {
 		this.paymentId = paymentId;
 		this.cardInfo = cardInfo;
-		this.amount = amount;
 		this.aid = aid;
 		this.paymentMethodType = paymentMethodType;
 	}

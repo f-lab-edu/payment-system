@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class PaymentKaKaoApprovalDtoImpl implements PaymentApprovalDto, PaymentKaKao {
+public class PaymentKakaoApprovalDtoImpl implements PaymentApprovalDto, PaymentKakao {
 
 	private String aid;
 	private String tid;

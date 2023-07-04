@@ -29,9 +29,6 @@ public class Payment extends BaseEntity {
 	@Column(name = "order_id", columnDefinition = "BIGINT UNSIGNED")
 	private Long orderId;
 
-	@Column(columnDefinition = "CHAR(20)")
-	private String tid;
-
 	@Nonnull
 	private Integer state;
 
@@ -49,15 +46,19 @@ public class Payment extends BaseEntity {
 	@Nonnull
 	private Integer installMonth;
 
+
+	@Column(columnDefinition = "VARCHAR(200)")
+	private String paymentKey;
+
 	@Builder
-	public Payment(Long orderId, String tid, Integer state, Integer pgCompany, Integer totalAmount,
-		Integer taxFreeAmount, Integer installMonth) {
+	public Payment(Long orderId, Integer state, Integer pgCompany, Integer totalAmount,
+		Integer taxFreeAmount, Integer installMonth, String paymentKey) {
 		this.orderId = orderId;
-		this.tid = tid;
 		this.state = state;
 		this.pgCompany = pgCompany;
 		this.totalAmount = totalAmount;
 		this.taxFreeAmount = taxFreeAmount;
 		this.installMonth = installMonth;
+		this.paymentKey = paymentKey;
 	}
 }

@@ -66,9 +66,9 @@ public class OrderController {
 
 	@GetMapping("/{pgCompany}")
 	public ResponseEntity<PaymentOrderDetailDto> getOrderDetail(
-		@PathVariable PaymentPgCompany pgCompany, @RequestParam String tid) {
+		@PathVariable PaymentPgCompany pgCompany, @RequestParam String paymentKey) {
 		paymentService.setStrategy(pgCompany);
-		PaymentOrderDetailDto paymentOrderDetailDto = paymentService.getOrderDetail(tid);
+		PaymentOrderDetailDto paymentOrderDetailDto = paymentService.getOrderDetail(paymentKey);
 		return ResponseEntity.ok().body(paymentOrderDetailDto);
 	}
 }
