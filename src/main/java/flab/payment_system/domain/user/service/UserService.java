@@ -15,16 +15,13 @@ import flab.payment_system.domain.user.exception.UserEmailNotExistBadRequestExce
 import flab.payment_system.domain.user.exception.UserNotSignInedConflictException;
 import flab.payment_system.domain.user.exception.UserPasswordFailBadRequestException;
 import flab.payment_system.domain.user.exception.UserSignUpBadRequestException;
-import flab.payment_system.domain.user.exception.UserUnauthorizedException;
 import flab.payment_system.domain.user.exception.UserVerificationEmailBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationIdBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationNumberBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationUnauthorizedException;
 import flab.payment_system.domain.user.repository.UserRepository;
 import flab.payment_system.domain.user.repository.UserVerificationRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
