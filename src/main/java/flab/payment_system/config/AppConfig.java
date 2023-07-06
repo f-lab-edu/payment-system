@@ -5,7 +5,9 @@ import flab.payment_system.core.enums.Constant;
 import flab.payment_system.core.filter.ExceptionHandlerFilter;
 import flab.payment_system.core.filter.SignInCheckFilter;
 import flab.payment_system.domain.session.service.SessionService;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -74,7 +76,10 @@ public class AppConfig {
 	}
 
 	@Bean
-	public RestTemplate restTemplate() {
-		return new RestTemplate();
+	public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+		return restTemplateBuilder
+			.setConnectTimeout(Duration.ofSeconds(10))
+			.setReadTimeout(Duration.ofSeconds(3))
+			.build();
 	}
 }

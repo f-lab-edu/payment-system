@@ -113,11 +113,12 @@ public class PaymentStrategyTossClient implements PaymentStrategy {
 		params.put("successUrl",
 			requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
 				+ PaymentPgCompany.TOSS.getName() +
-				"/approved?orderId=" + orderId + "&paymentId=" + paymentId + "&pg_token=temp");
+				"/approved?orderId=" + orderId + "&paymentId=" + paymentId + "&pg_token=temp"
+				+ "&productId="
+				+ productId + "&quantity=" + orderProductDto.quantity());
 		params.put("failUrl",
 			requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
-				+ PaymentPgCompany.TOSS.getName() + "/cancel?paymentId=" + paymentId + "&productId"
-				+ productId);
+				+ PaymentPgCompany.TOSS.getName() + "/cancel?paymentId=" + paymentId);
 
 		return new HttpEntity<>(params, headers);
 	}

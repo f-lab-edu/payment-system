@@ -13,6 +13,7 @@ import flab.payment_system.domain.product.service.ProductService;
 import flab.payment_system.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,11 +38,11 @@ public class OrderController {
 	@PostMapping("/{pgCompany}")
 	public ResponseEntity<PaymentReadyDto> orderProductRequest(
 		@PathVariable PaymentPgCompany pgCompany,
-		@RequestBody OrderProductDto orderProductDto,
+		@RequestBody @Valid OrderProductDto orderProductDto,
 		HttpServletRequest request, HttpSession session) {
+		productService.checkRemainStock(orderProductDto.productId());
 
 		long userId = userService.getUserId(session);
-		productService.transactionDecreaseStock(orderProductDto);
 
 		long orderId = orderService.orderProduct(orderProductDto, userId);
 
@@ -56,11 +57,10 @@ public class OrderController {
 	@PostMapping("/{pgCompany}/cancel")
 	public ResponseEntity<PaymentCancelDto> orderCancel(
 		@PathVariable PaymentPgCompany pgCompany,
-		@RequestBody OrderCancelDto orderCancelDto) {
+		@RequestBody @Valid OrderCancelDto orderCancelDto) {
 		paymentService.setStrategy(pgCompany);
 		PaymentCancelDto paymentCancelDto = paymentService.orderCancel(orderCancelDto);
 
-		productService.increaseStock(orderCancelDto.productId());
 		return ResponseEntity.ok().body(paymentCancelDto);
 	}
 

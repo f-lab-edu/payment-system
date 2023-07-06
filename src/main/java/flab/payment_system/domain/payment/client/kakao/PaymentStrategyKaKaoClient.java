@@ -131,14 +131,14 @@ public class PaymentStrategyKaKaoClient implements PaymentStrategy {
 		params.add("approval_url",
 			requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
 				+ PaymentPgCompany.KAKAO.getName() +
-				"/approved?orderId=" + orderId + "&paymentId=" + paymentId);
+				"/approved?orderId=" + orderId + "&paymentId=" + paymentId + "&productId="
+				+ productId + "&quantity=" + orderProductDto.quantity());
 		params.add("cancel_url",
 			requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
-				+ PaymentPgCompany.KAKAO.getName() + "/cancel?paymentId=" + paymentId + "&productId"
-				+ productId);
+				+ PaymentPgCompany.KAKAO.getName() + "/cancel?paymentId=" + paymentId);
 		params.add("fail_url", requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
 			+ PaymentPgCompany.KAKAO.getName()
-			+ "/fail?paymentId=" + paymentId + "&productId" + productId);
+			+ "/fail?paymentId=" + paymentId);
 		params.add("partner_order_id", String.valueOf(orderId));
 		params.add("partner_user_id", String.valueOf(userId));
 		params.add("item_name", orderProductDto.productName());
