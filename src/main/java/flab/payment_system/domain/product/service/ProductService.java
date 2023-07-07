@@ -39,4 +39,14 @@ public class ProductService {
 		productRepository.updateDecreaseStock(productId,
 			quantity);
 	}
+
+	public void increaseStock(Long productId, Integer quantity) {
+		Product product = productRepository.findById(productId).orElseThrow(
+			ProductNotExistBadRequestException::new);
+		if (product.getStock() - quantity < 0) {
+			throw new ProductSoldOutException();
+		}
+		productRepository.updateIncreaseStock(productId,
+			quantity);
+	}
 }

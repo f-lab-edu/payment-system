@@ -60,6 +60,7 @@ public class OrderController {
 		@RequestBody @Valid OrderCancelDto orderCancelDto) {
 		paymentService.setStrategy(pgCompany);
 		PaymentCancelDto paymentCancelDto = paymentService.orderCancel(orderCancelDto);
+		productService.increaseStock(orderCancelDto.productId(), orderCancelDto.quantity());
 
 		return ResponseEntity.ok().body(paymentCancelDto);
 	}
