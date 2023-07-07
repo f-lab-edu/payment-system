@@ -1,5 +1,7 @@
 ## 💰 payment-system
-프로젝트 명: myStudyLibrary
+
+<center><img src="https://github.com/f-lab-edu/payment-system/assets/98700133/3aa62a31-a9fb-4043-89b8-7e31e1b1daee"  width="60%" height="60%"/></center>
+
 작성자: 김예지
 
 여러 pg사들과 연동한 결제 시스템
@@ -28,7 +30,7 @@
   
   
 2) 로그인
-  - 세션 관리를 통한 로그인 유지 방식
+  - redis 에 세션 저장한 로그인 유지 방식
   
   <br>
   
@@ -40,13 +42,11 @@
 
 <br>
 
-4) 결제 취소 
-- 테스트 키 등을 사용
+4) 결제 취소
 
 <br>
 
 5) 단건 주문 조회
-- 테스트 키/개발 api 서버 등을 사용
 
 <br>
 
