@@ -15,6 +15,9 @@ configurations {
     compileOnly {
         extendsFrom annotationProcessor
     }
+    all {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
 }
 
 repositories {
@@ -24,7 +27,6 @@ repositories {
 dependencies {
 
     // spring boot init
-    implementation 'org.springframework.boot:spring-boot-starter'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-mail'
@@ -33,6 +35,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
 
     // log
+    implementation 'org.springframework.boot:spring-boot-starter-log4j2'
+    implementation 'commons-dbcp:commons-dbcp:1.4'
+    implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
 
     // data
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
@@ -55,6 +60,8 @@ dependencies {
     // lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    testImplementation 'org.projectlombok:lombok'
 
     // test
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
