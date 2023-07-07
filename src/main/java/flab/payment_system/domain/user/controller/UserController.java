@@ -68,9 +68,4 @@ public class UserController {
 
 		return ResponseEntity.noContent().build();
 	}
-
-	@GetMapping("/test")
-	public String test() {
-		return "success";
-	}
 }

@@ -7,11 +7,12 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import lombok.extern.log4j.Log4j2;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-
+@Log4j2
 public class ExceptionHandlerFilter extends OncePerRequestFilter {
 
 	@Override
@@ -40,14 +41,14 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 		response.setHeader("Content-Type", "application/json");
 		response.setStatus(exceptionMessage.getCode());
 		response.getOutputStream().write(responseToSend);
+
+		log.info(baseException.getStatus() + " : " + baseException.getMessage(), baseException);
 	}
 
 	private void handleException(Exception exception,
 		HttpServletResponse response) throws IOException {
-
 		ExceptionMessage exceptionMessage = ExceptionMessage.builder()
-			.message(
-				String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR) + " : " + exception.getMessage())
+			.message(HttpStatus.INTERNAL_SERVER_ERROR + " : " + exception.getMessage())
 			.code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 
 		byte[] responseToSend = restResponseBytes(exceptionMessage);
@@ -55,6 +56,8 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 		response.setHeader("Content-Type", "application/json");
 		response.setStatus(exceptionMessage.getCode());
 		response.getOutputStream().write(responseToSend);
+
+		log.warn(HttpStatus.INTERNAL_SERVER_ERROR + " : " + exception.getMessage(), exception);
 	}
 
 	private byte[] restResponseBytes(ExceptionMessage exceptionMessage)
