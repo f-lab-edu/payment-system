@@ -5,6 +5,7 @@ import jakarta.mail.MessagingException;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
@@ -13,39 +14,41 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+@Log4j2
 @RequiredArgsConstructor
 @RestControllerAdvice
 public class CustomExceptionHandler {
 
 	@ExceptionHandler(BaseException.class)
 	public ResponseEntity<ExceptionMessage> handleBaseException(BaseException baseException) {
-
 		ExceptionMessage exceptionMessage = ExceptionMessage.builder()
 			.message(baseException.getStatus() + " : " + baseException.getMessage())
 			.code(baseException.getCode()).build();
 
+		log.info(baseException.getStatus() + " : " + baseException.getMessage(), baseException);
 		return new ResponseEntity<>
 			(exceptionMessage, HttpStatusCode.valueOf(baseException.getCode()));
 	}
 
 	@ExceptionHandler(MessagingException.class)
-	public ResponseEntity<ExceptionMessage> handleMessagingException() {
-
+	public ResponseEntity<ExceptionMessage> handleMessagingException(Exception exception) {
 		ExceptionMessage exceptionMessage = ExceptionMessage.builder()
 			.message(HttpStatus.INTERNAL_SERVER_ERROR + " : messaging_exception")
 			.code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 
+		log.warn(HttpStatus.INTERNAL_SERVER_ERROR + " : messaging_exception", exception);
 		return new ResponseEntity<>
 			(exceptionMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@ExceptionHandler(UnsupportedEncodingException.class)
-	public ResponseEntity<ExceptionMessage> handleUnsupportedEncodingException() {
-
+	public ResponseEntity<ExceptionMessage> handleUnsupportedEncodingException(
+		Exception exception) {
 		ExceptionMessage exceptionMessage = ExceptionMessage.builder()
 			.message(HttpStatus.UNSUPPORTED_MEDIA_TYPE + " : unsupportedEncodingException")
 			.code(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value()).build();
 
+		log.warn(HttpStatus.UNSUPPORTED_MEDIA_TYPE + " : unsupportedEncodingException", exception);
 		return new ResponseEntity<>
 			(exceptionMessage, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
 	}
@@ -53,7 +56,6 @@ public class CustomExceptionHandler {
 	@ExceptionHandler(MethodArgumentNotValidException.class)
 	public ResponseEntity<ExceptionMessage> handleMethodArgumentNotValidException(
 		MethodArgumentNotValidException exception) {
-
 		List<String> errors = exception.getBindingResult()
 			.getFieldErrors()
 			.stream()
@@ -63,6 +65,7 @@ public class CustomExceptionHandler {
 			.message(HttpStatus.BAD_REQUEST + " : " + errors)
 			.code(HttpStatus.BAD_REQUEST.value()).build();
 
+		log.info(HttpStatus.BAD_REQUEST + " : " + errors, exception);
 		return new ResponseEntity<>
 			(exceptionMessage, HttpStatus.BAD_REQUEST);
 	}
@@ -75,6 +78,7 @@ public class CustomExceptionHandler {
 			.message(HttpStatus.BAD_REQUEST + " : " + exception.getMessage())
 			.code(HttpStatus.BAD_REQUEST.value()).build();
 
+		log.warn(HttpStatus.BAD_REQUEST + " : " + exception.getMessage(), exception);
 		return new ResponseEntity<>
 			(exceptionMessage, HttpStatus.BAD_REQUEST);
 	}
@@ -84,10 +88,10 @@ public class CustomExceptionHandler {
 		Exception exception) {
 
 		ExceptionMessage exceptionMessage = ExceptionMessage.builder()
-			.message(
-				String.valueOf(HttpStatus.INTERNAL_SERVER_ERROR) + " : " + exception.getMessage())
+			.message(HttpStatus.INTERNAL_SERVER_ERROR + " : " + exception.getMessage())
 			.code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 
+		log.warn(HttpStatus.BAD_REQUEST + " : " + exception.getMessage(), exception);
 		return new ResponseEntity<>
 			(exceptionMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
