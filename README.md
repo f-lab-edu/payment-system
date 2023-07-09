@@ -24,6 +24,94 @@
 <br>
 
 
+<details>
+    <summary> 🧷 프로젝트 구조 펼쳐보기</summary>
+
+```bash
+main
+├── java
+│   ├── flab.payment_system
+│   │   ├──  config
+│   │   │   ├──  AppConfig
+│   │   │   ├──  QueryDslConfiguration
+│   │   │   ├──  RedisConfig
+│   │   │   ├──  WebConfig
+│   │   │   └──  WebMvcConfiguration
+│   │   ├──  core # 공통
+│   │   │   ├──  data
+│   │   │   │  ├──  BaseEntity
+│   │   │   ├──  enums
+│   │   │   │  ├──  Constant
+│   │   │   ├──  exception
+│   │   │   │  ├──  BadRequestException
+│   │   │   │  ├──  BaseException
+│   │   │   │  ├──  ConflictException
+│   │   │   │  ├──  CustomExceptionHandler
+│   │   │   │  ├──  ExceptionMessage
+│   │   │   │  ├──  ForbiddenException
+│   │   │   │  ├──  OkException
+│   │   │   │  ├──  ServiceUnavailableException
+│   │   │   │  ├──  UnauthorizedException
+│   │   │   ├──  filter
+│   │   │   │  ├──  ExceptionHandlerFilter
+│   │   │   │  ├──  SignInCheckFilter
+│   │   │   ├──  interceptor
+│   │   │   │  ├──  LoggingInterceptor
+│   │   │   ├──  response
+│   │   │   │  ├──  ResponseMessage
+│   │   │   └──  utils
+│   │   │   │  ├──  CookieUtil
+│   │   │   │  ├──  IpUtil
+│   │   ├──  domain
+│   │   │   ├──  log
+│   │   │   │  ├──  domain
+│   │   │   │  │  ├──  AppLogs
+│   │   │   ├──  mail
+│   │   │   │  ├──  service
+│   │   │   │  │  ├──  MailService
+│   │   │   ├──  order
+│   │   │   │  ├──  controller
+│   │   │   │  │  ├──  OrderController
+│   │   │   │  ├──  domain
+│   │   │   │  │  ├──  Order
+│   │   │   │  ├──  dto
+│   │   │   │  │  ├──  OrderCancelDto
+│   │   │   │  │  ├──  OrderDetailDto
+│   │   │   │  │  ├──  OrderProductDto
+│   │   │   │  ├── exception
+│   │   │   │  │  ├──  OrderNotExistBadRequestException
+│   │   │   │  ├── repository
+│   │   │   │  │  ├──  OrderCustomRepository
+│   │   │   │  │  ├──  OrderCustomRepositoryImpl
+│   │   │   │  │  ├──  OrderRepository
+│   │   │   │  ├── service
+│   │   │   │  │  ├──  OrderService
+│   │   │   ├──  payment
+│   │   │   │  ├──  client
+│   │   │   │  │  ├──  kakao
+│   │   │   │  │  ├──  toss
+
+
+
+│   │   └─── app
+├── resources
+│   ├── static
+│   │  └──  index.html
+│   ├── templates
+│   │  └──  mail.html
+│   ├── application.yml
+│   ├── log4jdbc.log4j2.properties
+│   ├── logback-spring-local.xml
+└   └── logback-spring-prod.xml
+```
+
+
+<!-- summary 아래 한칸 공백 두고 내용 삽입 -->
+
+</details>
+
+
+
 
 <br>
 
