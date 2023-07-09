@@ -2,21 +2,54 @@
 
 <center><img src="https://github.com/f-lab-edu/payment-system/assets/98700133/3aa62a31-a9fb-4043-89b8-7e31e1b1daee"  width="60%" height="60%"/></center>
 
-작성자: 김예지
-
-여러 pg사들과 연동한 결제 시스템
+> 개인 프로젝트입니다.
+> 스프링부트를 이용한 백엔드 개발, 로그 수집 및 테스트 코드 작성을 했습니다.
 
 참고사항: 보안상 비밀번호는 암호화돼서 저장됩니다.
 
 <br>
 
-### 📌 기술 스택
+### 📌 프로젝트 설명
+
+> 평소 돈의 흐름에 관심이 많아 결제 시스템을 구현해보고 싶다는 생각을 했고, 카카오와 토스 결제 api를 연동한 결제 시스템을 구현했습니다.
+> 결제 프로세스는 아래와 같습니다.
+
+<center><img src="https://github.com/f-lab-edu/payment-system/assets/98700133/7650eaea-d9d2-4db6-b36e-7830aa06a4a0"  width="60%" height="60%"/></center>
+
+<br>
+
+
+### 📌 폴더 구조
+
+<br>
+
+
+
+<br>
+
+
+### 📌 api & db 설계
+
+:clipboard:[api설계](https://closed-glade-095.notion.site/flab-d83ee2e4bd5d4f0cb3645f597ec53f2f)
+
+- db 설계
+
+![image](https://github.com/f-lab-edu/payment-system/assets/98700133/772ffa43-9b4b-4cb7-89c2-76b15b6fc616)
+
+![image](https://github.com/f-lab-edu/payment-system/assets/98700133/497b2954-082b-4fc4-a7e0-8253b75d3b00)
+
+결제에 대한 공통적인 정보는 payment 테이블에 저장하고, pg사 별로 달라지는 정보들은 따로 테이블을 만들어줬습니다.
+
+<br>
+
+
+### 📌 개발 스택
 * for Application : `Java 17` `Spring boot` `MySQL` `JPA` `QueryDSL` `Junit5` `redis`
 
 * for production : `Docker`
 
-
 <br>
+
 
 ### 📌 주요 기능
 
@@ -60,10 +93,15 @@
 
 <br>
 
-### 📌 api & db 설계
+### 📌 개선하고 싶은점
 
-:clipboard:[api설계](https://closed-glade-095.notion.site/flab-d83ee2e4bd5d4f0cb3645f597ec53f2f)
+<br>
 
-- db 설계
 
-![image](https://github.com/f-lab-edu/payment-system/assets/98700133/1e42a1be-ac3d-4e32-a860-247f457b30fc)
+### 📌 문제사항과 해결방안
+
+
+<br>
+
+### 📌 회고
+
