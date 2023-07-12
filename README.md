@@ -17,7 +17,7 @@
 <br>
 
 
-### 📌 폴더 구조
+### 📁 폴더 구조
 
 <br>
 
@@ -237,11 +237,7 @@ main
 <br>
 
 
-### 📌 api & db 설계
-
-:clipboard:[api설계](https://closed-glade-095.notion.site/flab-d83ee2e4bd5d4f0cb3645f597ec53f2f)
-
-- db 설계
+### 📌 db 설계
 
 ![image](https://github.com/f-lab-edu/payment-system/assets/98700133/772ffa43-9b4b-4cb7-89c2-76b15b6fc616)
 
@@ -263,10 +259,9 @@ main
 ### 📌 주요 기능
 
 1) 회원가입
-  - 서버에서 유저 정보 관리
   - 가입 시 유저 아이디 대신 이메일로 가입하도록 하고, 이메일로 인증번호를 보내서 인증하도록 하는 방식
-  - redis에 인증번호 정보 저장해서 ttl안에 인증하도록 하도록하고, 시간이 지나면 자동으로 인증번호
-  - bcrypt 로 암호화해서 비밀번호 저장
+  - redis에 인증번호 정보 저장해서 ttl안에 인증하도록 하도록하고, 시간이 지나면 자동으로 인증번호 정보 삭제
+  - 보안을 위해 bcrypt 로 암호화해서 비밀번호 저장
   
   <br>
   
