@@ -1,7 +1,5 @@
 ## 💰 payment-system
 
-<center><img src="https://github.com/f-lab-edu/payment-system/assets/98700133/3aa62a31-a9fb-4043-89b8-7e31e1b1daee"  width="60%" height="60%"/></center>
-
 > 개인 프로젝트입니다.
 > 스프링부트를 이용한 백엔드 개발, 로그 수집 및 테스트 코드 작성을 했습니다.
 
@@ -12,9 +10,9 @@
 ### 📌 프로젝트 설명
 
 > 평소 돈의 흐름에 관심이 많아 결제 시스템을 구현해보고 싶다는 생각을 했고, 카카오와 토스 결제 api를 연동한 결제 시스템을 구현했습니다.
-> 결제 프로세스는 아래와 같습니다.
+> 단건 결제 프로세스는 아래와 같습니다.
 
-<center><img src="https://github.com/f-lab-edu/payment-system/assets/98700133/7650eaea-d9d2-4db6-b36e-7830aa06a4a0"  width="60%" height="60%"/></center>
+<center><img src="https://github.com/f-lab-edu/payment-system/assets/98700133/d9dfa411-632c-4b3f-99c2-5e527ee62e34"  width="60%" height="60%"/></center>
 
 <br>
 
@@ -33,16 +31,15 @@ main
 │   ├── flab.payment_system
 │   │   ├──  config
 │   │   │   ├──  AppConfig
-│   │   │   ├──  QueryDslConfiguration
+│   │   │   ├──  QueryDslConfig
 │   │   │   ├──  RedisConfig
-│   │   │   ├──  WebConfig
-│   │   │   └──  WebMvcConfiguration
+│   │   │   └──  WebConfig
 │   │   ├──  core # 공통
 │   │   │   ├──  data
-│   │   │   │  ├──  BaseEntity
+│   │   │   │  └──  BaseEntity
 │   │   │   ├──  enums
-│   │   │   │  ├──  Constant
-│   │   │   ├──  exception
+│   │   │   │  └──  Constant
+│   │   │   ├──  exception # 각 domain 의 예외들은 아래 예외들을 상속받음
 │   │   │   │  ├──  BadRequestException
 │   │   │   │  ├──  BaseException
 │   │   │   │  ├──  ConflictException
@@ -51,59 +48,59 @@ main
 │   │   │   │  ├──  ForbiddenException
 │   │   │   │  ├──  OkException
 │   │   │   │  ├──  ServiceUnavailableException
-│   │   │   │  ├──  UnauthorizedException
+│   │   │   │  └──  UnauthorizedException
 │   │   │   ├──  filter
 │   │   │   │  ├──  ExceptionHandlerFilter
-│   │   │   │  ├──  SignInCheckFilter
+│   │   │   │  └──  SignInCheckFilter
 │   │   │   ├──  interceptor
-│   │   │   │  ├──  LoggingInterceptor
+│   │   │   │  └──  LoggingInterceptor
 │   │   │   ├──  response
-│   │   │   │  ├──  ResponseMessage
+│   │   │   │  └──  ResponseMessage
 │   │   │   └──  utils
 │   │   │   │  ├──  CookieUtil
-│   │   │   │  ├──  IpUtil
+│   │   │   │  └──  IpUtil
 │   │   ├──  domain
 │   │   │   ├──  log
 │   │   │   │  ├──  domain
-│   │   │   │  │  ├──  AppLogs
+│   │   │   │  │  └──  AppLogs
 │   │   │   ├──  mail
-│   │   │   │  ├──  service
-│   │   │   │  │  ├──  MailService
+│   │   │   │  ├──  service # 유저에게 이메일 보낼 때(회원가입을 위한 유저 인증번호 발송)
+│   │   │   │  │  └──  MailService
 │   │   │   ├──  order
 │   │   │   │  ├──  controller
-│   │   │   │  │  ├──  OrderController
+│   │   │   │  │  └──  OrderController
 │   │   │   │  ├──  domain
-│   │   │   │  │  ├──  Order
+│   │   │   │  │  └──  Order
 │   │   │   │  ├──  dto
 │   │   │   │  │  ├──  OrderCancelDto
 │   │   │   │  │  ├──  OrderDetailDto
-│   │   │   │  │  ├──  OrderProductDto
+│   │   │   │  │  └──  OrderProductDto
 │   │   │   │  ├── exception
-│   │   │   │  │  ├──  OrderNotExistBadRequestException
+│   │   │   │  │  └──  OrderNotExistBadRequestException
 │   │   │   │  ├── repository
 │   │   │   │  │  ├──  OrderCustomRepository
 │   │   │   │  │  ├──  OrderCustomRepositoryImpl
-│   │   │   │  │  ├──  OrderRepository
+│   │   │   │  │  └──  OrderRepository
 │   │   │   │  ├── service
-│   │   │   │  │  ├──  OrderService
+│   │   │   │  │  └──  OrderService
 │   │   │   ├──  payment
-│   │   │   │  ├──  client
+│   │   │   │  ├──  client # pg사와 통신
 │   │   │   │  │  ├──  kakao
-│   │   │   │  │  │  ├──  PaymentKakaoClient
+│   │   │   │  │  │  └──  PaymentKakaoClient
 │   │   │   │  │  ├──  toss
-│   │   │   │  │  │  ├──  PaymentTossClient
+│   │   │   │  │  │  └──  PaymentTossClient
 │   │   │   │  ├──  controller
-│   │   │   │  │  ├──  PaymentController
-│   │   │   │  ├──  domain
+│   │   │   │  │  └──  PaymentController
+│   │   │   │  ├── domain
 │   │   │   │  ├── Payment
-│   │   │   │  │  ├──  kakao
+│   │   │   │  │  ├──  kakao 
 │   │   │   │  │  │  ├── Amount
 │   │   │   │  │  │  ├── ApprovedCancelAmount
 │   │   │   │  │  │  ├── CancelAvailableAmount
 │   │   │   │  │  │  ├── CanceledAmount
 │   │   │   │  │  │  ├── CardInfo
 │   │   │   │  │  │  ├── KakaoPayment
-│   │   │   │  │  │  ├── PaymentActionDetails
+│   │   │   │  │  │  └── PaymentActionDetails
 │   │   │   │  │  ├──  toss
 │   │   │   │  │  │  ├── Cacnels
 │   │   │   │  │  │  ├── Card
@@ -118,16 +115,16 @@ main
 │   │   │   │  │  │  ├── RefundReceiveAccount
 │   │   │   │  │  │  ├── TossPayment
 │   │   │   │  │  │  ├── Transfer
-│   │   │   │  │  │  ├── VirtualAccount
+│   │   │   │  │  │  └── VirtualAccount
 │   │   │   │  ├──  enums
 │   │   │   │  │  ├── PaymentPgCompany
 │   │   │   │  │  ├── PaymentPgCompanyStringToEnumConverter
-│   │   │   │  │  ├── PaymentStateConstant
+│   │   │   │  │  └── PaymentStateConstant
 │   │   │   │  ├──  exception
 │   │   │   │  │  ├── PaymentFailBadRequestException
 │   │   │   │  │  ├── PaymentKakaoServiceUnavailableException
 │   │   │   │  │  ├── PaymentNotExistBadRequestException
-│   │   │   │  │  ├── PaymentTossServiceUnavailableException
+│   │   │   │  │  └── PaymentTossServiceUnavailableException
 │   │   │   │  ├──  repository
 │   │   │   │  │  ├──  PaymentCustomRepository
 │   │   │   │  │  ├──  PaymentCustomRepositoryImpl
@@ -135,16 +132,16 @@ main
 │   │   │   │  │  ├──  kakao
 │   │   │   │  │  │  ├──  KakaoPaymentCustomRepository
 │   │   │   │  │  │  ├──  KakaoPaymentCustomRepositoryImpl
-│   │   │   │  │  │  ├──  KakaoPaymentRepository
+│   │   │   │  │  │  └──  KakaoPaymentRepository
 │   │   │   │  │  ├──  toss
 │   │   │   │  │  │  ├──  TossPaymentCustomRepository
 │   │   │   │  │  │  ├──  TossPaymentCustomRepositoryImpl
-│   │   │   │  │  │  ├──  TossPaymentRepository
+│   │   │   │  │  │  └──  TossPaymentRepository
 │   │   │   │  ├──  request
 │   │   │   │  │  ├──  kakao
-│   │   │   │  │  │  ├──  PaymentKakaoRequestBodyFactory
+│   │   │   │  │  │  └──  PaymentKakaoRequestBodyFactory
 │   │   │   │  │  ├──  toss
-│   │   │   │  │  │  ├──  PaymentTossRequestBodyFactory
+│   │   │   │  │  │  └──  PaymentTossRequestBodyFactory
 │   │   │   │  ├──  response
 │   │   │   │  │  ├──  PaymentApprovalDto
 │   │   │   │  │  ├──  PaymentCancelDto
@@ -155,72 +152,82 @@ main
 │   │   │   │  │  │  ├──  PaymentKakaoApprovalDtoImpl
 │   │   │   │  │  │  ├──  PaymentKakaoCancelDtoImpl
 │   │   │   │  │  │  ├──  PaymentKakaoOrderDetailDtoImpl
-│   │   │   │  │  │  ├──  PaymentKakaoReadyDtoImpl
+│   │   │   │  │  │  └──  PaymentKakaoReadyDtoImpl
 │   │   │   │  │  ├──  toss
 │   │   │   │  │  │  ├──  PaymentToss
-│   │   │   │  │  │  ├──  PaymentTossDtoImpl
+│   │   │   │  │  │  └──  PaymentTossDtoImpl
+│   │   │   │  ├──  service
+│   │   │   │  │  ├──  PaymentService
+│   │   │   │  │  ├──  PaymentStrategy # enums - PaymentPgCompany 값에 따라서 해당 인터페이스를 구현한 전략 서비스 호출
+│   │   │   │  │  ├──  kakao
+│   │   │   │  │  │  └──  PaymentStrategyKakaoService
+│   │   │   │  │  ├──  toss
+│   │   │   │  │  │  └──  PaymentStrategyTossService
 │   │   │   │  ├──  product
 │   │   │   │  │  ├──  controller
-│   │   │   │  │  │  ├──  ProductController
+│   │   │   │  │  │  └──  ProductController
 │   │   │   │  │  ├──  domain
-│   │   │   │  │  │  ├──  Product
+│   │   │   │  │  │  └──  Product
 │   │   │   │  │  ├──  dto
-│   │   │   │  │  │  ├──  ProductDto
+│   │   │   │  │  │  └──  ProductDto
 │   │   │   │  │  ├──  exception
 │   │   │   │  │  │  ├──  ProductNotExistBadRequestException
-│   │   │   │  │  │  ├──  ProductSoldOutException
+│   │   │   │  │  │  └──  ProductSoldOutException
 │   │   │   │  │  ├──  repository
 │   │   │   │  │  │  ├──  ProductCustomRepository
 │   │   │   │  │  │  ├──  ProductCustomRepositoryImpl
-│   │   │   │  │  │  ├──  ProductRepository
+│   │   │   │  │  │  └──  ProductRepository
 │   │   │   │  │  ├──  service
-│   │   │   │  │  │  ├──  ProductService
+│   │   │   │  │  │  └──  ProductService
 │   │   │   │  ├──  redisson
-│   │   │   │  │  ├──  service
-│   │   │   │  │  │  ├──  RedissonLockService
+│   │   │   │  │  ├──  service # 재고 동시성 이슈 처리를 위한 redisson lock
+│   │   │   │  │  │  └──  RedissonLockService
 │   │   │   │  ├──  session
 │   │   │   │  │  ├──  service
-│   │   │   │  │  │  ├──  SessionService
+│   │   │   │  │  │  └──  SessionService
 │   │   │   │  ├──  user
 │   │   │   │  │  ├──  controller
-│   │   │   │  │  │  ├──  UserController
+│   │   │   │  │  │  └──  UserController
 │   │   │   │  │  ├──  domain
 │   │   │   │  │  │  ├──  User
-│   │   │   │  │  │  ├──  UserVerification
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-│   │   └─── app
+│   │   │   │  │  │  └──  UserVerification
+│   │   │   │  │  ├──  dto
+│   │   │   │  │  │  ├──  UserConfirmVerificationNumberDto
+│   │   │   │  │  │  ├──  UserDto
+│   │   │   │  │  │  ├──  UserSignUpDto
+│   │   │   │  │  │  ├──  UserVerificationDto
+│   │   │   │  │  │  └──  UserVerifiyEmailDto
+│   │   │   │  │  ├──  exception
+│   │   │   │  │  │  ├──  UserAlreadySignInConflictException
+│   │   │   │  │  │  ├──  UserEmailAlreadyExistConflictException
+│   │   │   │  │  │  ├──  UserEmailNotExistBadReqeuestException
+│   │   │   │  │  │  ├──  UserNotSignInedConflictException
+│   │   │   │  │  │  ├──  UserPasswordFailBadRequestException
+│   │   │   │  │  │  ├──  UserSignUpBadRequestException
+│   │   │   │  │  │  ├──  UserUnauthorizedException
+│   │   │   │  │  │  ├──  UserVerificationEmailBadReqeust
+│   │   │   │  │  │  ├──  UserVerificationIdBadRequestException
+│   │   │   │  │  │  ├──  UserVerificationNumberBadRequestException
+│   │   │   │  │  │  ├──  UserVerificationUnautorizedExcpetion
+│   │   │   │  │  │  └──  UserVerifyUserEmailException
+│   │   │   │  │  ├──  repository
+│   │   │   │  │  │  ├──  UserCustomRepository
+│   │   │   │  │  │  ├──  UserCustomRepositoryImpl
+│   │   │   │  │  │  ├──  UserRepository
+│   │   │   │  │  │  └──  UserVerificationRepository
+│   │   │   │  │  ├──  service
+│   │   │   │  │  │  └──  UserService
+│   │   │   │  └──  PaymentSystemApplication
 ├── resources
-│   ├── static
-│   │  └──  index.html
 │   ├── templates
 │   │  └──  mail.html
 │   ├── application.yml
-│   ├── log4jdbc.log4j2.properties
-│   ├── logback-spring-local.xml
-└   └── logback-spring-prod.xml
+│   ├── log4j2-local.xml
+└   └── log4j2-prod.xml
 ```
 
 
-<!-- summary 아래 한칸 공백 두고 내용 삽입 -->
+<!-- summary -->
 
 </details>
 
