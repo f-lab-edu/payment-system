@@ -1,4 +1,4 @@
-package flab.payment_system.domain.payment.client;
+package flab.payment_system.domain.payment.service;
 
 import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;

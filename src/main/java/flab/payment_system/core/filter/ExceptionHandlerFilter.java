@@ -57,7 +57,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
 		response.setStatus(exceptionMessage.getCode());
 		response.getOutputStream().write(responseToSend);
 
-		log.warn(HttpStatus.INTERNAL_SERVER_ERROR + " : " + exception.getMessage(), exception);
+		log.error(HttpStatus.INTERNAL_SERVER_ERROR + " : " + exception.getMessage(), exception);
 	}
 
 	private byte[] restResponseBytes(ExceptionMessage exceptionMessage)

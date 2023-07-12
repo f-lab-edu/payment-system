@@ -19,7 +19,7 @@ public class RedissonLockService {
 	private final ProductService productService;
 	private final PaymentService paymentService;
 
-	@Transactional(propagation = Propagation.REQUIRES_NEW)
+	@Transactional
 	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId,
 		Long paymentId,
 		Long productId, Integer quantity) {

@@ -2,7 +2,6 @@ package flab.payment_system.domain.payment.service;
 
 import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;
-import flab.payment_system.domain.payment.client.PaymentStrategy;
 import flab.payment_system.domain.payment.domain.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.enums.PaymentStateConstant;
@@ -11,12 +10,13 @@ import flab.payment_system.domain.payment.response.PaymentApprovalDto;
 import flab.payment_system.domain.payment.response.PaymentCancelDto;
 import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
 import flab.payment_system.domain.payment.response.PaymentReadyDto;
-import flab.payment_system.domain.payment.client.kakao.PaymentStrategyKaKaoClient;
-import flab.payment_system.domain.payment.client.toss.PaymentStrategyTossClient;
+import flab.payment_system.domain.payment.service.kakao.PaymentStrategyKaKaoService;
+import flab.payment_system.domain.payment.service.toss.PaymentStrategyTossService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
 
 
@@ -31,10 +31,10 @@ public class PaymentService {
 
 	public void setStrategy(PaymentPgCompany paymentPgCompany) {
 		if (paymentPgCompany == PaymentPgCompany.TOSS) {
-			this.paymentStrategy = applicationContext.getBean(PaymentStrategyTossClient.class);
+			this.paymentStrategy = applicationContext.getBean(PaymentStrategyTossService.class);
 		}
 		if (paymentPgCompany == PaymentPgCompany.KAKAO) {
-			this.paymentStrategy = applicationContext.getBean(PaymentStrategyKaKaoClient.class);
+			this.paymentStrategy = applicationContext.getBean(PaymentStrategyKaKaoService.class);
 		}
 	}
 

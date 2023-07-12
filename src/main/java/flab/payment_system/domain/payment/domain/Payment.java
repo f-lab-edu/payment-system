@@ -30,6 +30,7 @@ public class Payment extends BaseEntity {
 	private Long orderId;
 
 	@Nonnull
+	@Column(columnDefinition = "TINYINT UNSIGNED")
 	private Integer state;
 
 	// 0 카카오, 1 토스

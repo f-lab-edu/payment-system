@@ -1,11 +1,13 @@
 package flab.payment_system.domain.payment.domain.toss;
 
 
+import jakarta.persistence.Embeddable;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Embeddable
 public class Card {
 
 	private Integer amount;

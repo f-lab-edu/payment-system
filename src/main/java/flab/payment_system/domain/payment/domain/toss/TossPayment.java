@@ -1,7 +1,6 @@
 package flab.payment_system.domain.payment.domain.toss;
 
 import flab.payment_system.core.data.BaseEntity;
-import flab.payment_system.domain.payment.domain.kakao.CardInfo;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -10,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import java.time.OffsetDateTime;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

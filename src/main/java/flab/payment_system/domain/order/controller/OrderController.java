@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,13 +37,14 @@ public class OrderController {
 	private final ProductService productService;
 
 	@PostMapping("/{pgCompany}")
+	@Transactional
 	public ResponseEntity<PaymentReadyDto> orderProductRequest(
 		@PathVariable PaymentPgCompany pgCompany,
 		@RequestBody @Valid OrderProductDto orderProductDto,
 		HttpServletRequest request, HttpSession session) {
-		productService.checkRemainStock(orderProductDto.productId());
-
 		long userId = userService.getUserId(session);
+
+		productService.checkRemainStock(orderProductDto.productId());
 
 		long orderId = orderService.orderProduct(orderProductDto, userId);
 
@@ -53,6 +55,11 @@ public class OrderController {
 
 		return ResponseEntity.ok().body(paymentReadyDto);
 	}
+
+	/*
+	 paymentService.orderCancel() 작업은 성공하고 productService.increaseStock()은 실패했을 때,
+	 이미 PG 사에 취소 처리 된 것이기 때문에 transaction 처리하지 않음
+	 */
 
 	@PostMapping("/{pgCompany}/cancel")
 	public ResponseEntity<PaymentCancelDto> orderCancel(

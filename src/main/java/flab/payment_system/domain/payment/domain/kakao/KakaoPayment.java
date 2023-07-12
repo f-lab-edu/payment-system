@@ -31,9 +31,10 @@ public class KakaoPayment extends BaseEntity {
 	@Embedded
 	private CardInfo cardInfo;
 
+	@Column(name = "aid", columnDefinition = "VARCHAR(50)")
 	private String aid;
 
-	@Column(name = "payment_method_type")
+	@Column(name = "payment_method_type", columnDefinition = "VARCHAR(5)")
 	private String paymentMethodType;
 
 	@Builder

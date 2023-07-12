@@ -91,7 +91,7 @@ public class CustomExceptionHandler {
 			.message(HttpStatus.INTERNAL_SERVER_ERROR + " : " + exception.getMessage())
 			.code(HttpStatus.INTERNAL_SERVER_ERROR.value()).build();
 
-		log.warn(HttpStatus.BAD_REQUEST + " : " + exception.getMessage(), exception);
+		log.error(HttpStatus.INTERNAL_SERVER_ERROR + " : " + exception.getMessage(), exception);
 		return new ResponseEntity<>
 			(exceptionMessage, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
