@@ -1,21 +1,25 @@
 ## 💰 payment-system
 
 > 개인 프로젝트입니다.
+> 평소 돈의 흐름에 관심이 많아 결제 시스템을 구현해보고 싶다는 생각을 했고, 카카오와 토스 결제 api를 연동한 결제 시스템을 구현했습니다.
 > 스프링부트를 이용한 백엔드 개발, 로그 수집 및 테스트 코드 작성을 했습니다.
 
 참고사항: 보안상 비밀번호는 암호화돼서 저장됩니다.
 
 <br>
 
-### 📌 프로젝트 설명
+### 📌 프로젝트를 통해 얻고 싶은 기술 역량 목표
 
-> 평소 돈의 흐름에 관심이 많아 결제 시스템을 구현해보고 싶다는 생각을 했고, 카카오와 토스 결제 api를 연동한 결제 시스템을 구현했습니다.
-> 단건 결제 프로세스는 아래와 같습니다.
-
-<center><img src="https://github.com/f-lab-edu/payment-system/assets/98700133/d9dfa411-632c-4b3f-99c2-5e527ee62e34"  width="60%" height="60%"/></center>
+- 신뢰성 있는 결제 시스템을 위한 동시성 이슈 고려, 성능과 신뢰성 적절한 범위 내에서 trade-off 관계 고민하기
+- 로그인 기능 고민 (아래 둘 중 선택)
+  - 세션관리(선택) : 로드밸런싱을 통한 분산 처리 시스템에서 적절한 로그인 세션 처리 -> 세션을 redis에 관리
+  - 토큰발행 : 토큰 탈취 보안 문제에 대한 대비책 고민 
+- redis 를 자유자재로 필요한 곳에 사용하기
+   - 세션관리
+   - 회원가입을 위한 인증번호 저장
+   - lock
 
 <br>
-
 
 ### 📁 폴더 구조
 
@@ -239,11 +243,21 @@ main
 
 ### 📌 db 설계
 
+
+
+<details>
+    <summary> 🧷 펼쳐보기 </summary>
+    
+
 ![image](https://github.com/f-lab-edu/payment-system/assets/98700133/772ffa43-9b4b-4cb7-89c2-76b15b6fc616)
 
 ![image](https://github.com/f-lab-edu/payment-system/assets/98700133/497b2954-082b-4fc4-a7e0-8253b75d3b00)
 
 결제에 대한 공통적인 정보는 payment 테이블에 저장하고, pg사 별로 달라지는 정보들은 따로 테이블을 만들어줬습니다.
+
+<!-- summary -->
+
+</details>
 
 <br>
 
@@ -277,6 +291,10 @@ main
 - 전략패턴을 이용해서 하나의 인터페이스 및 로직으로 여러 pg사 api 사용할 수 있도록 함 
 - 테스트 키 사용해서 실제 결제는 일어나지 않도록 함
 
+-  단건 결제 프로세스는 아래와 같습니다.
+
+<center><img src="https://github.com/f-lab-edu/payment-system/assets/98700133/d9dfa411-632c-4b3f-99c2-5e527ee62e34"  width="60%" height="60%"/></center>
+
 <br>
 
 4) 주문
@@ -285,17 +303,31 @@ main
 
 <br>
 
+### 📌 리팩토링
 
-### 📌 프로젝트를 통해 얻고 싶은 기술 역량
+> 기존에 Exception 클래스들을 정의할 때 상속받지 않고 일일히 메세지와 코드를 새로 정의해주었습니다. 핸들러에서 핸들링할 때도 아래와 같이 각 예외 별로 처리해주다보니 예외를 하나 추가할 때마다 반복적인 코드가 늘어났습니다.
 
-- 회원가입 시 유저와 사이트의 신뢰성 있는 관계 수립을 위해서 이메일 인증을 통한 가입, ip 대역 확인해서 한국이 아닐 경우 유효하지 않은 요청으로 처리
-- 신뢰성 있는 결제 시스템을 위한 동시성 이슈 고려, 성능과 신뢰성 적절한 범위 내에서 trade-off 관계 고민하기
-- 로그인
-  - 세션관리 : 로드밸런싱을 통한 분산 처리 시스템에서 적절한 로그인 세션 처리를 위해 세션을 redis에 관리
-  - 토큰발행 : 토큰 탈취 보안 문제에 대한 대비책 고민 
-- redis 를 자유자재로 필요한 곳에 사용하기 : 캐싱, lock 여부 확인
+- 기존의 예외 핸들러 코드
+```
+public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 
-<br>
+    // 예외 별로 핸들링 
+	@ExceptionHandler(UserVerificationIdBadRequestException.class)
+```
+>
+>
+> 이를 해결하기 위해 Exception은 BaseException 과 상태코드 별로 BaseException을 상속받아 따로 정의해준 예외들을 정의해줌으로써 hierarchy 구조로 리팩토링 했습니다. 리팩토링을 할 때 초기 시간적 비용이 들어가긴 했지만, 장기적으로 봤을 때 예외를 하나 추가할 때 마다 드는 반복적인 작업 시간이 줄어들었고, 아래와 같이 핸들러에서 포괄적으로 처리해줌으로써 예외처리가 편리해졌습니다.
+
+- 수정된 예외 핸들러 코드
+
+```
+public class CustomExceptionHandler {
+    // 해당 프로젝트의 모든 예외는 BaseException을 상속받음
+	@ExceptionHandler(BaseException.class)
+	public ResponseEntity<ExceptionMessage> handleBaseException(BaseException baseException) {
+
+```
+
 
 ### 📌 개선하고 싶은점
 
