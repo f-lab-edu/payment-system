@@ -42,6 +42,9 @@ public class OrderController {
 		@PathVariable PaymentPgCompany pgCompany,
 		@RequestBody @Valid OrderProductDto orderProductDto,
 		HttpServletRequest request, HttpSession session) {
+		String requestUrl = request.getRequestURL().toString()
+			.replace(request.getRequestURI(), "");
+
 		long userId = userService.getUserId(session);
 
 		productService.checkRemainStock(orderProductDto.productId());
@@ -49,7 +52,7 @@ public class OrderController {
 		long orderId = orderService.orderProduct(orderProductDto, userId);
 
 		paymentService.setStrategy(pgCompany);
-		PaymentReadyDto paymentReadyDto = paymentService.createPayment(orderProductDto, request,
+		PaymentReadyDto paymentReadyDto = paymentService.createPayment(orderProductDto, requestUrl,
 			userId,
 			orderId, pgCompany);
 
