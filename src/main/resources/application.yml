@@ -36,10 +36,18 @@ server:
 
 logging:
   level:
-    root: debug
-
+    root: info
+  config: classpath:log4j2-${spring.profiles.active}.xml
 
 timezone: ${TIMEZONE}
 smtp-id: ${SMTP_ID}
-secret-key: ${SECRET_KEY}
+
+kakao-cid: TC0ONETIME
+kakao-host: https://kapi.kakao.com/v1/payment
+kakao-adminkey: ${KAKAO_ADMIN_KEY}
+
+toss-host: https://api.tosspayments.com/v1/payments
+toss-client-key: ${TOSS_CLIENT_KEY}
+toss-secret-key: ${TOSS_SECRET_KEY}
+
 

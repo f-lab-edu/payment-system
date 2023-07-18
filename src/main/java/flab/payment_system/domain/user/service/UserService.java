@@ -1,6 +1,5 @@
 package flab.payment_system.domain.user.service;
 
-import flab.payment_system.domain.session.enums.Token;
 import flab.payment_system.domain.session.service.SessionService;
 import flab.payment_system.domain.mail.service.MailService;
 import flab.payment_system.domain.user.domain.User;
@@ -11,9 +10,9 @@ import flab.payment_system.domain.user.dto.UserSignUpDto;
 import flab.payment_system.domain.user.dto.UserVerificationDto;
 import flab.payment_system.domain.user.dto.UserVerifyEmailDto;
 import flab.payment_system.domain.user.exception.UserAlreadySignInConflictException;
-import flab.payment_system.domain.user.exception.UserAlreadySignOutConflictException;
 import flab.payment_system.domain.user.exception.UserEmailAlreadyExistConflictException;
 import flab.payment_system.domain.user.exception.UserEmailNotExistBadRequestException;
+import flab.payment_system.domain.user.exception.UserNotSignInedConflictException;
 import flab.payment_system.domain.user.exception.UserPasswordFailBadRequestException;
 import flab.payment_system.domain.user.exception.UserSignUpBadRequestException;
 import flab.payment_system.domain.user.exception.UserVerificationEmailBadRequestException;
@@ -22,10 +21,7 @@ import flab.payment_system.domain.user.exception.UserVerificationNumberBadReques
 import flab.payment_system.domain.user.exception.UserVerificationUnauthorizedException;
 import flab.payment_system.domain.user.repository.UserRepository;
 import flab.payment_system.domain.user.repository.UserVerificationRepository;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
 import lombok.RequiredArgsConstructor;
@@ -145,7 +141,11 @@ public class UserService {
 		return true;
 	}
 
-	public String signInUser(UserDto userDto, HttpSession session) {
+	public void signInUser(UserDto userDto, HttpSession session) {
+		if (sessionService.getUserId(session).isPresent()) {
+			throw new UserAlreadySignInConflictException();
+		}
+
 		Optional<User> optionalUser = userRepository.findByEmail(userDto.email());
 
 		User user = optionalUser.orElseThrow(UserEmailNotExistBadRequestException::new);
@@ -157,39 +157,15 @@ public class UserService {
 			throw new UserPasswordFailBadRequestException();
 		}
 
-		Long userId = user.getUserId();
-		Optional<Long> userSession = Optional.ofNullable(
-			sessionService.getByUserId(session, userId));
-
-		if (userSession.isPresent()) {
-			sessionService.invalidate(session);
-			throw new UserAlreadySignInConflictException();
-		}
-
-		sessionService.setByUserId(session, userId);
-
-		return sessionService.getCookieKey(userId);
+		sessionService.setUserId(session, user.getUserId());
 	}
 
-	public void signOutUser(HttpServletRequest request, HttpSession session) {
-		Cookie[] cookies = Optional.ofNullable(request.getCookies())
-			.orElseThrow(UserAlreadySignOutConflictException::new);
-
-		Optional<Cookie> accessTokenCookie = Arrays.stream(cookies)
-			.filter(cookie -> cookie.getName().equals(Token.Access_Token.getTokenType()))
-			.findFirst();
-
-		if (accessTokenCookie.isEmpty()) {
-			sessionService.invalidate(session);
-			throw new UserAlreadySignOutConflictException();
-		}
-
-		String accessToken = accessTokenCookie.get().getValue();
-
-		Optional.ofNullable(
-				sessionService.getByAccessToken(session, accessToken))
-			.orElseThrow(UserAlreadySignOutConflictException::new);
-
+	public void signOutUser(HttpSession session) {
+		getUserId(session);
 		sessionService.invalidate(session);
+	}
+
+	public long getUserId(HttpSession session) {
+		return sessionService.getUserId(session).orElseThrow(UserNotSignInedConflictException::new);
 	}
 }

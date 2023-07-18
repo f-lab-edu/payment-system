@@ -5,7 +5,9 @@ import flab.payment_system.core.enums.Constant;
 import flab.payment_system.core.filter.ExceptionHandlerFilter;
 import flab.payment_system.core.filter.SignInCheckFilter;
 import flab.payment_system.domain.session.service.SessionService;
+import java.time.Duration;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +17,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 @Configuration
@@ -22,7 +25,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 @RequiredArgsConstructor
 public class AppConfig {
 
-	private final SessionService jwtService;
+	private final SessionService sessionService;
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -43,10 +46,10 @@ public class AppConfig {
 		FilterRegistrationBean<OncePerRequestFilter> bean = new FilterRegistrationBean<>();
 
 		bean.setFilter(
-			new SignInCheckFilter(jwtService));
+			new SignInCheckFilter(sessionService));
 		bean.setOrder(2);
 		bean.addUrlPatterns(
-			Constant.API_AND_VERSION.getValue() + "/users/test",
+			Constant.API_AND_VERSION.getValue() + "/order/*",
 			Constant.API_AND_VERSION.getValue() + "/payments/*");
 
 		return bean;
@@ -61,7 +64,7 @@ public class AppConfig {
 			new ExceptionHandlerFilter());
 		bean.setOrder(1);
 		bean.addUrlPatterns(
-			Constant.API_AND_VERSION.getValue() + "/users/test",
+			Constant.API_AND_VERSION.getValue() + "/order/*",
 			Constant.API_AND_VERSION.getValue() + "/payments/*");
 
 		return bean;
@@ -70,5 +73,13 @@ public class AppConfig {
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(10);
+	}
+
+	@Bean
+	public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
+		return restTemplateBuilder
+			.setConnectTimeout(Duration.ofSeconds(5))
+			.setReadTimeout(Duration.ofSeconds(3))
+			.build();
 	}
 }

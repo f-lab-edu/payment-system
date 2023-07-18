@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="INFO" packages="com.psc" monitorInterval="30">
+  <Appenders>
+    <JDBC name="dbLogger" tableName="app_logs">
+      <DriverManager connectionString="${spring:spring.datasource.url}"
+        driverClassName="${spring:spring.datasource.driver-class-name}"
+        userName="${spring:spring.datasource.username}"
+        password="${spring:spring.datasource.password}"/>
+      <Column name="trace_id" pattern="%traceId"/>
+      <Column name="created_at" isEventTimestamp="true"/>
+      <Column name="logger" pattern="%logger"/>
+      <Column name="log_level" pattern="%level"/>
+      <Column name="message" pattern="%m"/>
+      <Column name="exception" pattern="%throwable"/>
+    </JDBC>
+  </Appenders>
+
+  <Loggers>
+    <logger name="org.springframework" level="info" additivity="false">
+      <AppenderRef ref="dbLogger"/>
+    </logger>
+
+    <logger name="flab.payment_system" level="info" additivity="false">
+      <AppenderRef ref="dbLogger"/>
+    </logger>
+    <logger name="jdbc.sqlonly" level="OFF"/>
+    <logger name="jdbc.sqltiming" level="INFO"/>
+    <logger name="jdbc.audit" level="OFF"/>
+    <logger name="jdbc.resultset" level="OFF"/>
+    <logger name="jdbc.resultsettable" level="OFF"/>
+    <logger name="jdbc.connection" level="OFF"/>
+    <logger name="org.hibernate.SQL_SLOW" level="WARN"/>
+
+    <Root level="info" additivity="false">
+      <AppenderRef ref="dbLogger"/>
+    </Root>
+
+  </Loggers>
+</Configuration>
