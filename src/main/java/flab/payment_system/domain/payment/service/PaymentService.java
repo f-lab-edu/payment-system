@@ -2,9 +2,11 @@ package flab.payment_system.domain.payment.service;
 
 import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;
+import flab.payment_system.domain.order.exception.OrderNotExistBadRequestException;
 import flab.payment_system.domain.payment.domain.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.enums.PaymentStateConstant;
+import flab.payment_system.domain.payment.exception.PaymentNotExistBadRequestException;
 import flab.payment_system.domain.payment.repository.PaymentRepository;
 import flab.payment_system.domain.payment.response.PaymentApprovalDto;
 import flab.payment_system.domain.payment.response.PaymentCancelDto;
@@ -12,11 +14,9 @@ import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
 import flab.payment_system.domain.payment.response.PaymentReadyDto;
 import flab.payment_system.domain.payment.service.kakao.PaymentStrategyKaKaoService;
 import flab.payment_system.domain.payment.service.toss.PaymentStrategyTossService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
 
 
@@ -39,9 +39,7 @@ public class PaymentService {
 	}
 
 	public PaymentReadyDto createPayment(OrderProductDto orderProductDto,
-		HttpServletRequest request, long userId, long orderId, PaymentPgCompany paymentPgCompany) {
-		String requestUrl = request.getRequestURL().toString()
-			.replace(request.getRequestURI(), "");
+		String requestUrl, long userId, long orderId, PaymentPgCompany paymentPgCompany) {
 
 		Payment payment = paymentRepository.save(
 			Payment.builder().orderId(orderId).state(PaymentStateConstant.ONGOING.getValue())
@@ -51,6 +49,7 @@ public class PaymentService {
 
 		PaymentReadyDto paymentReadyDto = paymentStrategy.createPayment(orderProductDto, userId,
 			requestUrl, orderId, payment.getPaymentId(), orderProductDto.productId());
+		paymentReadyDto.setPaymentId(payment.getPaymentId());
 
 		paymentRepository.updatePaymentKeyByPaymentId(
 			payment.getPaymentId(), paymentReadyDto.getPaymentKey());

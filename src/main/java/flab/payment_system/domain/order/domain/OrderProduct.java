@@ -17,7 +17,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 @NoArgsConstructor
 @Entity
 @Table(name = "order_product")
-public class Order extends BaseEntity {
+public class OrderProduct extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +35,7 @@ public class Order extends BaseEntity {
 	private Integer quantity;
 
 	@Builder
-	public Order(long userId, long productId, Integer quantity) {
+	public OrderProduct(long userId, long productId, Integer quantity) {
 		this.userId = userId;
 		this.productId = productId;
 		this.quantity = quantity;
