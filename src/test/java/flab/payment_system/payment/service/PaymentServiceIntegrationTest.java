@@ -1,14 +1,15 @@
 package flab.payment_system.payment.service;
 
+import flab.payment_system.config.DatabaseCleanUp;
 import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.order.service.OrderService;
 import flab.payment_system.domain.payment.domain.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
-import flab.payment_system.domain.payment.exception.PaymentNotExistBadRequestException;
 import flab.payment_system.domain.payment.repository.PaymentRepository;
 import flab.payment_system.domain.payment.response.kakao.PaymentKakaoReadyDtoImpl;
 import flab.payment_system.domain.payment.response.toss.PaymentTossDtoImpl;
 import flab.payment_system.domain.payment.service.PaymentService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -16,10 +17,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-@Transactional
 public class PaymentServiceIntegrationTest {
 
 	@Autowired
@@ -29,11 +28,19 @@ public class PaymentServiceIntegrationTest {
 	@Autowired
 	private PaymentRepository paymentRepository;
 
+	@Autowired
+	private DatabaseCleanUp databaseCleanUp;
+
 	private static String requestUrl;
 
 	@BeforeAll
 	public static void setUp() {
 		requestUrl = "http://localhost:8080";
+	}
+
+	@AfterEach
+	void tearDown() {
+		databaseCleanUp.truncateAllEntity();
 	}
 
 	@Nested
@@ -54,11 +61,11 @@ public class PaymentServiceIntegrationTest {
 			PaymentKakaoReadyDtoImpl paymentReadyDto = (PaymentKakaoReadyDtoImpl) paymentService.createPayment(
 				orderProductDto, requestUrl,
 				userId, orderId, pgCompany);
-			Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(
-				PaymentNotExistBadRequestException::new);
+			Payment payment = paymentRepository.findByOrderId(orderId).orElse(null);
 
 			// then
 			Assertions.assertEquals(paymentReadyDto.getPaymentId(), payment.getPaymentId());
+			Assertions.assertNotNull(payment);
 		}
 
 		@DisplayName("pg_toss")
@@ -75,11 +82,11 @@ public class PaymentServiceIntegrationTest {
 			PaymentTossDtoImpl paymentReadyDto = (PaymentTossDtoImpl) paymentService.createPayment(
 				orderProductDto, requestUrl,
 				userId, orderId, pgCompany);
-			Payment payment = paymentRepository.findByOrderId(orderId).orElseThrow(
-				PaymentNotExistBadRequestException::new);
+			Payment payment = paymentRepository.findByOrderId(orderId).orElse(null);
 
 			// then
 			Assertions.assertEquals(paymentReadyDto.getPaymentId(), payment.getPaymentId());
+			Assertions.assertNotNull(payment);
 		}
 	}
 }

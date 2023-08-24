@@ -1,6 +1,7 @@
 package flab.payment_system.user.service;
 
 
+import flab.payment_system.config.DatabaseCleanUp;
 import flab.payment_system.domain.user.domain.User;
 import flab.payment_system.domain.user.domain.UserVerification;
 import flab.payment_system.domain.user.dto.UserConfirmVerificationNumberDto;
@@ -10,15 +11,14 @@ import flab.payment_system.domain.user.dto.UserVerifyEmailDto;
 import flab.payment_system.domain.user.repository.UserRepository;
 import flab.payment_system.domain.user.repository.UserVerificationRepository;
 import flab.payment_system.domain.user.service.UserService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-@Transactional
 public class UserServiceIntegrationTest {
 
 	@Autowired
@@ -29,6 +29,14 @@ public class UserServiceIntegrationTest {
 
 	@Autowired
 	private UserVerificationRepository userVerificationRepository;
+
+	@Autowired
+	private DatabaseCleanUp databaseCleanUp;
+
+	@AfterEach
+	void tearDown() {
+		databaseCleanUp.truncateAllEntity();
+	}
 
 
 	@DisplayName("이메일_인증번호_발급_성공")
@@ -87,9 +95,10 @@ public class UserServiceIntegrationTest {
 
 		// when
 		userService.signUpUser(userSignUpDto);
-		User user = userRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+		User user = userRepository.findByEmail(email).orElse(null);
 
 		// then
 		Assertions.assertEquals(email, user.getEmail());
+		Assertions.assertNotNull(user);
 	}
 }
