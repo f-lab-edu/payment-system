@@ -256,9 +256,10 @@ main
     <summary> 🧷 펼쳐보기 </summary>
     
 
-![image](https://github.com/f-lab-edu/payment-system/assets/98700133/772ffa43-9b4b-4cb7-89c2-76b15b6fc616)
+![image](https://github.com/f-lab-edu/payment-system/assets/98700133/80c5d414-5745-482d-ba8f-e89ece46c0f0)
 
-![image](https://github.com/f-lab-edu/payment-system/assets/98700133/497b2954-082b-4fc4-a7e0-8253b75d3b00)
+![image](https://github.com/f-lab-edu/payment-system/assets/98700133/8c1bc66c-46bb-4632-b8a2-2610dbfbabaa)
+
 
 결제에 대한 공통적인 정보는 payment 테이블에 저장하고, pg사 별로 달라지는 정보들은 따로 테이블을 만들어줬습니다.
 
@@ -298,7 +299,7 @@ main
 
 -  단건 결제 프로세스는 아래와 같습니다.
 
-<center><img src="https://github.com/f-lab-edu/payment-system/assets/98700133/d9dfa411-632c-4b3f-99c2-5e527ee62e34"  width="60%" height="60%"/></center>
+<center><img src="https://github.com/f-lab-edu/payment-system/assets/98700133/8427fe42-36e4-4bfc-be0c-5471357297a9"  width="60%" height="60%"/></center>
 
 <br>
 
