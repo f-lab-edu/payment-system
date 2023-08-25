@@ -1,6 +1,6 @@
 package flab.payment_system.domain.payment.request.toss;
 
-import flab.payment_system.core.enums.Constant;
+import flab.payment_system.common.enums.Constant;
 import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.payment.domain.Payment;

@@ -1,4 +1,4 @@
-package flab.payment_system.core.data;
+package flab.payment_system.common.data;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;

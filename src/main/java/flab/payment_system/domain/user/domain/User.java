@@ -1,7 +1,7 @@
 package flab.payment_system.domain.user.domain;
 
 
-import flab.payment_system.core.data.BaseEntity;
+import flab.payment_system.common.data.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

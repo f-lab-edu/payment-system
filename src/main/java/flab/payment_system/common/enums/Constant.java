@@ -1,4 +1,4 @@
-package flab.payment_system.core.enums;
+package flab.payment_system.common.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

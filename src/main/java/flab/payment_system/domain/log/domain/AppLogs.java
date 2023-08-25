@@ -1,6 +1,6 @@
 package flab.payment_system.domain.log.domain;
 
-import flab.payment_system.core.data.BaseEntity;
+import flab.payment_system.common.data.BaseEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -11,7 +11,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import java.sql.Timestamp;
 
 @Getter
 @Setter

@@ -1,4 +1,4 @@
-package flab.payment_system.core.utils;
+package flab.payment_system.common.utils;
 
 import org.springframework.http.ResponseCookie;
 

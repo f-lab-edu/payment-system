@@ -1,4 +1,4 @@
-package flab.payment_system.core.filter;
+package flab.payment_system.common.filter;
 
 import flab.payment_system.domain.session.service.SessionService;
 import flab.payment_system.domain.user.exception.UserUnauthorizedException;

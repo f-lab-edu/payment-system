@@ -1,8 +1,8 @@
-package flab.payment_system.core.filter;
+package flab.payment_system.common.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import flab.payment_system.core.exception.BaseException;
-import flab.payment_system.core.exception.ExceptionMessage;
+import flab.payment_system.common.exception.BaseException;
+import flab.payment_system.common.exception.ExceptionMessage;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

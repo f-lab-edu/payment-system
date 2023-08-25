@@ -1,6 +1,6 @@
 package flab.payment_system.domain.payment.controller;
 
-import flab.payment_system.core.response.ResponseMessage;
+import flab.payment_system.common.response.ResponseMessage;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.response.PaymentApprovalDto;
 import flab.payment_system.domain.payment.service.PaymentService;

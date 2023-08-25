@@ -1,9 +1,8 @@
 package flab.payment_system.domain.payment.domain.toss;
 
-import flab.payment_system.core.data.BaseEntity;
+import flab.payment_system.common.data.BaseEntity;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

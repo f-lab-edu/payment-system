@@ -1,4 +1,4 @@
-package flab.payment_system.core.utils;
+package flab.payment_system.common.utils;
 
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;

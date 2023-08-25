@@ -1,4 +1,4 @@
-package flab.payment_system.core.exception;
+package flab.payment_system.common.exception;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;

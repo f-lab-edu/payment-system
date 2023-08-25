@@ -1,6 +1,6 @@
 package flab.payment_system.domain.payment.domain.kakao;
 
-import flab.payment_system.core.data.BaseEntity;
+import flab.payment_system.common.data.BaseEntity;
 import jakarta.annotation.Nonnull;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;

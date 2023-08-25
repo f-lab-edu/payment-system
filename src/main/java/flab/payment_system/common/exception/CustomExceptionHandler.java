@@ -1,4 +1,4 @@
-package flab.payment_system.core.exception;
+package flab.payment_system.common.exception;
 
 
 import jakarta.mail.MessagingException;
