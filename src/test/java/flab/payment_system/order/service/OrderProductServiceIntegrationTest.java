@@ -1,7 +1,7 @@
 package flab.payment_system.order.service;
 
 import flab.payment_system.config.DatabaseCleanUp;
-import flab.payment_system.domain.order.domain.OrderProduct;
+import flab.payment_system.domain.order.entity.OrderProduct;
 import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.order.repository.OrderRepository;
 import flab.payment_system.domain.order.service.OrderService;

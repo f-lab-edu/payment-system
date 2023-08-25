@@ -1,6 +1,6 @@
 package flab.payment_system.common.filter;
 
-import flab.payment_system.domain.session.service.SessionService;
+import flab.payment_system.session.service.SessionService;
 import flab.payment_system.domain.user.exception.UserUnauthorizedException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

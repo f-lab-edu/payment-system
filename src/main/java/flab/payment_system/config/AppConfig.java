@@ -4,7 +4,7 @@ package flab.payment_system.config;
 import flab.payment_system.common.enums.Constant;
 import flab.payment_system.common.filter.ExceptionHandlerFilter;
 import flab.payment_system.common.filter.SignInCheckFilter;
-import flab.payment_system.domain.session.service.SessionService;
+import flab.payment_system.session.service.SessionService;
 import java.time.Duration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.client.RestTemplateBuilder;

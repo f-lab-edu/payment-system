@@ -1,8 +1,7 @@
 package flab.payment_system.domain.product.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import flab.payment_system.domain.product.domain.QProduct;
-import jakarta.persistence.criteria.CriteriaBuilder.In;
+import flab.payment_system.domain.product.entity.QProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;

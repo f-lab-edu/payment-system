@@ -1,4 +1,4 @@
-package flab.payment_system.domain.log.domain;
+package flab.payment_system.domain.log.entity;
 
 import flab.payment_system.common.data.BaseEntity;
 import jakarta.persistence.Column;

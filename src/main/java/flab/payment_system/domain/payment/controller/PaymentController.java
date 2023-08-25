@@ -1,11 +1,11 @@
 package flab.payment_system.domain.payment.controller;
 
+import flab.payment_system.adapter.RedissonLockAdapter;
+import flab.payment_system.adapter.UserAdapter;
 import flab.payment_system.common.response.ResponseMessage;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.response.PaymentApprovalDto;
 import flab.payment_system.domain.payment.service.PaymentService;
-import flab.payment_system.domain.redisson.service.RedissonLockService;
-import flab.payment_system.domain.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class PaymentController {
 
 	private final PaymentService paymentService;
-	private final UserService userService;
-	private final RedissonLockService redissonLockService;
+	private final UserAdapter userAdapter;
+	private final RedissonLockAdapter redissonLockAdapter;
 
 	@GetMapping("/{pgCompany}/approved")
 	public ResponseEntity<PaymentApprovalDto> paymentApproved(
@@ -33,8 +33,8 @@ public class PaymentController {
 		@RequestParam("quantity") Integer quantity,
 		HttpSession session) {
 		paymentService.setStrategy(pgCompany);
-		long userId = userService.getUserId(session);
-		PaymentApprovalDto paymentApprovalDto = redissonLockService.approvePayment(pgToken, orderId,
+		long userId = userAdapter.getUserId(session);
+		PaymentApprovalDto paymentApprovalDto = redissonLockAdapter.approvePayment(pgToken, orderId,
 			userId, paymentId, productId, quantity);
 
 		return ResponseEntity.ok().body(paymentApprovalDto);
