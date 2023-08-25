@@ -1,0 +1,22 @@
+package flab.payment_system.session.service;
+
+import jakarta.servlet.http.HttpSession;
+import java.util.Optional;
+import org.springframework.stereotype.Service;
+
+@Service
+public class SessionService {
+
+
+	public Optional<Long> getUserId(HttpSession session) {
+		return Optional.ofNullable((Long) session.getAttribute("userId"));
+	}
+
+	public void setUserId(HttpSession session, Long userId) {
+		session.setAttribute("userId", userId);
+	}
+
+	public void invalidate(HttpSession session) {
+		session.invalidate();
+	}
+}

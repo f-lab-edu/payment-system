@@ -1,6 +1,9 @@
 package flab.payment_system.domain.order.controller;
 
 
+import flab.payment_system.adapter.PaymentAdapter;
+import flab.payment_system.adapter.ProductAdapter;
+import flab.payment_system.adapter.UserAdapter;
 import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.order.service.OrderService;
@@ -8,9 +11,6 @@ import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.response.PaymentCancelDto;
 import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
 import flab.payment_system.domain.payment.response.PaymentReadyDto;
-import flab.payment_system.domain.payment.service.PaymentService;
-import flab.payment_system.domain.product.service.ProductService;
-import flab.payment_system.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -32,9 +32,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
 	private final OrderService orderService;
-	private final PaymentService paymentService;
-	private final UserService userService;
-	private final ProductService productService;
+	private final PaymentAdapter paymentAdapter;
+	private final UserAdapter userAdapter;
+	private final ProductAdapter productAdapter;
 
 	@PostMapping("/{pgCompany}")
 	@Transactional
@@ -45,14 +45,14 @@ public class OrderController {
 		String requestUrl = request.getRequestURL().toString()
 			.replace(request.getRequestURI(), "");
 
-		long userId = userService.getUserId(session);
+		long userId = userAdapter.getUserId(session);
 
-		productService.checkRemainStock(orderProductDto.productId());
+		productAdapter.checkRemainStock(orderProductDto.productId());
 
 		long orderId = orderService.orderProduct(orderProductDto, userId);
 
-		paymentService.setStrategy(pgCompany);
-		PaymentReadyDto paymentReadyDto = paymentService.createPayment(orderProductDto, requestUrl,
+		paymentAdapter.setStrategy(pgCompany);
+		PaymentReadyDto paymentReadyDto = paymentAdapter.createPayment(orderProductDto, requestUrl,
 			userId,
 			orderId, pgCompany);
 
@@ -68,9 +68,9 @@ public class OrderController {
 	public ResponseEntity<PaymentCancelDto> orderCancel(
 		@PathVariable PaymentPgCompany pgCompany,
 		@RequestBody @Valid OrderCancelDto orderCancelDto) {
-		paymentService.setStrategy(pgCompany);
-		PaymentCancelDto paymentCancelDto = paymentService.orderCancel(orderCancelDto);
-		productService.increaseStock(orderCancelDto.productId(), orderCancelDto.quantity());
+		paymentAdapter.setStrategy(pgCompany);
+		PaymentCancelDto paymentCancelDto = paymentAdapter.orderCancel(orderCancelDto);
+		productAdapter.increaseStock(orderCancelDto.productId(), orderCancelDto.quantity());
 
 		return ResponseEntity.ok().body(paymentCancelDto);
 	}
@@ -78,8 +78,8 @@ public class OrderController {
 	@GetMapping("/{pgCompany}")
 	public ResponseEntity<PaymentOrderDetailDto> getOrderDetail(
 		@PathVariable PaymentPgCompany pgCompany, @RequestParam String paymentKey) {
-		paymentService.setStrategy(pgCompany);
-		PaymentOrderDetailDto paymentOrderDetailDto = paymentService.getOrderDetail(paymentKey);
+		paymentAdapter.setStrategy(pgCompany);
+		PaymentOrderDetailDto paymentOrderDetailDto = paymentAdapter.getOrderDetail(paymentKey);
 		return ResponseEntity.ok().body(paymentOrderDetailDto);
 	}
 }

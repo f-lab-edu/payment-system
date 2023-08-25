@@ -1,6 +1,6 @@
 package flab.payment_system.domain.order.repository;
 
-import flab.payment_system.domain.order.domain.OrderProduct;
+import flab.payment_system.domain.order.entity.OrderProduct;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 

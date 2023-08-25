@@ -2,8 +2,8 @@ package flab.payment_system.user.service;
 
 
 import flab.payment_system.config.DatabaseCleanUp;
-import flab.payment_system.domain.user.domain.User;
-import flab.payment_system.domain.user.domain.UserVerification;
+import flab.payment_system.domain.user.entity.User;
+import flab.payment_system.domain.user.entity.UserVerification;
 import flab.payment_system.domain.user.dto.UserConfirmVerificationNumberDto;
 import flab.payment_system.domain.user.dto.UserSignUpDto;
 import flab.payment_system.domain.user.dto.UserVerificationDto;

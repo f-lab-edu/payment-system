@@ -1,6 +1,6 @@
 package flab.payment_system.domain.user.exception;
 
-import flab.payment_system.core.exception.BadRequestException;
+import flab.payment_system.common.exception.BadRequestException;
 
 public class UserVerificationIdBadRequestException extends BadRequestException {
 

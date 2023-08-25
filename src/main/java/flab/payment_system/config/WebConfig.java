@@ -1,6 +1,6 @@
 package flab.payment_system.config;
 
-import flab.payment_system.core.interceptor.LoggingInterceptor;
+import flab.payment_system.common.interceptor.LoggingInterceptor;
 import flab.payment_system.domain.payment.enums.PaymentPgCompanyStringToEnumConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

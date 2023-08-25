@@ -1,6 +1,6 @@
 package flab.payment_system.domain.product.service;
 
-import flab.payment_system.domain.product.domain.Product;
+import flab.payment_system.domain.product.entity.Product;
 import flab.payment_system.domain.product.dto.ProductDto;
 import flab.payment_system.domain.product.exception.ProductNotExistBadRequestException;
 import flab.payment_system.domain.product.exception.ProductSoldOutException;
