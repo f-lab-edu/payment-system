@@ -33,12 +33,19 @@
 main
 ├── java
 │   ├── flab.payment_system
+│   │   ├──  adapter # 다른 패키지(도메인)의 클래스를 사용할 때
+│   │   │   ├──  MailAdapter
+│   │   │   ├──  PaymentAdapter
+│   │   │   ├──  ProductAdapter
+│   │   │   ├──  RedissonLockAdapter
+│   │   │   ├──  SessionAdapter
+│   │   │   └──  UserAdapter
 │   │   ├──  config
 │   │   │   ├──  AppConfig
 │   │   │   ├──  QueryDslConfig
 │   │   │   ├──  RedisConfig
 │   │   │   └──  WebConfig
-│   │   ├──  core # 공통
+│   │   ├──  common # 공통
 │   │   │   ├──  data
 │   │   │   │  └──  BaseEntity
 │   │   │   ├──  enums
@@ -65,7 +72,7 @@ main
 │   │   │   │  └──  IpUtil
 │   │   ├──  domain
 │   │   │   ├──  log
-│   │   │   │  ├──  domain
+│   │   │   │  ├──  entity
 │   │   │   │  │  └──  AppLogs
 │   │   │   ├──  mail
 │   │   │   │  ├──  service # 유저에게 이메일 보낼 때(회원가입을 위한 유저 인증번호 발송)
@@ -73,8 +80,8 @@ main
 │   │   │   ├──  order
 │   │   │   │  ├──  controller
 │   │   │   │  │  └──  OrderController
-│   │   │   │  ├──  domain
-│   │   │   │  │  └──  Order
+│   │   │   │  ├──  entity
+│   │   │   │  │  └──  OrderProduct
 │   │   │   │  ├──  dto
 │   │   │   │  │  ├──  OrderCancelDto
 │   │   │   │  │  ├──  OrderDetailDto
@@ -170,7 +177,7 @@ main
 │   │   │   │  ├──  product
 │   │   │   │  │  ├──  controller
 │   │   │   │  │  │  └──  ProductController
-│   │   │   │  │  ├──  domain
+│   │   │   │  │  ├──  entity
 │   │   │   │  │  │  └──  Product
 │   │   │   │  │  ├──  dto
 │   │   │   │  │  │  └──  ProductDto
@@ -192,7 +199,7 @@ main
 │   │   │   │  ├──  user
 │   │   │   │  │  ├──  controller
 │   │   │   │  │  │  └──  UserController
-│   │   │   │  │  ├──  domain
+│   │   │   │  │  ├──  entity
 │   │   │   │  │  │  ├──  User
 │   │   │   │  │  │  └──  UserVerification
 │   │   │   │  │  ├──  dto
