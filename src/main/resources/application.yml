@@ -1,0 +1,53 @@
+spring:
+  profiles:
+    active: prod
+  data:
+    redis:
+      port: ${REDIS_PORT}
+      host: ${REDIS_HOST}
+      password: ${REDIS_PASSWORD}
+
+  mvc:
+    dispatch-options-request: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 다국적 서비스 사용 대비를 위해 database(mysql) server timezone 은 utc, 애플리케이션 단에서 kst OffsetDateTime or ZoneDateTime 타입 사용
+    url: ${DB_URL}/${DB_DATABASE}?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC&useLegacyDatetimeCode=false
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  mail:
+    host: ${SMTP_HOST}
+    port: 465
+    username: ${SMTP_ID}
+    password: ${SMTP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          ssl:
+            enable: true
+            trust: ${SMTP_HOST}
+server:
+  shutdown: graceful
+
+logging:
+  level:
+    root: info
+  config: classpath:log4j2-${spring.profiles.active}.xml
+
+timezone: ${TIMEZONE}
+smtp-id: ${SMTP_ID}
+
+kakao-cid: TC0ONETIME
+kakao-host: https://kapi.kakao.com/v1/payment
+kakao-adminkey: ${KAKAO_ADMIN_KEY}
+
+toss-host: https://api.tosspayments.com/v1/payments
+toss-client-key: ${TOSS_CLIENT_KEY}
+toss-secret-key: ${TOSS_SECRET_KEY}
+
+

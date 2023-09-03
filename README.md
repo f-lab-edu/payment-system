@@ -23,9 +23,6 @@
 
 ### 📁 폴더 구조
 
-<br>
-
-
 <details>
     <summary> 🧷 프로젝트 구조 펼쳐보기</summary>
 
@@ -254,11 +251,9 @@ main
 
 <details>
     <summary> 🧷 펼쳐보기 </summary>
-    
-
-![image](https://github.com/f-lab-edu/payment-system/assets/98700133/80c5d414-5745-482d-ba8f-e89ece46c0f0)
-
-![image](https://github.com/f-lab-edu/payment-system/assets/98700133/8c1bc66c-46bb-4632-b8a2-2610dbfbabaa)
+![image](https://github.com/f-lab-edu/payment-system/assets/98700133/69e3bc8e-3ccc-4804-b257-1306b2c65633)
+	
+![image](https://github.com/f-lab-edu/payment-system/assets/98700133/a7f420fa-2845-4357-9709-cb78c48ab052)
 
 
 결제에 대한 공통적인 정보는 payment 테이블에 저장하고, pg사 별로 달라지는 정보들은 따로 테이블을 만들어줬습니다.
@@ -298,8 +293,7 @@ main
 - 테스트 키 사용해서 실제 결제는 일어나지 않도록 함
 
 -  단건 결제 프로세스는 아래와 같습니다.
-
-<center><img src="https://github.com/f-lab-edu/payment-system/assets/98700133/8427fe42-36e4-4bfc-be0c-5471357297a9"  width="60%" height="60%"/></center>
+<center><img src="https://github.com/f-lab-edu/payment-system/assets/98700133/132aa184-4321-4658-b7b9-31458e175fd3"  width="60%" height="60%"/></center>
 
 <br>
 
@@ -343,7 +337,7 @@ public class CustomExceptionHandler {
 
 1. pg 사에서 보관 중인 결제 정보와 해당 서버의 결제 정보가 완벽히 호환되기는 힘들 거라고 생각했습니다. 예를 들면 pg 서버에서는 성공적으로 처리된 결제지만 서버에서는 timeout 등의 문제로 실패된 결제라고 처리되는 경우가 있겠습니다. 이를 호환해 주기 위해서 주기적으로 pg 사에서 결제 정보를 파일로 받아와서 해당 서버의 db 정보와 비교해 결제 데이터를 맞춰주는 배치 시스템이 있을 것이고 이를 반영하고 싶다는 생각을 했습니다.
 
-2. 이번에는 프로젝트가 모두 끝난 뒤 테스트 코드를 작성해서 주요한 로직에만 간단한 통합 테스트를 작성했는데 다음번에는 기능을 작성할 때마다 단위 테스트를 작성하면서 프로젝트를 진행하고 싶다는 생각을 했습니다.
+2. 재고 관리를 하는 데 있어서 rdb 컬럼에 재고 개수를 저장하고 redis를 이용한 분산락을 통해 재고 증감을 처리해 주었습니다. 그런데 이때, 결제 승인 작업이 완료될 때까지 락이 걸려있어서 성능이 떨어질 수 있다는 단점이 있습니다. 토큰 버킷 알고리즘을 사용하면 이를 개선할 수 있을 것입니다. rdb에 관리하는 재고 개수 컬럼을 없애고 redis에 재고 개수만큼 토큰을 채워 넣고 재고에 접근하는 유저마다 토큰을 꺼내면 락을 걸지 않고도 자연스럽게 재고관리 동시성 문제를 해결할 수 있을 것입니다.
 
 3. RestTemplate 사용 시 커넥션 풀을 따로 설정해 주지 않고 디폴트 설정을 사용하고 있습니다. 따로 설정해 주지 않으면 요청할 때마다 커넥션이 생성돼서 소켓이 고갈되는 문제가 발생할 수 있기 때문에 부하 테스트를 진행한 뒤 커넥션 풀을 따로 설정해 주고 싶습니다.
 
