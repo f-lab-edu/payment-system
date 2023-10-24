@@ -317,7 +317,7 @@ public class CustomExceptionHandler extends ResponseEntityExceptionHandler {
 ```
 >
 >
-> 이를 해결하기 위해 Exception은 BaseException 과 상태 코드 별로 BaseException을 상속받아 따로 정의해 준 예외들을 정의해 줌으로써 hierarchy 구조로 리팩토링했습니다. 리팩토링을 할 때 초기 시간적 비용이 들어가긴 했지만, 장기적으로 봤을 때 예외를 하나 추가할 때마다 드는 반복적인 작업 시간이 줄어들었고, 아래와 같이 핸들러에서 포괄적으로 처리해 줌으로써 예외 처리가 편리해졌습니다.
+> 이를 해결하기 위해 Exception은 BaseException 과 상태 코드 별로 BaseException을 상속받은 예외들을 정의해 줌으로써 hierarchy 구조로 리팩토링했습니다. 리팩토링을 할 때 초기 시간적 비용이 들어가긴 했지만, 장기적으로 봤을 때 예외를 하나 추가할 때마다 드는 반복적인 작업 시간이 줄어들었고, 아래와 같이 핸들러에서 포괄적으로 처리해 줌으로써 예외 처리가 편리해졌습니다.
 
 - 수정된 예외 핸들러 코드
 
