@@ -251,6 +251,7 @@ main
 
 <details>
     <summary> 🧷 펼쳐보기 </summary>
+	
 ![image](https://github.com/f-lab-edu/payment-system/assets/98700133/69e3bc8e-3ccc-4804-b257-1306b2c65633)
 	
 ![image](https://github.com/f-lab-edu/payment-system/assets/98700133/a7f420fa-2845-4357-9709-cb78c48ab052)
