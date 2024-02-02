@@ -1,9 +1,9 @@
 package flab.payment_system.domain.user.service;
 
-import flab.payment_system.domain.session.service.SessionService;
-import flab.payment_system.domain.mail.service.MailService;
-import flab.payment_system.domain.user.domain.User;
-import flab.payment_system.domain.user.domain.UserVerification;
+import flab.payment_system.adapter.MailAdapter;
+import flab.payment_system.adapter.SessionAdapter;
+import flab.payment_system.domain.user.entity.User;
+import flab.payment_system.domain.user.entity.UserVerification;
 import flab.payment_system.domain.user.dto.UserConfirmVerificationNumberDto;
 import flab.payment_system.domain.user.dto.UserDto;
 import flab.payment_system.domain.user.dto.UserSignUpDto;
@@ -32,11 +32,12 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserService {
 
-	private final MailService mailService;
+	private final MailAdapter mailAdapter;
+
+	private final SessionAdapter sessionAdapter;
 
 	private final UserRepository userRepository;
 	private final UserVerificationRepository userVerificationRepository;
-	private final SessionService sessionService;
 	private final PasswordEncoder passwordEncoder;
 
 	public void signUpUser(UserSignUpDto userSignUpDto) {
@@ -106,9 +107,9 @@ public class UserService {
 
 		int verificationNumber = (random.nextInt(900000) + 100000) % 1000000;
 
-		mailService.sendMail(userVerifyEmailDto.email(),
+		mailAdapter.sendMail(userVerifyEmailDto.email(),
 			"[payment_system] 회원가입을 위한 인증번호 메일입니다.",
-			mailService.setContextForSendValidationNumber(String.valueOf(verificationNumber)));
+			mailAdapter.setContextForSendValidationNumber(String.valueOf(verificationNumber)));
 
 		return verificationNumber;
 	}
@@ -142,7 +143,7 @@ public class UserService {
 	}
 
 	public void signInUser(UserDto userDto, HttpSession session) {
-		if (sessionService.getUserId(session).isPresent()) {
+		if (sessionAdapter.getUserId(session).isPresent()) {
 			throw new UserAlreadySignInConflictException();
 		}
 
@@ -157,15 +158,15 @@ public class UserService {
 			throw new UserPasswordFailBadRequestException();
 		}
 
-		sessionService.setUserId(session, user.getUserId());
+		sessionAdapter.setUserId(session, user.getUserId());
 	}
 
 	public void signOutUser(HttpSession session) {
 		getUserId(session);
-		sessionService.invalidate(session);
+		sessionAdapter.invalidate(session);
 	}
 
 	public long getUserId(HttpSession session) {
-		return sessionService.getUserId(session).orElseThrow(UserNotSignInedConflictException::new);
+		return sessionAdapter.getUserId(session).orElseThrow(UserNotSignInedConflictException::new);
 	}
 }

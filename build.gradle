@@ -67,6 +67,8 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.junit.jupiter:junit-jupiter-api'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+
+    implementation group: 'com.google.guava', name: 'guava', version: '31.0.1-jre'
 }
 
 tasks.named('test') {
