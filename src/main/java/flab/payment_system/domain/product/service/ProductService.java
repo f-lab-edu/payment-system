@@ -38,18 +38,13 @@ public class ProductService {
 		if (product.getStock() - quantity < 0) {
 			throw new ProductSoldOutException();
 		}
-		productRepository.updateDecreaseStock(productId,
-			quantity);
+		product.setStock(product.getStock()-quantity);
 	}
 
 	@Transactional
 	public void increaseStock(Long productId, Integer quantity) {
 		Product product = productRepository.findById(productId).orElseThrow(
 			ProductNotExistBadRequestException::new);
-		if (product.getStock() - quantity < 0) {
-			throw new ProductSoldOutException();
-		}
-		productRepository.updateIncreaseStock(productId,
-			quantity);
+		product.setStock(product.getStock()+quantity);
 	}
 }

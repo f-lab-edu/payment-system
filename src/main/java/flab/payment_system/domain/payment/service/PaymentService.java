@@ -51,8 +51,7 @@ public class PaymentService {
 			requestUrl, orderId, payment.getPaymentId(), orderProductDto.productId());
 		paymentReadyDto.setPaymentId(payment.getPaymentId());
 
-		paymentRepository.updatePaymentKeyByPaymentId(
-			payment.getPaymentId(), paymentReadyDto.getPaymentKey());
+		payment.setPaymentKey(paymentReadyDto.getPaymentKey());
 
 		return paymentReadyDto;
 	}

@@ -6,6 +6,4 @@ public interface PaymentCustomRepository {
 
 	long updatePaymentStateByOrderId(long paymentId, Integer state);
 
-	long updatePaymentKeyByPaymentId(long paymentId, String paymentKey);
-
 }
