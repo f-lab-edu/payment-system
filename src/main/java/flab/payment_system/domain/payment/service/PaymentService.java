@@ -58,6 +58,7 @@ public class PaymentService {
 	}
 
 	// redissonLockService 에 @Transactional
+	@Transactional
 	public PaymentApprovalDto approvePayment(String pgToken, long orderId, long userId,
 		long paymentId) {
 
