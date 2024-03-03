@@ -37,7 +37,6 @@ public class OrderController {
 	private final ProductAdapter productAdapter;
 
 	@PostMapping("/{pgCompany}")
-	@Transactional
 	public ResponseEntity<PaymentReadyDto> orderProductRequest(
 		@PathVariable PaymentPgCompany pgCompany,
 		@RequestBody @Valid OrderProductDto orderProductDto,
