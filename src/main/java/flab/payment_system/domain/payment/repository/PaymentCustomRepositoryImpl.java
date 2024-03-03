@@ -31,15 +31,4 @@ public class PaymentCustomRepositoryImpl implements PaymentCustomRepository {
 			.set(payment.state, state)
 			.where(payment.orderId.eq(orderId)).execute();
 	}
-
-	@Override
-	@Transactional
-	@Modifying(clearAutomatically = true)
-	public long updatePaymentKeyByPaymentId(long paymentId, String paymentKey) {
-		return jpaQueryFactory.update(payment)
-			.set(payment.paymentKey, paymentKey)
-			.where(payment.paymentId.eq(paymentId)).execute();
-
-
-	}
 }

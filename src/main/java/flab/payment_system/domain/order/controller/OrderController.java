@@ -36,8 +36,8 @@ public class OrderController {
 	private final UserAdapter userAdapter;
 	private final ProductAdapter productAdapter;
 
-	@PostMapping("/{pgCompany}")
 	@Transactional
+	@PostMapping("/{pgCompany}")
 	public ResponseEntity<PaymentReadyDto> orderProductRequest(
 		@PathVariable PaymentPgCompany pgCompany,
 		@RequestBody @Valid OrderProductDto orderProductDto,
@@ -59,11 +59,8 @@ public class OrderController {
 		return ResponseEntity.ok().body(paymentReadyDto);
 	}
 
-	/*
-	 paymentService.orderCancel() 작업은 성공하고 productService.increaseStock()은 실패했을 때,
-	 이미 PG 사에 취소 처리 된 것이기 때문에 transaction 처리하지 않음
-	 */
 
+	@Transactional
 	@PostMapping("/{pgCompany}/cancel")
 	public ResponseEntity<PaymentCancelDto> orderCancel(
 		@PathVariable PaymentPgCompany pgCompany,

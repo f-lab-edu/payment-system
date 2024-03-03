@@ -5,6 +5,7 @@ import flab.payment_system.domain.product.dto.ProductDto;
 import flab.payment_system.domain.product.exception.ProductNotExistBadRequestException;
 import flab.payment_system.domain.product.exception.ProductSoldOutException;
 import flab.payment_system.domain.product.repository.ProductRepository;
+import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -30,23 +31,20 @@ public class ProductService {
 		}
 	}
 
+	@Transactional
 	public void decreaseStock(Long productId, Integer quantity) {
 		Product product = productRepository.findById(productId).orElseThrow(
 			ProductNotExistBadRequestException::new);
 		if (product.getStock() - quantity < 0) {
 			throw new ProductSoldOutException();
 		}
-		productRepository.updateDecreaseStock(productId,
-			quantity);
+		product.setStock(product.getStock()-quantity);
 	}
 
+	@Transactional
 	public void increaseStock(Long productId, Integer quantity) {
 		Product product = productRepository.findById(productId).orElseThrow(
 			ProductNotExistBadRequestException::new);
-		if (product.getStock() - quantity < 0) {
-			throw new ProductSoldOutException();
-		}
-		productRepository.updateIncreaseStock(productId,
-			quantity);
+		product.setStock(product.getStock()+quantity);
 	}
 }

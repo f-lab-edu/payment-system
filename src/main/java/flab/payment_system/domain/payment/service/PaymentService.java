@@ -15,6 +15,7 @@ import flab.payment_system.domain.payment.service.toss.PaymentStrategyTossServic
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
 
 
@@ -36,6 +37,7 @@ public class PaymentService {
 		}
 	}
 
+	@Transactional
 	public PaymentReadyDto createPayment(OrderProductDto orderProductDto,
 		String requestUrl, long userId, long orderId, PaymentPgCompany paymentPgCompany) {
 
@@ -49,12 +51,12 @@ public class PaymentService {
 			requestUrl, orderId, payment.getPaymentId(), orderProductDto.productId());
 		paymentReadyDto.setPaymentId(payment.getPaymentId());
 
-		paymentRepository.updatePaymentKeyByPaymentId(
-			payment.getPaymentId(), paymentReadyDto.getPaymentKey());
+		payment.setPaymentKey(paymentReadyDto.getPaymentKey());
 
 		return paymentReadyDto;
 	}
 
+	@Transactional
 	public PaymentApprovalDto approvePayment(String pgToken, long orderId, long userId,
 		long paymentId) {
 
@@ -77,6 +79,7 @@ public class PaymentService {
 			PaymentStateConstant.FAIL.getValue());
 	}
 
+	@Transactional
 	public PaymentCancelDto orderCancel(OrderCancelDto orderCancelDto) {
 		PaymentCancelDto paymentCancelDto = paymentStrategy.cancelPayment(orderCancelDto);
 
