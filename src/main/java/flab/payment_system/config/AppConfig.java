@@ -81,7 +81,7 @@ public class AppConfig {
 		return HttpClientBuilder.create()
 			.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
 				.setMaxConnPerRoute(30)
-				.setMaxConnTotal(100)
+				.setMaxConnTotal(60)
 				.build())
 			.build();
 	}
