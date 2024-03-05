@@ -51,12 +51,12 @@ public class PaymentServiceIntegrationTest {
 		@Test
 		public void createKakaoPaymentSuccess() {
 			// given
-			long userId = 1;
+			Long userId = 1L;
 			PaymentPgCompany pgCompany = PaymentPgCompany.KAKAO;
-			OrderProductDto orderProductDto = new OrderProductDto("초코파이", 1, 2, 5000, 5000, 0);
+			OrderProductDto orderProductDto = new OrderProductDto("초코파이", 1L, 2, 5000, 5000, 0);
 
 			// when
-			long orderId = orderService.orderProduct(orderProductDto, userId);
+			Long orderId = orderService.orderProduct(orderProductDto, userId);
 			paymentService.setStrategy(pgCompany);
 			PaymentKakaoReadyDtoImpl paymentReadyDto = (PaymentKakaoReadyDtoImpl) paymentService.createPayment(
 				orderProductDto, requestUrl,
@@ -72,12 +72,12 @@ public class PaymentServiceIntegrationTest {
 		@Test
 		public void createTossPaymentSuccess() {
 			// given
-			long userId = 1;
+			Long userId = 1L;
 			PaymentPgCompany pgCompany = PaymentPgCompany.TOSS;
-			OrderProductDto orderProductDto = new OrderProductDto("초코파이", 1, 2, 5000, 5000, 0);
+			OrderProductDto orderProductDto = new OrderProductDto("초코파이", 1L, 2, 5000, 5000, 0);
 
 			// when
-			long orderId = orderService.orderProduct(orderProductDto, userId);
+			Long orderId = orderService.orderProduct(orderProductDto, userId);
 			paymentService.setStrategy(pgCompany);
 			PaymentTossDtoImpl paymentReadyDto = (PaymentTossDtoImpl) paymentService.createPayment(
 				orderProductDto, requestUrl,
