@@ -36,7 +36,6 @@ public class PaymentTossRequestBodyFactory {
 		HttpHeaders headers = getHeaders();
 		Map<String, String> params = new HashMap<>();
 
-		params.put("apiKey", secretKey);
 		params.put("method", "간편결제");
 		params.put("taxFreeAmount", String.valueOf(orderProductDto.taxFreeAmount()));
 		params.put("orderId", "orderId_" + orderId + "_" + userId);
