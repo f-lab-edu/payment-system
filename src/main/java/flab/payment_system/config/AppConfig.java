@@ -5,12 +5,14 @@ import flab.payment_system.common.enums.Constant;
 import flab.payment_system.common.filter.ExceptionHandlerFilter;
 import flab.payment_system.common.filter.SignInCheckFilter;
 import flab.payment_system.session.service.SessionService;
-import java.time.Duration;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.apache.hc.client5.http.classic.HttpClient;
+import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.client5.http.impl.io.PoolingHttpClientConnectionManagerBuilder;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -74,12 +76,29 @@ public class AppConfig {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(10);
 	}
-
 	@Bean
-	public RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
-		return restTemplateBuilder
-			.setConnectTimeout(Duration.ofSeconds(5))
-			.setReadTimeout(Duration.ofSeconds(3))
+	HttpClient httpClient() {
+		return HttpClientBuilder.create()
+			.setConnectionManager(PoolingHttpClientConnectionManagerBuilder.create()
+				.setMaxConnPerRoute(30)
+				.setMaxConnTotal(100)
+				.build())
 			.build();
 	}
+
+	@Bean
+	HttpComponentsClientHttpRequestFactory factory(HttpClient httpClient) {
+		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
+		factory.setConnectTimeout(3000);
+		factory.setHttpClient(httpClient);
+
+		return factory;
+	}
+
+	@Bean
+	RestTemplate restTemplate(HttpComponentsClientHttpRequestFactory factory) {
+		return new RestTemplate(factory);
+	}
+
+
 }
