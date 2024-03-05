@@ -21,7 +21,7 @@ public class ProductController {
 	private final ProductService productService;
 
 	@GetMapping("/{productId}")
-	public ResponseEntity<ProductDto> getProductDetail(@PathVariable int productId) {
+	public ResponseEntity<ProductDto> getProductDetail(@PathVariable Long productId) {
 		ProductDto productDto = productService.getProductDetail(productId);
 
 		return ResponseEntity.ok().body(productDto);

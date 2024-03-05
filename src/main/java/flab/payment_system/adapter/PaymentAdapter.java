@@ -17,8 +17,8 @@ public class PaymentAdapter {
 
 	private final PaymentService paymentService;
 
-	public PaymentApprovalDto approvePayment(String pgToken, long orderId, long userId,
-		long paymentId) {
+	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId,
+		Long paymentId) {
 		return paymentService.approvePayment(pgToken, orderId, userId, paymentId);
 	}
 
@@ -27,7 +27,7 @@ public class PaymentAdapter {
 	}
 
 	public PaymentReadyDto createPayment(OrderProductDto orderProductDto, String requestUrl,
-		long userId, long orderId, PaymentPgCompany pgCompany) {
+		Long userId, Long orderId, PaymentPgCompany pgCompany) {
 		return paymentService.createPayment(orderProductDto, requestUrl, userId, orderId,
 			pgCompany);
 	}
