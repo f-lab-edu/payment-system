@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
+@SpringBootTest(properties = {"spring.config.location=classpath:application-test.yml"})
 public class OrderProductServiceIntegrationTest {
 
 	@Autowired
@@ -33,10 +33,10 @@ public class OrderProductServiceIntegrationTest {
 	@Test
 	public void orderProductSuccess() {
 		// given
-		long userId = 1;
-		OrderProductDto orderProductDto = new OrderProductDto("초코파이", 1, 2, 5000, 5000, 0);
+		Long userId = 1L;
+		OrderProductDto orderProductDto = new OrderProductDto("초코파이", 1L, 2, 5000, 5000, 0);
 		// when
-		long orderId = orderService.orderProduct(orderProductDto, userId);
+		Long orderId = orderService.orderProduct(orderProductDto, userId);
 		OrderProduct orderProduct = orderRepository.findById(orderId).orElse(null);
 		// then
 		Assertions.assertEquals(orderId, orderProduct.getOrderId());

@@ -4,11 +4,11 @@ import jakarta.validation.constraints.Min;
 
 public record ProductDto(
 	@Min(value = 1, message = "invalid_product_id")
-	long productId,
+	Long productId,
 	String name,
 	@Min(value = 1, message = "invalid_price")
-	long price,
+	Integer price,
 	@Min(value = 1, message = "invalid_stock")
-	long stock) {
+	Integer stock) {
 
 }

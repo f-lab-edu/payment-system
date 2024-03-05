@@ -38,8 +38,8 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 	}
 
 	@Override
-	public PaymentReadyDto createPayment(OrderProductDto orderProductDto, long userId,
-		String requestUrl, long orderId, long paymentId, long productId) {
+	public PaymentReadyDto createPayment(OrderProductDto orderProductDto,Long userId,
+		String requestUrl, Long orderId, Long paymentId, Long productId) {
 
 		HttpEntity<MultiValueMap<String, String>> body = paymentKakaoRequestBodyFactory.getBodyForCreatePayment(
 			orderProductDto, userId, requestUrl, orderId, paymentId, productId);
@@ -48,8 +48,8 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 	}
 
 	@Override
-	public PaymentApprovalDto approvePayment(String pgToken, long orderId, long userId,
-		long paymentId) {
+	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId,
+		Long paymentId) {
 		HttpEntity<MultiValueMap<String, String>> body = paymentKakaoRequestBodyFactory.getBodyForApprovePayment(
 			pgToken, orderId,
 			userId, paymentId);

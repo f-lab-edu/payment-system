@@ -31,12 +31,11 @@ public class PaymentTossRequestBodyFactory {
 
 
 	public HttpEntity<Map<String, String>> getBodyForCreatePayment(
-		OrderProductDto orderProductDto, long userId, String requestUrl, long orderId,
-		long paymentId, long productId) {
+		OrderProductDto orderProductDto, Long userId, String requestUrl, Long orderId,
+		Long paymentId, Long productId) {
 		HttpHeaders headers = getHeaders();
 		Map<String, String> params = new HashMap<>();
 
-		params.put("apiKey", secretKey);
 		params.put("method", "간편결제");
 		params.put("taxFreeAmount", String.valueOf(orderProductDto.taxFreeAmount()));
 		params.put("orderId", "orderId_" + orderId + "_" + userId);
@@ -57,7 +56,7 @@ public class PaymentTossRequestBodyFactory {
 	}
 
 	public HttpEntity<Map<String, String>> getBodyForApprovePayment(
-		long orderId, long userId, long paymentId) {
+		Long orderId, Long userId, Long paymentId) {
 		HttpHeaders headers = getHeaders();
 
 		Map<String, String> params = new HashMap<>();

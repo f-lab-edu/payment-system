@@ -41,7 +41,7 @@ public class PaymentKakaoRequestBodyFactory {
 
 	public HttpEntity<MultiValueMap<String, String>> getBodyForCreatePayment(
 		OrderProductDto orderProductDto,
-		long userId, String requestUrl, long orderId, long paymentId, long productId) {
+		Long userId, String requestUrl, Long orderId, Long paymentId, Long productId) {
 		HttpHeaders headers = getHeaders();
 
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -71,7 +71,7 @@ public class PaymentKakaoRequestBodyFactory {
 	}
 
 	public HttpEntity<MultiValueMap<String, String>> getBodyForApprovePayment(String pgToken,
-		long orderId, long userId, long paymentId) {
+		Long orderId, Long userId, Long paymentId) {
 		HttpHeaders headers = getHeaders();
 
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();

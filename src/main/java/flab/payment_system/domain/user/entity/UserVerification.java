@@ -22,7 +22,7 @@ public class UserVerification {
 	private boolean isVerified;
 
 	@Builder
-	public UserVerification(Long verificationId, Long userId, String email,
+	public UserVerification(Long verificationId, String email,
 		Integer verificationNumber,
 		boolean isVerified) {
 		this.verificationId = verificationId;

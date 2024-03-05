@@ -69,6 +69,7 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
 
     implementation group: 'com.google.guava', name: 'guava', version: '31.0.1-jre'
+    implementation 'org.apache.httpcomponents.client5:httpclient5:5.2.1'
 }
 
 tasks.named('test') {

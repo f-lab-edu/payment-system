@@ -166,7 +166,7 @@ public class UserService {
 		sessionAdapter.invalidate(session);
 	}
 
-	public long getUserId(HttpSession session) {
+	public Long getUserId(HttpSession session) {
 		return sessionAdapter.getUserId(session).orElseThrow(UserNotSignInedConflictException::new);
 	}
 }

@@ -10,7 +10,7 @@ public class ProductAdapter {
 
 	private final ProductService productService;
 
-	public void checkRemainStock(long productId) {
+	public void checkRemainStock(Long productId) {
 		productService.checkRemainStock(productId);
 	}
 
@@ -18,7 +18,7 @@ public class ProductAdapter {
 		productService.decreaseStock(productId, quantity);
 	}
 
-	public void increaseStock(long productId, Integer quantity) {
+	public void increaseStock(Long productId, Integer quantity) {
 		productService.increaseStock(productId, quantity);
 	}
 }

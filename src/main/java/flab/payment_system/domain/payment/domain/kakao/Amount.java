@@ -13,12 +13,12 @@ import lombok.Setter;
 @Embeddable
 public class Amount {
 
-	private int total;
+	private Integer total;
 	@Column(name = "tax_free")
-	private int taxFree;
-	private int tax;
-	private int point;
-	private int discount;
+	private Integer taxFree;
+	private Integer tax;
+	private Integer point;
+	private Integer discount;
 	@Column(name = "green_deposit")
-	private int greenDeposit;
+	private Integer greenDeposit;
 }

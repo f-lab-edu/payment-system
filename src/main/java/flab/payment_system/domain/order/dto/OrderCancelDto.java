@@ -9,9 +9,9 @@ public record OrderCancelDto(
 	@Min(value = 1, message = "invalid_cancel_tax_free_amount")
 	Integer cancelTaxFreeAmount,
 	@Min(value = 1, message = "invalid_order_id")
-	long orderId,
+	Long orderId,
 	@Min(value = 1, message = "invalid_product_id")
-	long productId,
+	Long productId,
 	@Min(value = 1, message = "invalid_quantity")
 	Integer quantity
 ) {

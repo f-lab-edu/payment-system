@@ -16,14 +16,14 @@ public class ProductService {
 	private final ProductRepository productRepository;
 
 
-	public ProductDto getProductDetail(long productId) {
+	public ProductDto getProductDetail(Long productId) {
 		Product product = productRepository.findById(productId).orElseThrow(
 			ProductNotExistBadRequestException::new);
 		return new ProductDto(product.getProductId(), product.getName(), product.getPrice(),
 			product.getStock());
 	}
 
-	public void checkRemainStock(long productId) {
+	public void checkRemainStock(Long productId) {
 		Product product = productRepository.findById(productId).orElseThrow(
 			ProductNotExistBadRequestException::new);
 		if (product.getStock() == 0) {

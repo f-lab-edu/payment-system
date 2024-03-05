@@ -9,10 +9,10 @@ import flab.payment_system.domain.payment.response.PaymentReadyDto;
 
 public interface PaymentStrategy {
 
-	PaymentReadyDto createPayment(OrderProductDto orderProductDto, long userId, String requestUrl,
-		long orderId, long paymentId, long productId);
+	PaymentReadyDto createPayment(OrderProductDto orderProductDto, Long userId, String requestUrl,
+		Long orderId, Long paymentId, Long productId);
 
-	PaymentApprovalDto approvePayment(String pgToken, long orderId, long userId, long paymentId);
+	PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId, Long paymentId);
 
 	PaymentCancelDto cancelPayment(OrderCancelDto orderCancelDto);
 

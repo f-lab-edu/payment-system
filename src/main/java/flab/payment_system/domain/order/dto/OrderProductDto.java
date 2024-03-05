@@ -6,9 +6,9 @@ import java.util.Optional;
 public record OrderProductDto(
 	String productName,
 	@Min(value = 1, message = "invalid_product_id")
-	long productId,
+	Long productId,
 	@Min(value = 1, message = "invalid_quantity")
-	int quantity,
+	Integer quantity,
 	@Min(value = 1, message = "invalid_total_amount")
 	Integer totalAmount,
 	@Min(value = 1, message = "invalid_tax_free_amount")

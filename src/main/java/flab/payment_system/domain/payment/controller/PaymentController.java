@@ -33,7 +33,7 @@ public class PaymentController {
 		@RequestParam("quantity") Integer quantity,
 		HttpSession session) {
 		paymentService.setStrategy(pgCompany);
-		long userId = userAdapter.getUserId(session);
+		Long userId = userAdapter.getUserId(session);
 		PaymentApprovalDto paymentApprovalDto = redissonLockAdapter.approvePayment(pgToken, orderId,
 			userId, paymentId, productId, quantity);
 

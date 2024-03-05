@@ -43,16 +43,16 @@ public class PaymentStrategyTossService implements PaymentStrategy {
 
 
 	@Override
-	public PaymentReadyDto createPayment(OrderProductDto orderProductDto, long userId,
-		String requestUrl, long orderId, long paymentId, long productId) {
+	public PaymentReadyDto createPayment(OrderProductDto orderProductDto, Long userId,
+		String requestUrl, Long orderId, Long paymentId, Long productId) {
 		HttpEntity<Map<String, String>> body = paymentTossRequestBodyFactory.getBodyForCreatePayment(
 			orderProductDto, userId, requestUrl, orderId, paymentId, productId);
 		return paymentTossClient.createPayment(tossHost, body);
 	}
 
 	@Override
-	public PaymentApprovalDto approvePayment(String pgToken, long orderId, long userId,
-		long paymentId) {
+	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId,
+		Long paymentId) {
 		HttpEntity<Map<String, String>> body = paymentTossRequestBodyFactory.getBodyForApprovePayment(
 			orderId, userId, paymentId);
 		PaymentTossDtoImpl paymentTossDto = paymentTossClient.approvePayment(tossHost + "/confirm",

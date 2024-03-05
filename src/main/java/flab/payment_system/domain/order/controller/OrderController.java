@@ -45,11 +45,11 @@ public class OrderController {
 		String requestUrl = request.getRequestURL().toString()
 			.replace(request.getRequestURI(), "");
 
-		long userId = userAdapter.getUserId(session);
+		Long userId = userAdapter.getUserId(session);
 
 		productAdapter.checkRemainStock(orderProductDto.productId());
 
-		long orderId = orderService.orderProduct(orderProductDto, userId);
+		Long orderId = orderService.orderProduct(orderProductDto, userId);
 
 		paymentAdapter.setStrategy(pgCompany);
 		PaymentReadyDto paymentReadyDto = paymentAdapter.createPayment(orderProductDto, requestUrl,
