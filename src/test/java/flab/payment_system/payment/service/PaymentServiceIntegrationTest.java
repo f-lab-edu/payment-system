@@ -9,14 +9,13 @@ import flab.payment_system.domain.payment.repository.PaymentRepository;
 import flab.payment_system.domain.payment.response.kakao.PaymentKakaoReadyDtoImpl;
 import flab.payment_system.domain.payment.response.toss.PaymentTossDtoImpl;
 import flab.payment_system.domain.payment.service.PaymentService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(properties = {"spring.config.location=classpath:application-test.yml"})
 public class PaymentServiceIntegrationTest {

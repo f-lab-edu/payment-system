@@ -1,9 +1,12 @@
 package flab.payment_system.domain.product.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import flab.payment_system.domain.product.entity.Product;
 import flab.payment_system.domain.product.entity.QProduct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Repository

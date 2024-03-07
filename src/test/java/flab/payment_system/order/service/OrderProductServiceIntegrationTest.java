@@ -5,12 +5,13 @@ import flab.payment_system.domain.order.entity.OrderProduct;
 import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.order.repository.OrderRepository;
 import flab.payment_system.domain.order.service.OrderService;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import flab.payment_system.domain.product.entity.Product;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(properties = {"spring.config.location=classpath:application-test.yml"})
 public class OrderProductServiceIntegrationTest {
