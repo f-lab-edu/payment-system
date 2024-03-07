@@ -11,4 +11,17 @@ public class ProductCustomRepositoryImpl implements ProductCustomRepository {
 
 	private final JPAQueryFactory jpaQueryFactory;
 	private final QProduct product = QProduct.product;
+
+	@Override
+	public List<Product> findByCursor(Long lastProductId, long size) {
+		var query = jpaQueryFactory.selectFrom(product)
+			.orderBy(product.productId.desc())
+			.limit(size);
+
+		if (lastProductId != null) {
+			query.where(product.productId.lt(lastProductId));
+		}
+
+		return query.fetch();
+	}
 }

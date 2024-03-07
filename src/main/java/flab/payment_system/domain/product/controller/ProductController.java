@@ -20,6 +20,12 @@ public class ProductController {
 
 	private final ProductService productService;
 
+	@GetMapping
+	public List<ProductDto> getProductList(@RequestParam(required = false) Long lastProductId,
+										   @RequestParam(defaultValue = "5") long size) {
+		return productService.getProductList(lastProductId, size);
+	}
+
 	@GetMapping("/{productId}")
 	public ResponseEntity<ProductDto> getProductDetail(@PathVariable Long productId) {
 		ProductDto productDto = productService.getProductDetail(productId);
