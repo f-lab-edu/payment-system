@@ -20,17 +20,29 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest(properties = {"spring.config.location=classpath:application-test.yml"})
 public class UserServiceIntegrationTest {
 
-	@Autowired
-	private UserService userService;
+	private final UserService userService;
+
+	private final UserRepository userRepository;
+
+	private final UserVerificationRepository userVerificationRepository;
+
+	private final DatabaseCleanUp databaseCleanUp;
 
 	@Autowired
-	private UserRepository userRepository;
+	UserServiceIntegrationTest
+		(UserService userService, UserRepository userRepository,
+		 UserVerificationRepository userVerificationRepository, DatabaseCleanUp databaseCleanUp) {
+		this.userService = userService;
+		this.userRepository = userRepository;
+		this.userVerificationRepository = userVerificationRepository;
+		this.databaseCleanUp = databaseCleanUp;
 
-	@Autowired
-	private UserVerificationRepository userVerificationRepository;
+	}
 
-	@Autowired
-	private DatabaseCleanUp databaseCleanUp;
+	@BeforeEach
+	void setUp() {
+		databaseCleanUp.truncateAllEntity();
+	}
 
 	@AfterEach
 	void tearDown() {
@@ -49,7 +61,7 @@ public class UserServiceIntegrationTest {
 		UserVerificationDto userVerificationDto = userService.verifyUserEmail(userVerifyEmailDto);
 
 		// then
-		Assertions.assertEquals(userVerificationDto.email(), email);
+		assertEquals(userVerificationDto.email(), email);
 
 	}
 
@@ -70,7 +82,7 @@ public class UserServiceIntegrationTest {
 			userConfirmVerificationNumberDto);
 
 		// then
-		Assertions.assertEquals(isVerified, true);
+		assertTrue(isVerified);
 	}
 
 	@DisplayName("회원가입_성공")
@@ -97,7 +109,7 @@ public class UserServiceIntegrationTest {
 		User user = userRepository.findByEmail(email).orElse(null);
 
 		// then
-		Assertions.assertEquals(email, user.getEmail());
-		Assertions.assertNotNull(user);
+		assertEquals(email, user.getEmail());
+		assertNotNull(user);
 	}
 }

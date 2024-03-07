@@ -19,23 +19,31 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(properties = {"spring.config.location=classpath:application-test.yml"})
 public class PaymentServiceIntegrationTest {
+	private final PaymentService paymentService;
+	private final OrderService orderService;
+	private final PaymentRepository paymentRepository;
+	private final DatabaseCleanUp databaseCleanUp;
+
+	private final String requestUrl;
 
 	@Autowired
-	private PaymentService paymentService;
-	@Autowired
-	private OrderService orderService;
-	@Autowired
-	private PaymentRepository paymentRepository;
+	PaymentServiceIntegrationTest
+		(PaymentService paymentService, OrderService orderService,
+		 @Value("${test-url}") String requestUrl, PaymentRepository paymentRepository,
+		 DatabaseCleanUp databaseCleanUp) {
+		this.paymentService = paymentService;
+		this.orderService = orderService;
+		this.requestUrl = requestUrl;
+		this.paymentRepository = paymentRepository;
+		this.databaseCleanUp = databaseCleanUp;
 
-	@Autowired
-	private DatabaseCleanUp databaseCleanUp;
-
-	private static String requestUrl;
-
-	@BeforeAll
-	public static void setUp() {
-		requestUrl = "http://localhost:8080";
 	}
+
+	@BeforeEach
+	void setUp() {
+		databaseCleanUp.truncateAllEntity();
+	}
+
 
 	@AfterEach
 	void tearDown() {
@@ -63,8 +71,8 @@ public class PaymentServiceIntegrationTest {
 			Payment payment = paymentRepository.findByOrderId(orderId).orElse(null);
 
 			// then
-			Assertions.assertEquals(paymentReadyDto.getPaymentId(), payment.getPaymentId());
-			Assertions.assertNotNull(payment);
+			assertEquals(paymentReadyDto.getPaymentId(), payment.getPaymentId());
+			assertNotNull(payment);
 		}
 
 		@DisplayName("pg_toss")
@@ -84,8 +92,8 @@ public class PaymentServiceIntegrationTest {
 			Payment payment = paymentRepository.findByOrderId(orderId).orElse(null);
 
 			// then
-			Assertions.assertEquals(paymentReadyDto.getPaymentId(), payment.getPaymentId());
-			Assertions.assertNotNull(payment);
+			assertEquals(paymentReadyDto.getPaymentId(), payment.getPaymentId());
+			assertNotNull(payment);
 		}
 	}
 }

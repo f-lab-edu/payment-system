@@ -16,13 +16,25 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @SpringBootTest(properties = {"spring.config.location=classpath:application-test.yml"})
 public class OrderProductServiceIntegrationTest {
 
-	@Autowired
-	private OrderService orderService;
-	@Autowired
-	private OrderRepository orderRepository;
+	private final OrderService orderService;
+	private final OrderRepository orderRepository;
+
+	private final DatabaseCleanUp databaseCleanUp;
 
 	@Autowired
-	private DatabaseCleanUp databaseCleanUp;
+	OrderProductServiceIntegrationTest
+		(OrderService orderService, OrderRepository orderRepository,
+		 DatabaseCleanUp databaseCleanUp) {
+		this.orderService = orderService;
+		this.orderRepository = orderRepository;
+		this.databaseCleanUp = databaseCleanUp;
+
+	}
+
+	@BeforeEach
+	void setUp() {
+		databaseCleanUp.truncateAllEntity();
+	}
 
 	@AfterEach
 	void tearDown() {
@@ -40,10 +52,10 @@ public class OrderProductServiceIntegrationTest {
 		Long orderId = orderService.orderProduct(orderProductDto, userId);
 		OrderProduct orderProduct = orderRepository.findById(orderId).orElse(null);
 		// then
-		Assertions.assertEquals(orderId, orderProduct.getOrderId());
-		Assertions.assertEquals(orderProductDto.productId(), orderProduct.getProductId());
-		Assertions.assertEquals(userId, orderProduct.getUserId());
-		Assertions.assertEquals(orderProductDto.quantity(), orderProduct.getQuantity());
-		Assertions.assertNotNull(orderProduct);
+		assertEquals(orderId, orderProduct.getOrderId());
+		assertEquals(orderProductDto.productId(), orderProduct.getProductId());
+		assertEquals(userId, orderProduct.getUserId());
+		assertEquals(orderProductDto.quantity(), orderProduct.getQuantity());
+		assertNotNull(orderProduct);
 	}
 }
