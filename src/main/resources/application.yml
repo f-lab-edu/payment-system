@@ -31,6 +31,9 @@ spring:
           ssl:
             enable: true
             trust: ${SMTP_HOST}
+  cache:
+    type: redis
+
 server:
   shutdown: graceful
 

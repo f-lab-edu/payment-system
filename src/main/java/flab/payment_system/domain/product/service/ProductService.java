@@ -5,6 +5,7 @@ import flab.payment_system.domain.product.dto.ProductDto;
 import flab.payment_system.domain.product.exception.ProductNotExistBadRequestException;
 import flab.payment_system.domain.product.exception.ProductSoldOutException;
 import flab.payment_system.domain.product.repository.ProductRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,6 +19,8 @@ public class ProductService {
 
 	private final ProductRepository productRepository;
 
+
+	@Cacheable(value = "productListCache", key = "#root.methodName + '_' + #lastProductId + '_' + #size", cacheManager = "cacheManager")
 	public List<ProductDto> getProductList(Long lastProductId, long size) {
 		List<Product> products = productRepository.findByCursor(lastProductId, size);
 		return products.stream()
