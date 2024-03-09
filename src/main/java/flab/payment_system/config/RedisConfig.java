@@ -22,6 +22,7 @@ import java.time.Duration;
 
 @EnableRedisHttpSession(maxInactiveIntervalInSeconds = 7200)
 @EnableRedisRepositories
+@EnableCaching
 @Configuration
 public class RedisConfig {
 
@@ -50,5 +51,18 @@ public class RedisConfig {
 		configuration.setPort(port);
 		configuration.setPassword(password);
 		return new LettuceConnectionFactory(configuration);
+	}
+
+	@Bean
+	public CacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
+		RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
+			.entryTtl(Duration.ofHours(12))
+			.disableCachingNullValues()
+			.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+			.serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+
+		return RedisCacheManager.builder(RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory))
+			.cacheDefaults(cacheConfiguration)
+			.build();
 	}
 }
