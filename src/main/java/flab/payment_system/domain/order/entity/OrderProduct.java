@@ -1,17 +1,13 @@
 package flab.payment_system.domain.order.entity;
 
 import flab.payment_system.common.data.BaseEntity;
+import flab.payment_system.domain.product.entity.Product;
+import flab.payment_system.domain.user.entity.User;
 import jakarta.annotation.Nonnull;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Getter
 @NoArgsConstructor

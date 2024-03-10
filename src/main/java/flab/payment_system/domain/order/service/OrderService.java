@@ -1,12 +1,13 @@
 package flab.payment_system.domain.order.service;
 
+import flab.payment_system.adapter.OrderAdapter;
 import flab.payment_system.domain.order.entity.OrderProduct;
 import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.order.repository.OrderRepository;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @RequiredArgsConstructor

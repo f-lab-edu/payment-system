@@ -39,7 +39,7 @@ public class PaymentService {
 
 	@Transactional
 	public PaymentReadyDto createPayment(OrderProductDto orderProductDto,
-		String requestUrl, Long userId, Long orderId, PaymentPgCompany paymentPgCompany) {
+										 String requestUrl, Long userId, Long orderId, PaymentPgCompany paymentPgCompany) {
 
 		Payment payment = paymentRepository.save(
 			Payment.builder().orderId(orderId).state(PaymentStateConstant.ONGOING.getValue())
@@ -57,8 +57,7 @@ public class PaymentService {
 	}
 
 	@Transactional
-	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId,
-		Long paymentId) {
+	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId, Long paymentId) {
 
 		PaymentApprovalDto paymentApprovalDto = paymentStrategy.approvePayment(pgToken, orderId,
 			userId, paymentId);
@@ -67,11 +66,6 @@ public class PaymentService {
 			PaymentStateConstant.APPROVED.getValue());
 
 		return paymentApprovalDto;
-	}
-
-	public void cancelPayment(Long paymentId) {
-		paymentRepository.updatePaymentStateByPaymentId(paymentId,
-			PaymentStateConstant.CANCEL.getValue());
 	}
 
 	@Transactional

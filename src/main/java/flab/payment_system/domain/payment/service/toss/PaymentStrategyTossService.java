@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 
 @Component
@@ -30,8 +29,7 @@ public class PaymentStrategyTossService implements PaymentStrategy {
 	private final PaymentTossClient paymentTossClient;
 
 	public PaymentStrategyTossService(
-		@Value("${toss-host}") String tossHost
-		, RestTemplate restTemplate,
+		@Value("${toss-host}") String tossHost,
 		TossPaymentRepository tossPaymentRepository,
 		PaymentTossRequestBodyFactory paymentTossRequestBodyFactory,
 		PaymentTossClient paymentTossClient) {

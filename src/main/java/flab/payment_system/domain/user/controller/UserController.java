@@ -52,8 +52,7 @@ public class UserController {
 
 
 	@PostMapping("/sign-in")
-	public ResponseEntity<Object> signInUser(@RequestBody UserDto userDto, HttpSession session,
-		HttpServletRequest request) {
+	public ResponseEntity<Object> signInUser(@RequestBody UserDto userDto, HttpSession session) {
 
 		userService.signInUser(userDto, session);
 

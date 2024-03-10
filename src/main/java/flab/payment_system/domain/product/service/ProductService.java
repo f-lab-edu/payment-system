@@ -20,7 +20,6 @@ public class ProductService {
 
 	private final ProductRepository productRepository;
 
-
 	@Cacheable(value = "productListCache", key = "#root.methodName + '_' + #lastProductId + '_' + #size", cacheManager = "cacheManager")
 	public List<ProductDto> getProductList(Long lastProductId, long size) {
 		List<Product> products = productRepository.findByCursor(lastProductId, size);
