@@ -1,9 +1,7 @@
 package flab.payment_system.domain.order.controller;
 
 
-import flab.payment_system.adapter.PaymentAdapter;
-import flab.payment_system.adapter.ProductAdapter;
-import flab.payment_system.adapter.UserAdapter;
+import flab.payment_system.adapter.OrderAdapter;
 import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.order.service.OrderService;
@@ -32,9 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class OrderController {
 
 	private final OrderService orderService;
-	private final PaymentAdapter paymentAdapter;
-	private final UserAdapter userAdapter;
-	private final ProductAdapter productAdapter;
+	private final OrderAdapter orderAdapter;
 
 	@Transactional
 	@PostMapping("/{pgCompany}")
@@ -45,14 +41,14 @@ public class OrderController {
 		String requestUrl = request.getRequestURL().toString()
 			.replace(request.getRequestURI(), "");
 
-		Long userId = userAdapter.getUserId(session);
+		Long userId = orderAdapter.getUserId(session);
 
-		productAdapter.checkRemainStock(orderProductDto.productId());
+		orderAdapter.checkRemainStock(orderProductDto.productId());
 
 		Long orderId = orderService.orderProduct(orderProductDto, userId);
 
-		paymentAdapter.setStrategy(pgCompany);
-		PaymentReadyDto paymentReadyDto = paymentAdapter.createPayment(orderProductDto, requestUrl,
+		orderAdapter.setStrategy(pgCompany);
+		PaymentReadyDto paymentReadyDto = orderAdapter.createPayment(orderProductDto, requestUrl,
 			userId,
 			orderId, pgCompany);
 
@@ -65,9 +61,9 @@ public class OrderController {
 	public ResponseEntity<PaymentCancelDto> orderCancel(
 		@PathVariable PaymentPgCompany pgCompany,
 		@RequestBody @Valid OrderCancelDto orderCancelDto) {
-		paymentAdapter.setStrategy(pgCompany);
-		PaymentCancelDto paymentCancelDto = paymentAdapter.orderCancel(orderCancelDto);
-		productAdapter.increaseStock(orderCancelDto.productId(), orderCancelDto.quantity());
+		orderAdapter.setStrategy(pgCompany);
+		PaymentCancelDto paymentCancelDto = orderAdapter.orderCancel(orderCancelDto);
+		orderAdapter.increaseStock(orderCancelDto.productId(), orderCancelDto.quantity());
 
 		return ResponseEntity.ok().body(paymentCancelDto);
 	}
@@ -75,8 +71,8 @@ public class OrderController {
 	@GetMapping("/{pgCompany}")
 	public ResponseEntity<PaymentOrderDetailDto> getOrderDetail(
 		@PathVariable PaymentPgCompany pgCompany, @RequestParam String paymentKey) {
-		paymentAdapter.setStrategy(pgCompany);
-		PaymentOrderDetailDto paymentOrderDetailDto = paymentAdapter.getOrderDetail(paymentKey);
+		orderAdapter.setStrategy(pgCompany);
+		PaymentOrderDetailDto paymentOrderDetailDto = orderAdapter.getOrderDetail(paymentKey);
 		return ResponseEntity.ok().body(paymentOrderDetailDto);
 	}
 }

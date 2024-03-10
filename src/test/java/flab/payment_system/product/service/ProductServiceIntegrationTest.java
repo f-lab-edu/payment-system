@@ -11,11 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest(properties = {"spring.config.location=classpath:application-test.yml"})
 public class ProductServiceIntegrationTest {
@@ -39,6 +37,11 @@ public class ProductServiceIntegrationTest {
 	@BeforeEach
 	void setUp() {
 		databaseCleanUp.truncateAllEntity();
+		product = new Product();
+		product.setName("초코파이");
+		product.setPrice(1000);
+		product.setStock(100);
+		productRepository.save(product);
 	}
 
 	@AfterEach
@@ -108,13 +111,7 @@ public class ProductServiceIntegrationTest {
 	@DisplayName("상품상세조회_성공")
 	void getProductDetailSuccess() {
 		// given
-		product = new Product();
-		product.setProductId(1000L);
-		product.setName("초코파이");
-		product.setPrice(1000);
-		product.setStock(100);
-		Long productId = 1000L;
-		when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+		Long productId = 1L;
 
 		// when
 		ProductDto result = productService.getProductDetail(productId);
@@ -130,12 +127,7 @@ public class ProductServiceIntegrationTest {
 	@DisplayName("상품상세조회_실패")
 	void getProductDetailFailure() {
 		// given
-		product.setProductId(1000L);
-		product.setName("초코파이");
-		product.setPrice(1000);
-		product.setStock(100);
-		Long invalidProductId = 999L;
-		when(productRepository.findById(invalidProductId)).thenReturn(Optional.empty());
+		Long invalidProductId = 2L;
 
 		// when & then
 		assertThrows(ProductNotExistBadRequestException.class, () -> {

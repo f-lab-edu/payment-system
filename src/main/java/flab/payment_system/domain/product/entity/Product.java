@@ -9,11 +9,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Getter
-@Setter
 @NoArgsConstructor
 @Entity
 @Table(name = "product")
@@ -35,4 +33,16 @@ public class Product extends BaseEntity {
 	@NonNull
 	@Column(columnDefinition = "INT UNSIGNED")
 	private Integer stock;
+
+	public void setName(@NonNull String name) {
+		this.name = name;
+	}
+
+	public void setPrice(@NonNull Integer price) {
+		this.price = price;
+	}
+
+	public void setStock(@NonNull Integer stock) {
+		this.stock = stock;
+	}
 }

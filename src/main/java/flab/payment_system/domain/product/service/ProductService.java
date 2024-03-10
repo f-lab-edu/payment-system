@@ -15,10 +15,10 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ProductService {
 
 	private final ProductRepository productRepository;
-
 
 	@Cacheable(value = "productListCache", key = "#root.methodName + '_' + #lastProductId + '_' + #size", cacheManager = "cacheManager")
 	public List<ProductDto> getProductList(Long lastProductId, long size) {
@@ -58,5 +58,10 @@ public class ProductService {
 		Product product = productRepository.findById(productId).orElseThrow(
 			ProductNotExistBadRequestException::new);
 		product.setStock(product.getStock() + quantity);
+	}
+
+	public Product getProductByProductId(Long productId) {
+		return productRepository.findById(productId).orElseThrow(
+			ProductNotExistBadRequestException::new);
 	}
 }

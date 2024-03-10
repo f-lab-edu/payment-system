@@ -1,43 +1,39 @@
 package flab.payment_system.domain.order.entity;
 
 import flab.payment_system.common.data.BaseEntity;
+import flab.payment_system.domain.product.entity.Product;
+import flab.payment_system.domain.user.entity.User;
 import jakarta.annotation.Nonnull;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "order_product")
 public class OrderProduct extends BaseEntity {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "order_id", columnDefinition = "BIGINT UNSIGNED")
 	private Long orderId;
 
-	@Column(name = "user_id", columnDefinition = "BIGINT UNSIGNED")
-	private Long userId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private User user;
 
-	@NonNull
-	@Column(name = "productId", columnDefinition = "BIGINT UNSIGNED")
-	private Long productId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private Product product;
 
 	@Nonnull
 	private Integer quantity;
 
 	@Builder
-	public OrderProduct(long userId, long productId, Integer quantity) {
-		this.userId = userId;
-		this.productId = productId;
+	public OrderProduct(User user, Product product, Integer quantity) {
+		this.user = user;
+		this.product = product;
 		this.quantity = quantity;
 	}
 }

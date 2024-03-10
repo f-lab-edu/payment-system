@@ -1,6 +1,7 @@
 package flab.payment_system.domain.payment.service.toss;
 
 
+import flab.payment_system.adapter.PaymentAdapter;
 import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.payment.client.toss.PaymentTossClient;
@@ -13,12 +14,13 @@ import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
 import flab.payment_system.domain.payment.response.PaymentReadyDto;
 import flab.payment_system.domain.payment.response.toss.PaymentTossDtoImpl;
 import flab.payment_system.domain.payment.service.PaymentStrategy;
+
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestTemplate;
 
 
 @Component
@@ -28,23 +30,24 @@ public class PaymentStrategyTossService implements PaymentStrategy {
 	private final TossPaymentRepository tossPaymentRepository;
 	private final PaymentTossRequestBodyFactory paymentTossRequestBodyFactory;
 	private final PaymentTossClient paymentTossClient;
+	private final PaymentAdapter paymentAdapter;
 
 	public PaymentStrategyTossService(
-		@Value("${toss-host}") String tossHost
-		, RestTemplate restTemplate,
+		@Value("${toss-host}") String tossHost,
 		TossPaymentRepository tossPaymentRepository,
 		PaymentTossRequestBodyFactory paymentTossRequestBodyFactory,
-		PaymentTossClient paymentTossClient) {
+		PaymentTossClient paymentTossClient, PaymentAdapter paymentAdapter) {
 		this.tossHost = tossHost;
 		this.tossPaymentRepository = tossPaymentRepository;
 		this.paymentTossRequestBodyFactory = paymentTossRequestBodyFactory;
 		this.paymentTossClient = paymentTossClient;
+		this.paymentAdapter = paymentAdapter;
 	}
 
 
 	@Override
 	public PaymentReadyDto createPayment(OrderProductDto orderProductDto, Long userId,
-		String requestUrl, Long orderId, Long paymentId, Long productId) {
+										 String requestUrl, Long orderId, Long paymentId, Long productId) {
 		HttpEntity<Map<String, String>> body = paymentTossRequestBodyFactory.getBodyForCreatePayment(
 			orderProductDto, userId, requestUrl, orderId, paymentId, productId);
 		return paymentTossClient.createPayment(tossHost, body);
@@ -52,14 +55,14 @@ public class PaymentStrategyTossService implements PaymentStrategy {
 
 	@Override
 	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId,
-		Long paymentId) {
+											 Long paymentId) {
 		HttpEntity<Map<String, String>> body = paymentTossRequestBodyFactory.getBodyForApprovePayment(
 			orderId, userId, paymentId);
 		PaymentTossDtoImpl paymentTossDto = paymentTossClient.approvePayment(tossHost + "/confirm",
 			body);
 
 		tossPaymentRepository.save(
-			TossPayment.builder().paymentId(paymentId).country(paymentTossDto.getCountry())
+			TossPayment.builder().payment(paymentAdapter.getPaymentByPaymentId(paymentId)).country(paymentTossDto.getCountry())
 				.currency(
 					paymentTossDto.getCurrency()).type(paymentTossDto.getType()).build());
 

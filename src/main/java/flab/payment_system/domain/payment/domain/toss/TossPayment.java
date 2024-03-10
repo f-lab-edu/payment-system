@@ -1,13 +1,8 @@
 package flab.payment_system.domain.payment.domain.toss;
 
 import flab.payment_system.common.data.BaseEntity;
-import jakarta.annotation.Nonnull;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import flab.payment_system.domain.payment.domain.Payment;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -23,9 +18,9 @@ public class TossPayment extends BaseEntity {
 	@Column(name = "toss_payment_id", columnDefinition = "BIGINT UNSIGNED")
 	private Long tossPaymentId;
 
-	@Nonnull
-	@Column(name = "payment_id", columnDefinition = "BIGINT UNSIGNED")
-	private Long paymentId;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "payment_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private Payment payment;
 	@Column(columnDefinition = "VARCHAR(20)")
 
 	private String type;
@@ -37,9 +32,9 @@ public class TossPayment extends BaseEntity {
 	private String currency;
 
 	@Builder
-	public TossPayment(Long paymentId, String type, String country,
-		String currency) {
-		this.paymentId = paymentId;
+	public TossPayment(Payment payment, String type, String country,
+					   String currency) {
+		this.payment = payment;
 		this.type = type;
 		this.country = country;
 		this.currency = currency;

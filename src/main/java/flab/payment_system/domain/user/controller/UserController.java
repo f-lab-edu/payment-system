@@ -6,7 +6,6 @@ import flab.payment_system.domain.user.dto.UserSignUpDto;
 import flab.payment_system.domain.user.dto.UserVerificationDto;
 import flab.payment_system.domain.user.dto.UserVerifyEmailDto;
 import flab.payment_system.domain.user.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import java.net.URI;
@@ -52,8 +51,7 @@ public class UserController {
 
 
 	@PostMapping("/sign-in")
-	public ResponseEntity<Object> signInUser(@RequestBody UserDto userDto, HttpSession session,
-		HttpServletRequest request) {
+	public ResponseEntity<Object> signInUser(@RequestBody UserDto userDto, HttpSession session) {
 
 		userService.signInUser(userDto, session);
 

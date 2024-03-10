@@ -6,6 +6,9 @@ import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.order.repository.OrderRepository;
 import flab.payment_system.domain.order.service.OrderService;
 import flab.payment_system.domain.product.entity.Product;
+import flab.payment_system.domain.product.repository.ProductRepository;
+import flab.payment_system.domain.user.entity.User;
+import flab.payment_system.domain.user.repository.UserRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,15 +21,18 @@ public class OrderProductServiceIntegrationTest {
 
 	private final OrderService orderService;
 	private final OrderRepository orderRepository;
-
+	private final ProductRepository productRepository;
+	private final UserRepository userRepository;
 	private final DatabaseCleanUp databaseCleanUp;
 
 	@Autowired
 	OrderProductServiceIntegrationTest
 		(OrderService orderService, OrderRepository orderRepository,
-		 DatabaseCleanUp databaseCleanUp) {
+		 ProductRepository productRepository, UserRepository userRepository, DatabaseCleanUp databaseCleanUp) {
 		this.orderService = orderService;
 		this.orderRepository = orderRepository;
+		this.productRepository = productRepository;
+		this.userRepository = userRepository;
 		this.databaseCleanUp = databaseCleanUp;
 
 	}
@@ -34,6 +40,13 @@ public class OrderProductServiceIntegrationTest {
 	@BeforeEach
 	void setUp() {
 		databaseCleanUp.truncateAllEntity();
+		Product product = new Product();
+		product.setName("초코파이");
+		product.setPrice(5000);
+		product.setStock(100);
+		User user = User.builder().email("test@gmail.com").password("1234").build();
+		userRepository.save(user);
+		productRepository.save(product);
 	}
 
 	@AfterEach
@@ -53,8 +66,8 @@ public class OrderProductServiceIntegrationTest {
 		OrderProduct orderProduct = orderRepository.findById(orderId).orElse(null);
 		// then
 		assertEquals(orderId, orderProduct.getOrderId());
-		assertEquals(orderProductDto.productId(), orderProduct.getProductId());
-		assertEquals(userId, orderProduct.getUserId());
+		assertEquals(orderProductDto.productId(), orderProduct.getProduct().getProductId());
+		assertEquals(userId, orderProduct.getUser().getUserId());
 		assertEquals(orderProductDto.quantity(), orderProduct.getQuantity());
 		assertNotNull(orderProduct);
 	}
