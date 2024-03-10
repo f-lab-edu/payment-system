@@ -3,6 +3,7 @@ package flab.payment_system.domain.order.service;
 import flab.payment_system.adapter.OrderAdapter;
 import flab.payment_system.domain.order.entity.OrderProduct;
 import flab.payment_system.domain.order.dto.OrderProductDto;
+import flab.payment_system.domain.order.exception.OrderNotExistBadRequestException;
 import flab.payment_system.domain.order.repository.OrderRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -15,17 +16,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class OrderService {
 
 	private final OrderRepository orderRepository;
+	private final OrderAdapter orderAdapter;
 
 	@Transactional
 	public Long orderProduct(OrderProductDto orderProductDto, Long userId) {
-		AtomicReference<Integer> installMonth = new AtomicReference<>(0);
-		Optional<Integer> optionalInstallMonth = orderProductDto.getInstallMonth();
-		optionalInstallMonth.ifPresent(installMonth::set);
-
-		OrderProduct orderProduct = orderRepository.save(
-			OrderProduct.builder().productId(orderProductDto.productId()).userId(userId)
-				.quantity(orderProductDto.quantity()).build());
+		OrderProduct orderProduct = orderRepository.save(OrderProduct.builder()
+			.product(orderAdapter.getProductByProductId(orderProductDto.productId()))
+			.user(orderAdapter.getUserByUserId(userId)).quantity(orderProductDto.quantity()).build());
 		return orderProduct.getOrderId();
+	}
+
+	public OrderProduct getOrderProductByOrderId(Long orderId) {
+		return orderRepository.findById(orderId).orElseThrow(OrderNotExistBadRequestException::new);
 	}
 }
 

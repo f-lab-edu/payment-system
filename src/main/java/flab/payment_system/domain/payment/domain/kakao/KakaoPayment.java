@@ -1,14 +1,8 @@
 package flab.payment_system.domain.payment.domain.kakao;
 
 import flab.payment_system.common.data.BaseEntity;
-import jakarta.annotation.Nonnull;
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import flab.payment_system.domain.payment.domain.Payment;
+import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,9 +18,9 @@ public class KakaoPayment extends BaseEntity {
 	@Column(name = "kakao_payment_id", columnDefinition = "BIGINT UNSIGNED")
 	private Long kakaoPaymentId;
 
-	@Nonnull
-	@Column(name = "payment_id", columnDefinition = "BIGINT UNSIGNED")
-	private Long paymentId;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "payment_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private Payment payment;
 
 	@Embedded
 	private CardInfo cardInfo;
@@ -38,9 +32,9 @@ public class KakaoPayment extends BaseEntity {
 	private String paymentMethodType;
 
 	@Builder
-	public KakaoPayment(Long paymentId, CardInfo cardInfo, String aid,
+	public KakaoPayment(Payment payment, CardInfo cardInfo, String aid,
 		String paymentMethodType) {
-		this.paymentId = paymentId;
+		this.payment = payment;
 		this.cardInfo = cardInfo;
 		this.aid = aid;
 		this.paymentMethodType = paymentMethodType;

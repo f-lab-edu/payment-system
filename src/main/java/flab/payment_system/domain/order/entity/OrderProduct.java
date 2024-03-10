@@ -14,26 +14,26 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "order_product")
 public class OrderProduct extends BaseEntity {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "order_id", columnDefinition = "BIGINT UNSIGNED")
 	private Long orderId;
 
-	@Column(name = "user_id", columnDefinition = "BIGINT UNSIGNED")
-	private Long userId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "user_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private User user;
 
-	@NonNull
-	@Column(name = "productId", columnDefinition = "BIGINT UNSIGNED")
-	private Long productId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "product_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	private Product product;
 
 	@Nonnull
 	private Integer quantity;
 
 	@Builder
-	public OrderProduct(long userId, long productId, Integer quantity) {
-		this.userId = userId;
-		this.productId = productId;
+	public OrderProduct(User user, Product product, Integer quantity) {
+		this.user = user;
+		this.product = product;
 		this.quantity = quantity;
 	}
 }

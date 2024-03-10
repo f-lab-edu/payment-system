@@ -1,10 +1,12 @@
 package flab.payment_system.domain.payment.service;
 
+import flab.payment_system.adapter.PaymentAdapter;
 import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.payment.domain.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.enums.PaymentStateConstant;
+import flab.payment_system.domain.payment.exception.PaymentNotExistBadRequestException;
 import flab.payment_system.domain.payment.repository.PaymentRepository;
 import flab.payment_system.domain.payment.response.PaymentApprovalDto;
 import flab.payment_system.domain.payment.response.PaymentCancelDto;
@@ -27,6 +29,7 @@ public class PaymentService {
 	private PaymentStrategy paymentStrategy;
 	private final ApplicationContext applicationContext;
 	private final PaymentRepository paymentRepository;
+	private final PaymentAdapter paymentAdapter;
 
 	public void setStrategy(PaymentPgCompany paymentPgCompany) {
 		if (paymentPgCompany == PaymentPgCompany.TOSS) {
@@ -42,7 +45,7 @@ public class PaymentService {
 										 String requestUrl, Long userId, Long orderId, PaymentPgCompany paymentPgCompany) {
 
 		Payment payment = paymentRepository.save(
-			Payment.builder().orderId(orderId).state(PaymentStateConstant.ONGOING.getValue())
+			Payment.builder().orderProduct(paymentAdapter.getOrderProductByOrderId(orderId)).state(PaymentStateConstant.ONGOING.getValue())
 				.pgCompany(paymentPgCompany.getValue()).totalAmount(orderProductDto.totalAmount())
 				.taxFreeAmount(orderProductDto.taxFreeAmount())
 				.installMonth(orderProductDto.installMonth()).build());
@@ -85,6 +88,10 @@ public class PaymentService {
 
 	public PaymentOrderDetailDto getOrderDetail(String paymentKey) {
 		return paymentStrategy.getOrderDetail(paymentKey);
+	}
+
+	public Payment getPaymentByPaymentId(Long paymentId) {
+		return paymentRepository.findById(paymentId).orElseThrow(PaymentNotExistBadRequestException::new);
 	}
 }
 

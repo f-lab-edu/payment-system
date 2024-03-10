@@ -59,4 +59,9 @@ public class ProductService {
 			ProductNotExistBadRequestException::new);
 		product.setStock(product.getStock() + quantity);
 	}
+
+	public Product getProductByProductId(Long productId) {
+		return productRepository.findById(productId).orElseThrow(
+			ProductNotExistBadRequestException::new);
+	}
 }

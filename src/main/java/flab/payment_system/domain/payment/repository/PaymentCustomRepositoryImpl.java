@@ -29,6 +29,6 @@ public class PaymentCustomRepositoryImpl implements PaymentCustomRepository {
 	public long updatePaymentStateByOrderId(Long orderId, Integer state) {
 		return jpaQueryFactory.update(payment)
 			.set(payment.state, state)
-			.where(payment.orderId.eq(orderId)).execute();
+			.where(payment.orderProduct.orderId.eq(orderId)).execute();
 	}
 }
