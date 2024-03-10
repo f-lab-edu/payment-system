@@ -31,6 +31,7 @@ public class UserService {
 	private final UserVerificationRepository userVerificationRepository;
 	private final PasswordEncoder passwordEncoder;
 
+	@Transactional
 	public void signUpUser(UserSignUpDto userSignUpDto) {
 		Optional<User> optionalUser = userRepository.findByEmail(userSignUpDto.email());
 		if (optionalUser.isPresent()) {
@@ -58,6 +59,7 @@ public class UserService {
 		return passwordEncoder.matches(comparedPassword, hashedPassword);
 	}
 
+	@Transactional(readOnly = true)
 	public void confirmUserIsAuthorized(UserSignUpDto userSignUpDto) {
 		Optional<UserVerification> optionalUserVerification = userVerificationRepository.findById(
 			userSignUpDto.verificationId());
@@ -74,6 +76,7 @@ public class UserService {
 		}
 	}
 
+	@Transactional
 	public UserVerificationDto verifyUserEmail(UserVerifyEmailDto userVerifyEmailDto) {
 		Optional<User> optionalUser = userRepository.findByEmail(userVerifyEmailDto.email());
 

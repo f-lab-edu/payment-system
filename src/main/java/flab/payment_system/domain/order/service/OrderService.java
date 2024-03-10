@@ -15,6 +15,7 @@ public class OrderService {
 
 	private final OrderRepository orderRepository;
 
+	@Transactional
 	public Long orderProduct(OrderProductDto orderProductDto, Long userId) {
 		AtomicReference<Integer> installMonth = new AtomicReference<>(0);
 		Optional<Integer> optionalInstallMonth = orderProductDto.getInstallMonth();

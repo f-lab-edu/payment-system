@@ -74,6 +74,7 @@ public class PaymentService {
 			PaymentStateConstant.CANCEL.getValue());
 	}
 
+	@Transactional
 	public void failPayment(Long paymentId) {
 		paymentRepository.updatePaymentStateByPaymentId(paymentId,
 			PaymentStateConstant.FAIL.getValue());
