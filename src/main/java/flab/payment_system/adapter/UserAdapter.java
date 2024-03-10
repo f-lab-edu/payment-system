@@ -1,17 +1,17 @@
 package flab.payment_system.adapter;
 
-import flab.payment_system.domain.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-@RequiredArgsConstructor
-@Component
-public class UserAdapter {
+import java.util.Optional;
 
-	private final UserService userService;
+public interface UserAdapter {
+	void sendMail(String recipient, String subject, String context);
 
-	public long getUserId(HttpSession session) {
-		return userService.getUserId(session);
-	}
+	String setContextForSendValidationNumberForSendMail(String verificationNumber);
+
+	Optional<Long> getUserId(HttpSession session);
+
+	void setUserId(HttpSession session, Long userId);
+
+	void invalidate(HttpSession session);
 }

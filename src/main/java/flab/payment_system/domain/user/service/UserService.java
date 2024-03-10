@@ -1,7 +1,6 @@
 package flab.payment_system.domain.user.service;
 
-import flab.payment_system.adapter.MailAdapter;
-import flab.payment_system.adapter.SessionAdapter;
+import flab.payment_system.adapter.UserAdapter;
 import flab.payment_system.domain.user.entity.User;
 import flab.payment_system.domain.user.entity.UserVerification;
 import flab.payment_system.domain.user.dto.UserConfirmVerificationNumberDto;
@@ -9,32 +8,24 @@ import flab.payment_system.domain.user.dto.UserDto;
 import flab.payment_system.domain.user.dto.UserSignUpDto;
 import flab.payment_system.domain.user.dto.UserVerificationDto;
 import flab.payment_system.domain.user.dto.UserVerifyEmailDto;
-import flab.payment_system.domain.user.exception.UserAlreadySignInConflictException;
-import flab.payment_system.domain.user.exception.UserEmailAlreadyExistConflictException;
-import flab.payment_system.domain.user.exception.UserEmailNotExistBadRequestException;
-import flab.payment_system.domain.user.exception.UserNotSignInedConflictException;
-import flab.payment_system.domain.user.exception.UserPasswordFailBadRequestException;
-import flab.payment_system.domain.user.exception.UserSignUpBadRequestException;
-import flab.payment_system.domain.user.exception.UserVerificationEmailBadRequestException;
-import flab.payment_system.domain.user.exception.UserVerificationIdBadRequestException;
-import flab.payment_system.domain.user.exception.UserVerificationNumberBadRequestException;
-import flab.payment_system.domain.user.exception.UserVerificationUnauthorizedException;
+import flab.payment_system.domain.user.exception.*;
 import flab.payment_system.domain.user.repository.UserRepository;
 import flab.payment_system.domain.user.repository.UserVerificationRepository;
 import jakarta.servlet.http.HttpSession;
+
 import java.util.Optional;
 import java.util.concurrent.ThreadLocalRandom;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
-	private final MailAdapter mailAdapter;
-
-	private final SessionAdapter sessionAdapter;
+	private final UserAdapter userAdapter;
 
 	private final UserRepository userRepository;
 	private final UserVerificationRepository userVerificationRepository;
@@ -63,7 +54,7 @@ public class UserService {
 	}
 
 	private boolean comparePasswordAndConfirmPassword(String hashedPassword,
-		String comparedPassword) {
+													  String comparedPassword) {
 		return passwordEncoder.matches(comparedPassword, hashedPassword);
 	}
 
@@ -107,14 +98,15 @@ public class UserService {
 
 		int verificationNumber = (random.nextInt(900000) + 100000) % 1000000;
 
-		mailAdapter.sendMail(userVerifyEmailDto.email(),
+		userAdapter.sendMail(userVerifyEmailDto.email(),
 			"[payment_system] 회원가입을 위한 인증번호 메일입니다.",
-			mailAdapter.setContextForSendValidationNumber(String.valueOf(verificationNumber)));
+			userAdapter.setContextForSendValidationNumberForSendMail(String.valueOf(verificationNumber)));
 
 		return verificationNumber;
 	}
 
 
+	@Transactional
 	public boolean confirmVerificationNumber(
 		UserConfirmVerificationNumberDto userConfirmVerificationNumberDto) {
 		Optional<UserVerification> optionalUserVerification = userVerificationRepository.findById(
@@ -142,8 +134,9 @@ public class UserService {
 		return true;
 	}
 
+	@Transactional(readOnly = true)
 	public void signInUser(UserDto userDto, HttpSession session) {
-		if (sessionAdapter.getUserId(session).isPresent()) {
+		if (userAdapter.getUserId(session).isPresent()) {
 			throw new UserAlreadySignInConflictException();
 		}
 
@@ -158,15 +151,20 @@ public class UserService {
 			throw new UserPasswordFailBadRequestException();
 		}
 
-		sessionAdapter.setUserId(session, user.getUserId());
+		userAdapter.setUserId(session, user.getUserId());
 	}
 
 	public void signOutUser(HttpSession session) {
 		getUserId(session);
-		sessionAdapter.invalidate(session);
+		userAdapter.invalidate(session);
 	}
 
 	public Long getUserId(HttpSession session) {
-		return sessionAdapter.getUserId(session).orElseThrow(UserNotSignInedConflictException::new);
+		return userAdapter.getUserId(session).orElseThrow(UserNotSignInedConflictException::new);
+	}
+
+	@Transactional(readOnly = true)
+	public User getUserByUserId(Long userId) {
+		return userRepository.findById(userId).orElseThrow(UserNotExistBadRequestException::new);
 	}
 }

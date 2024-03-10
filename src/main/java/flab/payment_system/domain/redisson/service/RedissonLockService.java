@@ -1,7 +1,6 @@
 package flab.payment_system.domain.redisson.service;
 
-import flab.payment_system.adapter.PaymentAdapter;
-import flab.payment_system.adapter.ProductAdapter;
+import flab.payment_system.adapter.RedissonLockAdapter;
 import flab.payment_system.domain.payment.response.PaymentApprovalDto;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RedissonLockService {
 
 	private final RedissonClient redissonClient;
-	private final ProductAdapter productAdapter;
-	private final PaymentAdapter paymentAdapter;
+	private final RedissonLockAdapter redissonLockAdapter;
 
 	@Transactional
 	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId,
@@ -30,11 +28,11 @@ public class RedissonLockService {
 			if (!available) {
 				throw new RuntimeException();
 			}
-			productAdapter.checkRemainStock(productId);
-			PaymentApprovalDto paymentApprovalDto = paymentAdapter.approvePayment(pgToken, orderId,
+			redissonLockAdapter.checkRemainStock(productId);
+			PaymentApprovalDto paymentApprovalDto = redissonLockAdapter.approvePayment(pgToken, orderId,
 				userId, paymentId);
 
-			productAdapter.decreaseStock(productId, quantity);
+			redissonLockAdapter.decreaseStock(productId, quantity);
 
 			return paymentApprovalDto;
 		} catch (InterruptedException e) {
