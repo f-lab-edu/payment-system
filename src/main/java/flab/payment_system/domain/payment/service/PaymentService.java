@@ -2,7 +2,7 @@ package flab.payment_system.domain.payment.service;
 
 import flab.payment_system.adapter.PaymentAdapter;
 import flab.payment_system.domain.order.dto.OrderCancelDto;
-import flab.payment_system.domain.order.dto.OrderProductDto;
+import flab.payment_system.domain.payment.dto.PaymentCreateDto;
 import flab.payment_system.domain.payment.domain.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.enums.PaymentStateConstant;
@@ -41,17 +41,22 @@ public class PaymentService {
 	}
 
 	@Transactional
-	public PaymentReadyDto createPayment(OrderProductDto orderProductDto,
-										 String requestUrl, Long userId, Long orderId, PaymentPgCompany paymentPgCompany) {
+	public PaymentReadyDto createPayment(PaymentCreateDto paymentCreateDto,
+										 String requestUrl, Long userId, PaymentPgCompany paymentPgCompany) {
+		Optional<Payment> optionalPayment = paymentRepository.findByOrderProduct_OrderId(paymentCreateDto.orderId());
 
-		Payment payment = paymentRepository.save(
-			Payment.builder().orderProduct(paymentAdapter.getOrderProductByOrderId(orderId)).state(PaymentStateConstant.ONGOING.getValue())
-				.pgCompany(paymentPgCompany.getValue()).totalAmount(orderProductDto.totalAmount())
-				.taxFreeAmount(orderProductDto.taxFreeAmount())
-				.installMonth(orderProductDto.installMonth()).build());
+		Payment payment = optionalPayment.orElseGet(() -> paymentRepository.save(
+			Payment.builder().orderProduct(paymentAdapter.getOrderProductByOrderId(paymentCreateDto.orderId())).state(PaymentStateConstant.ONGOING.getValue())
+				.pgCompany(paymentPgCompany.getValue()).totalAmount(paymentCreateDto.totalAmount())
+				.taxFreeAmount(paymentCreateDto.taxFreeAmount())
+				.installMonth(paymentCreateDto.installMonth()).build()));
 
-		PaymentReadyDto paymentReadyDto = paymentStrategy.createPayment(orderProductDto, userId,
-			requestUrl, orderId, payment.getPaymentId(), orderProductDto.productId());
+		if (Objects.equals(payment.getState(), PaymentStateConstant.APPROVED.getValue()))
+			throw new PaymentAlreadyApprovedConflictException();
+
+		PaymentReadyDto paymentReadyDto = paymentStrategy.createPayment(paymentCreateDto, userId,
+			requestUrl, paymentCreateDto.orderId(), payment.getPaymentId(), paymentCreateDto.productId());
+
 		paymentReadyDto.setPaymentId(payment.getPaymentId());
 
 		payment.setPaymentKey(paymentReadyDto.getPaymentKey());

@@ -1,7 +1,6 @@
 package flab.payment_system.adapter;
 
 import flab.payment_system.domain.order.dto.OrderCancelDto;
-import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.response.PaymentCancelDto;
 import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
@@ -20,10 +19,7 @@ public interface OrderAdapter {
 
 	void setStrategy(PaymentPgCompany pgCompany);
 
-	PaymentReadyDto createPayment(OrderProductDto orderProductDto, String requestUrl,
-										 Long userId, Long orderId, PaymentPgCompany pgCompany);
-
-	PaymentCancelDto orderCancel(OrderCancelDto orderCancelDto);
+	PaymentCancelDto cancelPayment(OrderCancelDto orderCancelDto);
 
 	PaymentOrderDetailDto getOrderDetail(String paymentKey);
 

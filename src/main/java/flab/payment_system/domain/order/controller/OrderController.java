@@ -3,18 +3,16 @@ package flab.payment_system.domain.order.controller;
 
 import flab.payment_system.adapter.OrderAdapter;
 import flab.payment_system.domain.order.dto.OrderCancelDto;
+import flab.payment_system.domain.order.dto.OrderDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.order.service.OrderService;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.response.PaymentCancelDto;
 import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
-import flab.payment_system.domain.payment.response.PaymentReadyDto;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,27 +30,13 @@ public class OrderController {
 	private final OrderService orderService;
 	private final OrderAdapter orderAdapter;
 
-	@Transactional
-	@PostMapping("/{pgCompany}")
-	public ResponseEntity<PaymentReadyDto> orderProductRequest(
-		@PathVariable PaymentPgCompany pgCompany,
-		@RequestBody @Valid OrderProductDto orderProductDto,
-		HttpServletRequest request, HttpSession session) {
-		String requestUrl = request.getRequestURL().toString()
-			.replace(request.getRequestURI(), "");
-
+	@PostMapping
+	public ResponseEntity<OrderDto> orderProductRequest(
+		@RequestBody @Valid OrderProductDto orderProductDto, HttpSession session) {
 		Long userId = orderAdapter.getUserId(session);
+		OrderDto orderDto = orderService.orderProduct(orderProductDto, userId);
 
-		orderAdapter.checkRemainStock(orderProductDto.productId());
-
-		Long orderId = orderService.orderProduct(orderProductDto, userId);
-
-		orderAdapter.setStrategy(pgCompany);
-		PaymentReadyDto paymentReadyDto = orderAdapter.createPayment(orderProductDto, requestUrl,
-			userId,
-			orderId, pgCompany);
-
-		return ResponseEntity.ok().body(paymentReadyDto);
+		return ResponseEntity.ok().body(orderDto);
 	}
 
 

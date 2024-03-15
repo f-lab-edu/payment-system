@@ -1,8 +1,7 @@
 package flab.payment_system.domain.payment.service.kakao;
 
-import flab.payment_system.adapter.PaymentAdapter;
 import flab.payment_system.domain.order.dto.OrderCancelDto;
-import flab.payment_system.domain.order.dto.OrderProductDto;
+import flab.payment_system.domain.payment.dto.PaymentCreateDto;
 import flab.payment_system.domain.payment.client.kakao.PaymentKakaoClient;
 import flab.payment_system.domain.payment.domain.kakao.KakaoPayment;
 import flab.payment_system.domain.payment.repository.kakao.KakaoPaymentRepository;
@@ -12,6 +11,7 @@ import flab.payment_system.domain.payment.response.PaymentCancelDto;
 import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
 import flab.payment_system.domain.payment.response.PaymentReadyDto;
 import flab.payment_system.domain.payment.response.kakao.PaymentKakaoApprovalDtoImpl;
+import flab.payment_system.domain.payment.service.PaymentService;
 import flab.payment_system.domain.payment.service.PaymentStrategy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -26,26 +26,26 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 	private final KakaoPaymentRepository kakaoPaymentRepository;
 	private final PaymentKakaoRequestBodyFactory paymentKakaoRequestBodyFactory;
 	private final PaymentKakaoClient paymentKakaoClient;
-	private final PaymentAdapter paymentAdapter;
+	private final PaymentService paymentService;
 
 	public PaymentStrategyKaKaoService(
 		@Value("${kakao-host}") String kakaoHost,
 		KakaoPaymentRepository kakaoPaymentRepository,
 		PaymentKakaoRequestBodyFactory paymentKakaoRequestBodyFactory,
-		PaymentKakaoClient paymentKakaoClient, PaymentAdapter paymentAdapter) {
+		PaymentKakaoClient paymentKakaoClient, PaymentService paymentService) {
 		this.kakaoHost = kakaoHost;
 		this.kakaoPaymentRepository = kakaoPaymentRepository;
 		this.paymentKakaoRequestBodyFactory = paymentKakaoRequestBodyFactory;
 		this.paymentKakaoClient = paymentKakaoClient;
-		this.paymentAdapter = paymentAdapter;
+		this.paymentService = paymentService;
 	}
 
 	@Override
-	public PaymentReadyDto createPayment(OrderProductDto orderProductDto, Long userId,
+	public PaymentReadyDto createPayment(PaymentCreateDto paymentCreateDto, Long userId,
 										 String requestUrl, Long orderId, Long paymentId, Long productId) {
 
 		HttpEntity<MultiValueMap<String, String>> body = paymentKakaoRequestBodyFactory.getBodyForCreatePayment(
-			orderProductDto, userId, requestUrl, orderId, paymentId, productId);
+			paymentCreateDto, userId, requestUrl, orderId, paymentId, productId);
 
 		return paymentKakaoClient.createPayment(kakaoHost + "/ready", body);
 	}
@@ -60,7 +60,7 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 		PaymentKakaoApprovalDtoImpl paymentApprovalDto = paymentKakaoClient.approvePayment(
 			kakaoHost + "/approve", body);
 
-		kakaoPaymentRepository.save(KakaoPayment.builder().payment(paymentAdapter.getPaymentByPaymentId(paymentId))
+		kakaoPaymentRepository.save(KakaoPayment.builder().payment(paymentService.getPaymentByPaymentId(paymentId))
 			.paymentMethodType(paymentApprovalDto.getPaymentMethodType()).aid(
 				paymentApprovalDto.getAid())
 			.cardInfo(paymentApprovalDto.getCardInfo())
