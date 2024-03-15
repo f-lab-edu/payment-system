@@ -1,8 +1,9 @@
 package flab.payment_system.domain.redisson.service;
 
 import flab.payment_system.adapter.RedissonLockAdapter;
-import flab.payment_system.domain.payment.response.PaymentApprovalDto;
+
 import java.util.concurrent.TimeUnit;
+
 import lombok.RequiredArgsConstructor;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
@@ -17,9 +18,7 @@ public class RedissonLockService {
 	private final RedissonLockAdapter redissonLockAdapter;
 
 	@Transactional
-	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId,
-		Long paymentId,
-		Long productId, Integer quantity) {
+	public void decreaseStock(Long productId, Integer quantity) {
 		RLock lock = redissonClient.getLock(String.valueOf(productId));
 
 		try {
@@ -28,13 +27,31 @@ public class RedissonLockService {
 			if (!available) {
 				throw new RuntimeException();
 			}
-			redissonLockAdapter.checkRemainStock(productId);
-			PaymentApprovalDto paymentApprovalDto = redissonLockAdapter.approvePayment(pgToken, orderId,
-				userId, paymentId);
 
+			redissonLockAdapter.checkRemainStock(productId);
 			redissonLockAdapter.decreaseStock(productId, quantity);
 
-			return paymentApprovalDto;
+		} catch (InterruptedException e) {
+			throw new RuntimeException(e);
+		} finally {
+			lock.unlock();
+		}
+	}
+
+	@Transactional
+	public void increaseStock(Long productId, Integer quantity) {
+		RLock lock = redissonClient.getLock(String.valueOf(productId));
+
+		try {
+			boolean available = lock.tryLock(10, 1, TimeUnit.SECONDS);
+
+			if (!available) {
+				throw new RuntimeException();
+			}
+
+			redissonLockAdapter.checkRemainStock(productId);
+			redissonLockAdapter.increaseStock(productId, quantity);
+
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		} finally {

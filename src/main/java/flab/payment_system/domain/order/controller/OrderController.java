@@ -40,14 +40,12 @@ public class OrderController {
 	}
 
 
-	@Transactional
 	@PostMapping("/{pgCompany}/cancel")
 	public ResponseEntity<PaymentCancelDto> orderCancel(
 		@PathVariable PaymentPgCompany pgCompany,
 		@RequestBody @Valid OrderCancelDto orderCancelDto) {
 		orderAdapter.setStrategy(pgCompany);
-		PaymentCancelDto paymentCancelDto = orderAdapter.orderCancel(orderCancelDto);
-		orderAdapter.increaseStock(orderCancelDto.productId(), orderCancelDto.quantity());
+		PaymentCancelDto paymentCancelDto = orderAdapter.cancelPayment(orderCancelDto);
 
 		return ResponseEntity.ok().body(paymentCancelDto);
 	}
@@ -57,6 +55,7 @@ public class OrderController {
 		@PathVariable PaymentPgCompany pgCompany, @RequestParam String paymentKey) {
 		orderAdapter.setStrategy(pgCompany);
 		PaymentOrderDetailDto paymentOrderDetailDto = orderAdapter.getOrderDetail(paymentKey);
+
 		return ResponseEntity.ok().body(paymentOrderDetailDto);
 	}
 }

@@ -6,6 +6,8 @@ import flab.payment_system.domain.payment.dto.PaymentCreateDto;
 import flab.payment_system.domain.payment.domain.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.enums.PaymentStateConstant;
+import flab.payment_system.domain.payment.exception.PaymentAlreadyApprovedConflictException;
+import flab.payment_system.domain.payment.exception.PaymentNotApprovedConflictException;
 import flab.payment_system.domain.payment.exception.PaymentNotExistBadRequestException;
 import flab.payment_system.domain.payment.repository.PaymentRepository;
 import flab.payment_system.domain.payment.response.PaymentApprovalDto;
@@ -19,6 +21,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.annotation.RequestScope;
+
+import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -65,29 +70,47 @@ public class PaymentService {
 	}
 
 	@Transactional
-	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId, Long paymentId) {
+	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId, Long paymentId, Long productId, Integer quantity) {
 
 		PaymentApprovalDto paymentApprovalDto = paymentStrategy.approvePayment(pgToken, orderId,
 			userId, paymentId);
 
+		Payment payment = paymentRepository.findById(paymentId).orElseThrow(PaymentNotExistBadRequestException::new);
+		if (payment.getState().equals(PaymentStateConstant.APPROVED.getValue()))
+			throw new PaymentAlreadyApprovedConflictException();
+
 		paymentRepository.updatePaymentStateByPaymentId(paymentId,
 			PaymentStateConstant.APPROVED.getValue());
+
+		paymentAdapter.decreaseStock(productId, quantity);
 
 		return paymentApprovalDto;
 	}
 
 	@Transactional
 	public void failPayment(Long paymentId) {
+		Payment payment = paymentRepository.findById(paymentId).orElseThrow(PaymentNotExistBadRequestException::new);
+
+		if (payment.getState().equals(PaymentStateConstant.APPROVED.getValue()))
+			throw new PaymentAlreadyApprovedConflictException();
+
 		paymentRepository.updatePaymentStateByPaymentId(paymentId,
 			PaymentStateConstant.FAIL.getValue());
 	}
 
 	@Transactional
-	public PaymentCancelDto orderCancel(OrderCancelDto orderCancelDto) {
+	public PaymentCancelDto cancelPayment(OrderCancelDto orderCancelDto) {
+		Payment payment = paymentRepository.findByOrderProduct_OrderId(orderCancelDto.orderId()).orElseThrow(PaymentNotExistBadRequestException::new);
+		if (!payment.getState().equals(PaymentStateConstant.APPROVED.getValue()))
+			throw new PaymentNotApprovedConflictException();
+
 		PaymentCancelDto paymentCancelDto = paymentStrategy.cancelPayment(orderCancelDto);
 
 		paymentRepository.updatePaymentStateByOrderId(orderCancelDto.orderId(),
 			PaymentStateConstant.CANCEL.getValue());
+
+		paymentAdapter.increaseStock(orderCancelDto.productId(), orderCancelDto.quantity());
+
 		return paymentCancelDto;
 	}
 
