@@ -2,7 +2,7 @@ package flab.payment_system.domain.payment.request.kakao;
 
 import flab.payment_system.common.enums.Constant;
 import flab.payment_system.domain.order.dto.OrderCancelDto;
-import flab.payment_system.domain.order.dto.OrderProductDto;
+import flab.payment_system.domain.payment.dto.PaymentCreateDto;
 import flab.payment_system.domain.payment.domain.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.exception.PaymentNotExistBadRequestException;
@@ -40,19 +40,19 @@ public class PaymentKakaoRequestBodyFactory {
 	}
 
 	public HttpEntity<MultiValueMap<String, String>> getBodyForCreatePayment(
-		OrderProductDto orderProductDto,
+		PaymentCreateDto paymentCreateDto,
 		Long userId, String requestUrl, Long orderId, Long paymentId, Long productId) {
 		HttpHeaders headers = getHeaders();
 
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-		Optional<Integer> installMonth = orderProductDto.getInstallMonth();
+		Optional<Integer> installMonth = paymentCreateDto.getInstallMonth();
 		installMonth.ifPresent(integer -> params.add("install_month", String.valueOf(integer)));
 		params.add("cid", cid);
 		params.add("approval_url",
 			requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
 				+ PaymentPgCompany.KAKAO.getName() +
 				"/approved?orderId=" + orderId + "&paymentId=" + paymentId + "&productId="
-				+ productId + "&quantity=" + orderProductDto.quantity());
+				+ productId + "&quantity=" + paymentCreateDto.quantity());
 		params.add("cancel_url",
 			requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
 				+ PaymentPgCompany.KAKAO.getName() + "/cancel?paymentId=" + paymentId);
@@ -61,11 +61,11 @@ public class PaymentKakaoRequestBodyFactory {
 			+ "/fail?paymentId=" + paymentId);
 		params.add("partner_order_id", String.valueOf(orderId));
 		params.add("partner_user_id", String.valueOf(userId));
-		params.add("item_name", orderProductDto.productName());
-		params.add("quantity", String.valueOf(orderProductDto.quantity()));
+		params.add("item_name", paymentCreateDto.productName());
+		params.add("quantity", String.valueOf(paymentCreateDto.quantity()));
 		params.add("total_amount",
-			String.valueOf(orderProductDto.totalAmount()));
-		params.add("tax_free_amount", String.valueOf(orderProductDto.taxFreeAmount()));
+			String.valueOf(paymentCreateDto.totalAmount()));
+		params.add("tax_free_amount", String.valueOf(paymentCreateDto.taxFreeAmount()));
 
 		return new HttpEntity<>(params, headers);
 	}

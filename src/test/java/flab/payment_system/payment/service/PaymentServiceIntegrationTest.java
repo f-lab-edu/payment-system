@@ -1,7 +1,9 @@
 package flab.payment_system.payment.service;
 
 import flab.payment_system.config.DatabaseCleanUp;
+import flab.payment_system.domain.order.dto.OrderDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;
+import flab.payment_system.domain.payment.dto.PaymentCreateDto;
 import flab.payment_system.domain.order.service.OrderService;
 import flab.payment_system.domain.payment.domain.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
@@ -31,6 +33,7 @@ public class PaymentServiceIntegrationTest {
 	private final UserRepository userRepository;
 	private final DatabaseCleanUp databaseCleanUp;
 	private final String requestUrl;
+	private Product product;
 
 	@Autowired
 	PaymentServiceIntegrationTest(PaymentService paymentService, OrderService orderService, ProductRepository productRepository, UserRepository userRepository, @Value("${test-url}") String requestUrl, PaymentRepository paymentRepository, DatabaseCleanUp databaseCleanUp) {
@@ -47,7 +50,7 @@ public class PaymentServiceIntegrationTest {
 	@BeforeEach
 	void setUp() {
 		databaseCleanUp.truncateAllEntity();
-		Product product = new Product();
+		product = new Product();
 		product.setName("초코파이");
 		product.setPrice(5000);
 		product.setStock(100);
@@ -64,19 +67,25 @@ public class PaymentServiceIntegrationTest {
 	@Nested
 	@DisplayName("결제생성_성공")
 	public class createPaymentTest {
-
 		@DisplayName("pg_kakao")
 		@Test
 		public void createKakaoPaymentSuccess() {
 			// given
 			Long userId = 1L;
+			Integer quantity = 2;
+			Integer totalAmount = 5000;
+			Integer totalFreeAmount = 500;
+			Integer installMonth = 3;
+
+
 			PaymentPgCompany pgCompany = PaymentPgCompany.KAKAO;
-			OrderProductDto orderProductDto = new OrderProductDto("초코파이", 1L, 2, 5000, 5000, 0);
+			OrderProductDto orderProductDto = new OrderProductDto(product.getProductId(), quantity);
+			OrderDto orderDto = orderService.orderProduct(orderProductDto, userId);
+			PaymentCreateDto paymentCreateDto = new PaymentCreateDto(orderDto.orderId(), product.getName(), product.getProductId(), quantity, totalAmount, totalFreeAmount, installMonth);
 
 			// when
-			Long orderId = orderService.orderProduct(orderProductDto, userId);
 			paymentService.setStrategy(pgCompany);
-			PaymentKakaoReadyDtoImpl paymentReadyDto = (PaymentKakaoReadyDtoImpl) paymentService.createPayment(orderProductDto, requestUrl, userId, orderId, pgCompany);
+			PaymentKakaoReadyDtoImpl paymentReadyDto = (PaymentKakaoReadyDtoImpl) paymentService.createPayment(paymentCreateDto, requestUrl, userId, pgCompany);
 			Payment payment = paymentRepository.findById(paymentReadyDto.getPaymentId()).orElseThrow(PaymentNotExistBadRequestException::new);
 
 			// then
@@ -89,12 +98,20 @@ public class PaymentServiceIntegrationTest {
 		public void createTossPaymentSuccess() {
 			// given
 			Long userId = 1L;
+			Integer quantity = 2;
+			Integer totalAmount = 5000;
+			Integer totalFreeAmount = 500;
+			Integer installMonth = 3;
+
+
 			PaymentPgCompany pgCompany = PaymentPgCompany.TOSS;
-			OrderProductDto orderProductDto = new OrderProductDto("초코파이", 1L, 2, 5000, 5000, 0);
+			OrderProductDto orderProductDto = new OrderProductDto(product.getProductId(), quantity);
+			OrderDto orderDto = orderService.orderProduct(orderProductDto, userId);
+			PaymentCreateDto paymentCreateDto = new PaymentCreateDto(orderDto.orderId(), product.getName(), product.getProductId(), quantity, totalAmount, totalFreeAmount, installMonth);
+
 			// when
-			Long orderId = orderService.orderProduct(orderProductDto, userId);
 			paymentService.setStrategy(pgCompany);
-			PaymentTossDtoImpl paymentReadyDto = (PaymentTossDtoImpl) paymentService.createPayment(orderProductDto, requestUrl, userId, orderId, pgCompany);
+			PaymentTossDtoImpl paymentReadyDto = (PaymentTossDtoImpl) paymentService.createPayment(paymentCreateDto, requestUrl, userId, pgCompany);
 			Payment payment = paymentRepository.findById(paymentReadyDto.getPaymentId()).orElseThrow(PaymentNotExistBadRequestException::new);
 
 

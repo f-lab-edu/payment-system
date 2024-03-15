@@ -2,7 +2,7 @@ package flab.payment_system.domain.payment.request.toss;
 
 import flab.payment_system.common.enums.Constant;
 import flab.payment_system.domain.order.dto.OrderCancelDto;
-import flab.payment_system.domain.order.dto.OrderProductDto;
+import flab.payment_system.domain.payment.dto.PaymentCreateDto;
 import flab.payment_system.domain.payment.domain.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.exception.PaymentNotExistBadRequestException;
@@ -31,23 +31,23 @@ public class PaymentTossRequestBodyFactory {
 
 
 	public HttpEntity<Map<String, String>> getBodyForCreatePayment(
-		OrderProductDto orderProductDto, Long userId, String requestUrl, Long orderId,
+		PaymentCreateDto paymentCreateDto, Long userId, String requestUrl, Long orderId,
 		Long paymentId, Long productId) {
 		HttpHeaders headers = getHeaders();
 		Map<String, String> params = new HashMap<>();
 
 		params.put("method", "간편결제");
-		params.put("taxFreeAmount", String.valueOf(orderProductDto.taxFreeAmount()));
+		params.put("taxFreeAmount", String.valueOf(paymentCreateDto.taxFreeAmount()));
 		params.put("orderId", "orderId_" + orderId + "_" + userId);
-		params.put("orderName", orderProductDto.productName() + " " + orderProductDto.quantity());
+		params.put("orderName", paymentCreateDto.productName() + " " + paymentCreateDto.quantity());
 		params.put("amount",
-			String.valueOf(orderProductDto.totalAmount()));
+			String.valueOf(paymentCreateDto.totalAmount()));
 		params.put("successUrl",
 			requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
 				+ PaymentPgCompany.TOSS.getName() +
 				"/approved?orderId=" + orderId + "&paymentId=" + paymentId + "&pg_token=temp"
 				+ "&productId="
-				+ productId + "&quantity=" + orderProductDto.quantity());
+				+ productId + "&quantity=" + paymentCreateDto.quantity());
 		params.put("failUrl",
 			requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
 				+ PaymentPgCompany.TOSS.getName() + "/cancel?paymentId=" + paymentId);

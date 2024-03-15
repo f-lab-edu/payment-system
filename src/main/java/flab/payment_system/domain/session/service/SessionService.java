@@ -1,4 +1,4 @@
-package flab.payment_system.session.service;
+package flab.payment_system.domain.session.service;
 
 import jakarta.servlet.http.HttpSession;
 import java.util.Optional;
