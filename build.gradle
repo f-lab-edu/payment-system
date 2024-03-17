@@ -52,7 +52,8 @@ dependencies {
     implementation 'org.springframework.session:spring-session-data-redis'
     implementation 'org.redisson:redisson-spring-boot-starter:3.21.1'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
-
+    // batch
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
 
     // lombok
     compileOnly 'org.projectlombok:lombok'
