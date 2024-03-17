@@ -5,7 +5,7 @@ import flab.payment_system.domain.order.dto.OrderDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.payment.dto.PaymentCreateDto;
 import flab.payment_system.domain.order.service.OrderService;
-import flab.payment_system.domain.payment.domain.Payment;
+import flab.payment_system.domain.payment.entity.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.exception.PaymentNotExistBadRequestException;
 import flab.payment_system.domain.payment.repository.PaymentRepository;

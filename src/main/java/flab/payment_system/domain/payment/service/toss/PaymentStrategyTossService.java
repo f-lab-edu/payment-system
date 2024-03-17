@@ -4,7 +4,7 @@ package flab.payment_system.domain.payment.service.toss;
 import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.payment.dto.PaymentCreateDto;
 import flab.payment_system.domain.payment.client.toss.PaymentTossClient;
-import flab.payment_system.domain.payment.domain.toss.TossPayment;
+import flab.payment_system.domain.payment.entity.toss.TossPayment;
 import flab.payment_system.domain.payment.repository.toss.TossPaymentRepository;
 import flab.payment_system.domain.payment.request.toss.PaymentTossRequestBodyFactory;
 import flab.payment_system.domain.payment.response.PaymentApprovalDto;

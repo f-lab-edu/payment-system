@@ -1,6 +1,6 @@
 package flab.payment_system.domain.batch.compensation;
 
-import flab.payment_system.domain.payment.domain.Payment;
+import flab.payment_system.domain.payment.entity.Payment;
 import flab.payment_system.domain.payment.dto.PaymentCompensationDto;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;

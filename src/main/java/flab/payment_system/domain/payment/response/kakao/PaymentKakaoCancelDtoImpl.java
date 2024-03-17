@@ -2,10 +2,10 @@ package flab.payment_system.domain.payment.response.kakao;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
-import flab.payment_system.domain.payment.domain.kakao.Amount;
-import flab.payment_system.domain.payment.domain.kakao.ApprovedCancelAmount;
-import flab.payment_system.domain.payment.domain.kakao.CancelAvailableAmount;
-import flab.payment_system.domain.payment.domain.kakao.CanceledAmount;
+import flab.payment_system.domain.payment.entity.kakao.Amount;
+import flab.payment_system.domain.payment.entity.kakao.ApprovedCancelAmount;
+import flab.payment_system.domain.payment.entity.kakao.CancelAvailableAmount;
+import flab.payment_system.domain.payment.entity.kakao.CanceledAmount;
 import flab.payment_system.domain.payment.response.PaymentCancelDto;
 import lombok.Getter;
 
