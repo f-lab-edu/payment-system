@@ -41,11 +41,10 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 	}
 
 	@Override
-	public PaymentReadyDto createPayment(PaymentCreateDto paymentCreateDto, Long userId,
-										 String requestUrl, Long orderId, Long paymentId, Long productId) {
+	public PaymentReadyDto createPayment(PaymentCreateDto paymentCreateDto, Long userId, String requestUrl, Long paymentId) {
 
 		HttpEntity<MultiValueMap<String, String>> body = paymentKakaoRequestBodyFactory.getBodyForCreatePayment(
-			paymentCreateDto, userId, requestUrl, orderId, paymentId, productId);
+			paymentCreateDto, userId, requestUrl, paymentId);
 
 		return paymentKakaoClient.createPayment(kakaoHost + "/ready", body);
 	}

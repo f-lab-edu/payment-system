@@ -60,7 +60,7 @@ public class PaymentService {
 			throw new PaymentAlreadyApprovedConflictException();
 
 		PaymentReadyDto paymentReadyDto = paymentStrategy.createPayment(paymentCreateDto, userId,
-			requestUrl, paymentCreateDto.orderId(), payment.getPaymentId(), paymentCreateDto.productId());
+			requestUrl, payment.getPaymentId());
 
 		paymentReadyDto.setPaymentId(payment.getPaymentId());
 

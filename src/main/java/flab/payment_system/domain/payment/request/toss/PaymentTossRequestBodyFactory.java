@@ -7,9 +7,11 @@ import flab.payment_system.domain.payment.domain.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.exception.PaymentNotExistBadRequestException;
 import flab.payment_system.domain.payment.repository.PaymentRepository;
+
 import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -31,23 +33,22 @@ public class PaymentTossRequestBodyFactory {
 
 
 	public HttpEntity<Map<String, String>> getBodyForCreatePayment(
-		PaymentCreateDto paymentCreateDto, Long userId, String requestUrl, Long orderId,
-		Long paymentId, Long productId) {
+		PaymentCreateDto paymentCreateDto, Long userId, String requestUrl, Long paymentId) {
 		HttpHeaders headers = getHeaders();
 		Map<String, String> params = new HashMap<>();
 
 		params.put("method", "간편결제");
 		params.put("taxFreeAmount", String.valueOf(paymentCreateDto.taxFreeAmount()));
-		params.put("orderId", "orderId_" + orderId + "_" + userId);
+		params.put("orderId", "orderId_" + paymentCreateDto.orderId() + "_" + userId);
 		params.put("orderName", paymentCreateDto.productName() + " " + paymentCreateDto.quantity());
 		params.put("amount",
 			String.valueOf(paymentCreateDto.totalAmount()));
 		params.put("successUrl",
 			requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
 				+ PaymentPgCompany.TOSS.getName() +
-				"/approved?orderId=" + orderId + "&paymentId=" + paymentId + "&pg_token=temp"
+				"/approved?orderId=" + paymentCreateDto.orderId() + "&paymentId=" + paymentId + "&pg_token=temp"
 				+ "&productId="
-				+ productId + "&quantity=" + paymentCreateDto.quantity());
+				+ paymentCreateDto.productId() + "&quantity=" + paymentCreateDto.quantity());
 		params.put("failUrl",
 			requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
 				+ PaymentPgCompany.TOSS.getName() + "/cancel?paymentId=" + paymentId);

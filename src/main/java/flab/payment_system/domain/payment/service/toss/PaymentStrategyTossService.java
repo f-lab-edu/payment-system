@@ -47,9 +47,9 @@ public class PaymentStrategyTossService implements PaymentStrategy {
 
 	@Override
 	public PaymentReadyDto createPayment(PaymentCreateDto paymentCreateDto, Long userId,
-										 String requestUrl, Long orderId, Long paymentId, Long productId) {
+										 String requestUrl, Long paymentId) {
 		HttpEntity<Map<String, String>> body = paymentTossRequestBodyFactory.getBodyForCreatePayment(
-			paymentCreateDto, userId, requestUrl, orderId, paymentId, productId);
+			paymentCreateDto, userId, requestUrl, paymentId);
 		return paymentTossClient.createPayment(tossHost, body);
 	}
 
