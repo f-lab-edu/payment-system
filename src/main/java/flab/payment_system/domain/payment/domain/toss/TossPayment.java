@@ -19,7 +19,7 @@ public class TossPayment extends BaseEntity {
 	private Long tossPaymentId;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "payment_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "payment_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), unique = true)
 	private Payment payment;
 	@Column(columnDefinition = "VARCHAR(20)")
 

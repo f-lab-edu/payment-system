@@ -22,7 +22,7 @@ public class Payment extends BaseEntity {
 	private Long paymentId;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "order_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), unique = true)
 	private OrderProduct orderProduct;
 
 	@Nonnull
@@ -61,5 +61,9 @@ public class Payment extends BaseEntity {
 
 	public void setPaymentKey(String paymentKey) {
 		this.paymentKey = paymentKey;
+	}
+
+	public void setState(Integer state) {
+		this.state = state;
 	}
 }
