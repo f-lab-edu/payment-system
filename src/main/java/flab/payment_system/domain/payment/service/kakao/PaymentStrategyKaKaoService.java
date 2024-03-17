@@ -3,7 +3,7 @@ package flab.payment_system.domain.payment.service.kakao;
 import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.payment.dto.PaymentCreateDto;
 import flab.payment_system.domain.payment.client.kakao.PaymentKakaoClient;
-import flab.payment_system.domain.payment.domain.kakao.KakaoPayment;
+import flab.payment_system.domain.payment.entity.kakao.KakaoPayment;
 import flab.payment_system.domain.payment.repository.kakao.KakaoPaymentRepository;
 import flab.payment_system.domain.payment.request.kakao.PaymentKakaoRequestBodyFactory;
 import flab.payment_system.domain.payment.response.PaymentApprovalDto;

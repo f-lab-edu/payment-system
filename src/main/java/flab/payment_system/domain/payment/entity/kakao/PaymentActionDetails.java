@@ -1,4 +1,4 @@
-package flab.payment_system.domain.payment.domain.kakao;
+package flab.payment_system.domain.payment.entity.kakao;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

@@ -1,7 +1,7 @@
 package flab.payment_system.domain.batch.compensation;
 
 import flab.payment_system.domain.order.repository.OrderRepository;
-import flab.payment_system.domain.payment.domain.Payment;
+import flab.payment_system.domain.payment.entity.Payment;
 import flab.payment_system.domain.payment.dto.PaymentCompensationDto;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.enums.PaymentStateConstant;

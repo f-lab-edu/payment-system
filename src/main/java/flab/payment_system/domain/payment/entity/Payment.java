@@ -1,4 +1,4 @@
-package flab.payment_system.domain.payment.domain;
+package flab.payment_system.domain.payment.entity;
 
 import flab.payment_system.common.data.BaseEntity;
 import flab.payment_system.domain.order.entity.OrderProduct;

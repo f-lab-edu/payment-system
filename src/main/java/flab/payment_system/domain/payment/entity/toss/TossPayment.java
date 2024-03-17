@@ -1,7 +1,7 @@
-package flab.payment_system.domain.payment.domain.toss;
+package flab.payment_system.domain.payment.entity.toss;
 
 import flab.payment_system.common.data.BaseEntity;
-import flab.payment_system.domain.payment.domain.Payment;
+import flab.payment_system.domain.payment.entity.Payment;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class TossPayment extends BaseEntity {
 	private Long tossPaymentId;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "payment_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), unique = true)
+	@JoinColumn(name = "payment_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
 	private Payment payment;
 	@Column(columnDefinition = "VARCHAR(20)")
 

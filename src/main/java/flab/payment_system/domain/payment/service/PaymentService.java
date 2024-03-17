@@ -3,7 +3,7 @@ package flab.payment_system.domain.payment.service;
 import flab.payment_system.adapter.PaymentAdapter;
 import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.payment.dto.PaymentCreateDto;
-import flab.payment_system.domain.payment.domain.Payment;
+import flab.payment_system.domain.payment.entity.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.enums.PaymentStateConstant;
 import flab.payment_system.domain.payment.exception.PaymentAlreadyApprovedConflictException;

@@ -1,4 +1,4 @@
-package flab.payment_system.domain.payment.domain.toss;
+package flab.payment_system.domain.payment.entity.toss;
 
 
 import jakarta.persistence.Embeddable;
