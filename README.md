@@ -273,10 +273,11 @@ main
 
 <details>
     <summary> 🧷 펼쳐보기 </summary>
-	
-![image](https://github.com/f-lab-edu/payment-system/assets/98700133/69e3bc8e-3ccc-4804-b257-1306b2c65633)
-	
-![image](https://github.com/f-lab-edu/payment-system/assets/98700133/a7f420fa-2845-4357-9709-cb78c48ab052)
+
+![image](https://github.com/f-lab-edu/payment-system/assets/98700133/cb8a9d60-5e2c-45c3-9f0c-b57f574a3f87)
+
+![image](https://github.com/f-lab-edu/payment-system/assets/98700133/2caaa7d0-8863-4145-91dc-e5be1feaad79)
+
 
 
 결제에 대한 공통적인 정보는 payment 테이블에 저장하고, pg사 별로 달라지는 정보들은 따로 테이블을 만들어줬습니다.
