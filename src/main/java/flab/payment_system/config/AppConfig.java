@@ -4,7 +4,7 @@ package flab.payment_system.config;
 import flab.payment_system.common.enums.Constant;
 import flab.payment_system.common.filter.ExceptionHandlerFilter;
 import flab.payment_system.common.filter.SignInCheckFilter;
-import flab.payment_system.session.service.SessionService;
+import flab.payment_system.domain.session.service.SessionService;
 import lombok.RequiredArgsConstructor;
 import org.apache.hc.client5.http.classic.HttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
@@ -76,6 +76,7 @@ public class AppConfig {
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder(10);
 	}
+
 	@Bean
 	HttpClient httpClient() {
 		return HttpClientBuilder.create()

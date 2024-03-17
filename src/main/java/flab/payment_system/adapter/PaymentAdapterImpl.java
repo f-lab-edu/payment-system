@@ -2,9 +2,7 @@ package flab.payment_system.adapter;
 
 import flab.payment_system.domain.order.entity.OrderProduct;
 import flab.payment_system.domain.order.service.OrderService;
-import flab.payment_system.domain.payment.domain.Payment;
-import flab.payment_system.domain.payment.response.PaymentApprovalDto;
-import flab.payment_system.domain.payment.service.PaymentService;
+import flab.payment_system.domain.redisson.service.RedissonLockService;
 import flab.payment_system.domain.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +13,8 @@ import org.springframework.stereotype.Component;
 public class PaymentAdapterImpl implements PaymentAdapter {
 
 	private final UserService userService;
-	private final PaymentService paymentService;
 	private final OrderService orderService;
+	private final RedissonLockService redissonLockService;
 
 	@Override
 	public Long getUserId(HttpSession session) {
@@ -24,18 +22,19 @@ public class PaymentAdapterImpl implements PaymentAdapter {
 	}
 
 	@Override
-	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId, Long paymentId) {
-		return paymentService.approvePayment(pgToken, orderId, userId, paymentId);
-	}
-
-	@Override
 	public OrderProduct getOrderProductByOrderId(Long orderId) {
 		return orderService.getOrderProductByOrderId(orderId);
 	}
 
+
 	@Override
-	public Payment getPaymentByPaymentId(Long paymentId) {
-		return paymentService.getPaymentByPaymentId(paymentId);
+	public void increaseStock(Long productId, Integer quantity) {
+		redissonLockService.increaseStock(productId, quantity);
+	}
+
+	@Override
+	public void decreaseStock(Long productId, Integer quantity) {
+		redissonLockService.decreaseStock(productId, quantity);
 	}
 
 }

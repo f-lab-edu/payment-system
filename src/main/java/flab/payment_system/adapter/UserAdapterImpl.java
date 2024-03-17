@@ -1,7 +1,7 @@
 package flab.payment_system.adapter;
 
 import flab.payment_system.domain.mail.service.MailService;
-import flab.payment_system.session.service.SessionService;
+import flab.payment_system.domain.session.service.SessionService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

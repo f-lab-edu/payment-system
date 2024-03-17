@@ -2,12 +2,14 @@ package flab.payment_system.domain.payment.request.kakao;
 
 import flab.payment_system.common.enums.Constant;
 import flab.payment_system.domain.order.dto.OrderCancelDto;
-import flab.payment_system.domain.order.dto.OrderProductDto;
+import flab.payment_system.domain.payment.dto.PaymentCreateDto;
 import flab.payment_system.domain.payment.domain.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.exception.PaymentNotExistBadRequestException;
 import flab.payment_system.domain.payment.repository.PaymentRepository;
+
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -24,8 +26,8 @@ public class PaymentKakaoRequestBodyFactory {
 	private final String adminKey;
 
 	public PaymentKakaoRequestBodyFactory(@Value("${kakao-cid}") String cid,
-		@Value("${kakao-adminkey}") String adminKey,
-		PaymentRepository paymentRepository) {
+										  @Value("${kakao-adminkey}") String adminKey,
+										  PaymentRepository paymentRepository) {
 		this.cid = cid;
 		this.adminKey = adminKey;
 		this.paymentRepository = paymentRepository;
@@ -40,38 +42,37 @@ public class PaymentKakaoRequestBodyFactory {
 	}
 
 	public HttpEntity<MultiValueMap<String, String>> getBodyForCreatePayment(
-		OrderProductDto orderProductDto,
-		Long userId, String requestUrl, Long orderId, Long paymentId, Long productId) {
+		PaymentCreateDto paymentCreateDto, Long userId, String requestUrl, Long paymentId) {
 		HttpHeaders headers = getHeaders();
 
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-		Optional<Integer> installMonth = orderProductDto.getInstallMonth();
+		Optional<Integer> installMonth = paymentCreateDto.getInstallMonth();
 		installMonth.ifPresent(integer -> params.add("install_month", String.valueOf(integer)));
 		params.add("cid", cid);
 		params.add("approval_url",
 			requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
 				+ PaymentPgCompany.KAKAO.getName() +
-				"/approved?orderId=" + orderId + "&paymentId=" + paymentId + "&productId="
-				+ productId + "&quantity=" + orderProductDto.quantity());
+				"/approved?orderId=" + paymentCreateDto.orderId() + "&paymentId=" + paymentId + "&productId="
+				+ paymentCreateDto.productId() + "&quantity=" + paymentCreateDto.quantity());
 		params.add("cancel_url",
 			requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
 				+ PaymentPgCompany.KAKAO.getName() + "/cancel?paymentId=" + paymentId);
 		params.add("fail_url", requestUrl + Constant.API_AND_VERSION.getValue() + "/payment/"
 			+ PaymentPgCompany.KAKAO.getName()
 			+ "/fail?paymentId=" + paymentId);
-		params.add("partner_order_id", String.valueOf(orderId));
+		params.add("partner_order_id", String.valueOf(paymentCreateDto.orderId()));
 		params.add("partner_user_id", String.valueOf(userId));
-		params.add("item_name", orderProductDto.productName());
-		params.add("quantity", String.valueOf(orderProductDto.quantity()));
+		params.add("item_name", paymentCreateDto.productName());
+		params.add("quantity", String.valueOf(paymentCreateDto.quantity()));
 		params.add("total_amount",
-			String.valueOf(orderProductDto.totalAmount()));
-		params.add("tax_free_amount", String.valueOf(orderProductDto.taxFreeAmount()));
+			String.valueOf(paymentCreateDto.totalAmount()));
+		params.add("tax_free_amount", String.valueOf(paymentCreateDto.taxFreeAmount()));
 
 		return new HttpEntity<>(params, headers);
 	}
 
 	public HttpEntity<MultiValueMap<String, String>> getBodyForApprovePayment(String pgToken,
-		Long orderId, Long userId, Long paymentId) {
+																			  Long orderId, Long userId, Long paymentId) {
 		HttpHeaders headers = getHeaders();
 
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();

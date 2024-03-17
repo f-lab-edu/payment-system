@@ -1,11 +1,9 @@
 package flab.payment_system.adapter;
 
 import flab.payment_system.domain.order.dto.OrderCancelDto;
-import flab.payment_system.domain.order.dto.OrderProductDto;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.response.PaymentCancelDto;
 import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
-import flab.payment_system.domain.payment.response.PaymentReadyDto;
 import flab.payment_system.domain.payment.service.PaymentService;
 import flab.payment_system.domain.product.entity.Product;
 import flab.payment_system.domain.product.service.ProductService;
@@ -28,11 +26,6 @@ public class OrderAdapterImpl implements OrderAdapter {
 	}
 
 	@Override
-	public void increaseStock(Long productId, Integer quantity) {
-		productService.increaseStock(productId, quantity);
-	}
-
-	@Override
 	public Long getUserId(HttpSession session) {
 		return userService.getUserId(session);
 	}
@@ -43,15 +36,8 @@ public class OrderAdapterImpl implements OrderAdapter {
 	}
 
 	@Override
-	public PaymentReadyDto createPayment(OrderProductDto orderProductDto, String requestUrl,
-										 Long userId, Long orderId, PaymentPgCompany pgCompany) {
-		return paymentService.createPayment(orderProductDto, requestUrl, userId, orderId,
-			pgCompany);
-	}
-
-	@Override
-	public PaymentCancelDto orderCancel(OrderCancelDto orderCancelDto) {
-		return paymentService.orderCancel(orderCancelDto);
+	public PaymentCancelDto cancelPayment(OrderCancelDto orderCancelDto) {
+		return paymentService.cancelPayment(orderCancelDto);
 	}
 
 	@Override

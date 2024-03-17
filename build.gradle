@@ -52,11 +52,8 @@ dependencies {
     implementation 'org.springframework.session:spring-session-data-redis'
     implementation 'org.redisson:redisson-spring-boot-starter:3.21.1'
     implementation 'org.springframework.boot:spring-boot-starter-cache'
-
-    // jwt
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
-    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+    // batch
+    implementation 'org.springframework.boot:spring-boot-starter-batch'
 
     // lombok
     compileOnly 'org.projectlombok:lombok'

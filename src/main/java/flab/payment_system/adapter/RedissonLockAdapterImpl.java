@@ -1,6 +1,5 @@
 package flab.payment_system.adapter;
 
-import flab.payment_system.domain.payment.response.PaymentApprovalDto;
 import flab.payment_system.domain.payment.service.PaymentService;
 import flab.payment_system.domain.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -18,12 +17,12 @@ public class RedissonLockAdapterImpl implements RedissonLockAdapter {
 	}
 
 	@Override
-	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId, Long paymentId) {
-		return paymentService.approvePayment(pgToken, orderId, userId, paymentId);
+	public void decreaseStock(Long productId, Integer quantity) {
+		productService.decreaseStock(productId, quantity);
 	}
 
 	@Override
-	public void decreaseStock(Long productId, Integer quantity) {
-		productService.decreaseStock(productId, quantity);
+	public void increaseStock(Long productId, Integer quantity) {
+		productService.increaseStock(productId, quantity);
 	}
 }

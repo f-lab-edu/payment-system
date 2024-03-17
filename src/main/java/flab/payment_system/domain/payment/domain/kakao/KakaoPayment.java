@@ -19,7 +19,7 @@ public class KakaoPayment extends BaseEntity {
 	private Long kakaoPaymentId;
 
 	@OneToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "payment_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT))
+	@JoinColumn(name = "payment_id", nullable = false, foreignKey = @ForeignKey(ConstraintMode.NO_CONSTRAINT), unique = true)
 	private Payment payment;
 
 	@Embedded
@@ -33,7 +33,7 @@ public class KakaoPayment extends BaseEntity {
 
 	@Builder
 	public KakaoPayment(Payment payment, CardInfo cardInfo, String aid,
-		String paymentMethodType) {
+						String paymentMethodType) {
 		this.payment = payment;
 		this.cardInfo = cardInfo;
 		this.aid = aid;
