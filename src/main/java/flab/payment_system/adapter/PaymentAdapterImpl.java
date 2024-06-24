@@ -5,11 +5,12 @@ import flab.payment_system.domain.order.service.OrderService;
 import flab.payment_system.domain.redisson.service.RedissonLockService;
 import flab.payment_system.domain.user.service.UserService;
 import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class PaymentAdapterImpl implements PaymentAdapter {
 
 	private final UserService userService;
@@ -25,7 +26,6 @@ public class PaymentAdapterImpl implements PaymentAdapter {
 	public OrderProduct getOrderProductByOrderId(Long orderId) {
 		return orderService.getOrderProductByOrderId(orderId);
 	}
-
 
 	@Override
 	public void increaseStock(Long productId, Integer quantity) {

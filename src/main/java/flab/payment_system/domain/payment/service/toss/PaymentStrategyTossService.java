@@ -1,6 +1,5 @@
 package flab.payment_system.domain.payment.service.toss;
 
-
 import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.payment.dto.PaymentCreateDto;
 import flab.payment_system.domain.payment.client.toss.PaymentTossClient;
@@ -21,7 +20,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
-
 
 @Component
 public class PaymentStrategyTossService implements PaymentStrategy {
@@ -44,10 +42,9 @@ public class PaymentStrategyTossService implements PaymentStrategy {
 		this.paymentService = paymentService;
 	}
 
-
 	@Override
 	public PaymentReadyDto createPayment(PaymentCreateDto paymentCreateDto, Long userId,
-										 String requestUrl, Long paymentId) {
+		String requestUrl, Long paymentId) {
 		HttpEntity<Map<String, String>> body = paymentTossRequestBodyFactory.getBodyForCreatePayment(
 			paymentCreateDto, userId, requestUrl, paymentId);
 		return paymentTossClient.createPayment(tossHost, body);
@@ -55,16 +52,20 @@ public class PaymentStrategyTossService implements PaymentStrategy {
 
 	@Override
 	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId,
-											 Long paymentId) {
+		Long paymentId) {
 		HttpEntity<Map<String, String>> body = paymentTossRequestBodyFactory.getBodyForApprovePayment(
 			orderId, userId, paymentId);
 		PaymentTossDtoImpl paymentTossDto = paymentTossClient.approvePayment(tossHost + "/confirm",
 			body);
 
 		tossPaymentRepository.save(
-			TossPayment.builder().payment(paymentService.getPaymentByPaymentId(paymentId)).country(paymentTossDto.getCountry())
+			TossPayment.builder()
+				.payment(paymentService.getPaymentByPaymentId(paymentId))
+				.country(paymentTossDto.getCountry())
 				.currency(
-					paymentTossDto.getCurrency()).type(paymentTossDto.getType()).build());
+					paymentTossDto.getCurrency())
+				.type(paymentTossDto.getType())
+				.build());
 
 		return paymentTossDto;
 	}

@@ -1,18 +1,26 @@
 package flab.payment_system.domain.payment.controller;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import flab.payment_system.adapter.PaymentAdapter;
 import flab.payment_system.common.response.ResponseMessage;
 import flab.payment_system.domain.payment.dto.PaymentCreateDto;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.response.PaymentApprovalDto;
+import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
 import flab.payment_system.domain.payment.response.PaymentReadyDto;
 import flab.payment_system.domain.payment.service.PaymentService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,7 +46,6 @@ public class PaymentController {
 
 		return ResponseEntity.ok().body(paymentReadyDto);
 	}
-
 
 	@GetMapping("/{pgCompany}/approved")
 	public ResponseEntity<PaymentApprovalDto> paymentApproved(

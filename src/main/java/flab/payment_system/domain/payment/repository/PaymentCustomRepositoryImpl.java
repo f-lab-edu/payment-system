@@ -1,8 +1,10 @@
 package flab.payment_system.domain.payment.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import flab.payment_system.domain.payment.domain.QPayment;
+
+import flab.payment_system.domain.payment.entity.QPayment;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

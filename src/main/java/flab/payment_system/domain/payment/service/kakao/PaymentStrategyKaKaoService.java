@@ -13,11 +13,11 @@ import flab.payment_system.domain.payment.response.PaymentReadyDto;
 import flab.payment_system.domain.payment.response.kakao.PaymentKakaoApprovalDtoImpl;
 import flab.payment_system.domain.payment.service.PaymentService;
 import flab.payment_system.domain.payment.service.PaymentStrategy;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
-
 
 @Component
 public class PaymentStrategyKaKaoService implements PaymentStrategy {
@@ -41,7 +41,8 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 	}
 
 	@Override
-	public PaymentReadyDto createPayment(PaymentCreateDto paymentCreateDto, Long userId, String requestUrl, Long paymentId) {
+	public PaymentReadyDto createPayment(PaymentCreateDto paymentCreateDto, Long userId, String requestUrl,
+		Long paymentId) {
 
 		HttpEntity<MultiValueMap<String, String>> body = paymentKakaoRequestBodyFactory.getBodyForCreatePayment(
 			paymentCreateDto, userId, requestUrl, paymentId);
@@ -51,7 +52,7 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 
 	@Override
 	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId,
-											 Long paymentId) {
+		Long paymentId) {
 		HttpEntity<MultiValueMap<String, String>> body = paymentKakaoRequestBodyFactory.getBodyForApprovePayment(
 			pgToken, orderId,
 			userId, paymentId);
