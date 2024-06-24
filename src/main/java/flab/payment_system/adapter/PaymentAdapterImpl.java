@@ -17,6 +17,14 @@ public class PaymentAdapterImpl implements PaymentAdapter {
 	private final OrderService orderService;
 	private final RedissonLockService redissonLockService;
 
+	@Autowired
+	public PaymentAdapterImpl(UserService userService, @Lazy OrderService orderService,
+		@Lazy RedissonLockService redissonLockService) {
+		this.userService = userService;
+		this.orderService = orderService;
+		this.redissonLockService = redissonLockService;
+	}
+
 	@Override
 	public Long getUserId(HttpSession session) {
 		return userService.getUserId(session);
