@@ -31,18 +31,8 @@ public class OrderAdapterImpl implements OrderAdapter {
 	}
 
 	@Override
-	public void setStrategy(PaymentPgCompany pgCompany) {
-		paymentService.setStrategy(pgCompany);
-	}
-
-	@Override
-	public PaymentCancelDto cancelPayment(OrderCancelDto orderCancelDto) {
-		return paymentService.cancelPayment(orderCancelDto);
-	}
-
-	@Override
-	public PaymentOrderDetailDto getOrderDetail(String paymentKey) {
-		return paymentService.getOrderDetail(paymentKey);
+	public PaymentCancelDto cancelPayment(OrderCancelDto orderCancelDto, PaymentPgCompany pgCompany) {
+		return paymentService.cancelPayment(orderCancelDto, pgCompany);
 	}
 
 	@Override

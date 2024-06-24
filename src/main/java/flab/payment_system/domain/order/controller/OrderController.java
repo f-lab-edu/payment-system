@@ -39,19 +39,9 @@ public class OrderController {
 	public ResponseEntity<PaymentCancelDto> orderCancel(
 		@PathVariable PaymentPgCompany pgCompany,
 		@RequestBody @Valid OrderCancelDto orderCancelDto) {
-		orderAdapter.setStrategy(pgCompany);
-		PaymentCancelDto paymentCancelDto = orderAdapter.cancelPayment(orderCancelDto);
+		PaymentCancelDto paymentCancelDto = orderAdapter.cancelPayment(orderCancelDto, pgCompany);
 
 		return ResponseEntity.ok().body(paymentCancelDto);
-	}
-
-	@GetMapping("/{pgCompany}")
-	public ResponseEntity<PaymentOrderDetailDto> getOrderDetail(
-		@PathVariable PaymentPgCompany pgCompany, @RequestParam String paymentKey) {
-		orderAdapter.setStrategy(pgCompany);
-		PaymentOrderDetailDto paymentOrderDetailDto = orderAdapter.getOrderDetail(paymentKey);
-
-		return ResponseEntity.ok().body(paymentOrderDetailDto);
 	}
 }
 

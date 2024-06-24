@@ -12,12 +12,7 @@ public interface OrderAdapter {
 
 	Long getUserId(HttpSession session);
 
-
-	void setStrategy(PaymentPgCompany pgCompany);
-
-	PaymentCancelDto cancelPayment(OrderCancelDto orderCancelDto);
-
-	PaymentOrderDetailDto getOrderDetail(String paymentKey);
+	PaymentCancelDto cancelPayment(OrderCancelDto orderCancelDto, PaymentPgCompany pgCompany);
 
 	Product getProductByProductId(Long productId);
 

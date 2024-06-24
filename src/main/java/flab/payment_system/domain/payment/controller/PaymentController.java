@@ -40,7 +40,6 @@ public class PaymentController {
 
 		Long userId = paymentAdapter.getUserId(session);
 
-		paymentService.setStrategy(pgCompany);
 		PaymentReadyDto paymentReadyDto = paymentService.createPayment(paymentCreateDto, requestUrl,
 			userId, pgCompany);
 
@@ -54,19 +53,26 @@ public class PaymentController {
 		@RequestParam("paymentId") Long paymentId, @RequestParam("productId") Long productId
 		, @RequestParam("quantity") Integer quantity,
 		HttpSession session) {
-		paymentService.setStrategy(pgCompany);
 		Long userId = paymentAdapter.getUserId(session);
-		PaymentApprovalDto paymentApprovalDto = paymentService.approvePayment(pgToken, orderId, userId, paymentId, productId, quantity);
+		PaymentApprovalDto paymentApprovalDto = paymentService.approvePayment(pgToken, orderId, userId, paymentId,
+			productId, quantity, pgCompany);
 
 		return ResponseEntity.ok().body(paymentApprovalDto);
 	}
 
 	@GetMapping("/{pgCompany}/fail")
 	public ResponseEntity<ResponseMessage> paymentFail(@PathVariable PaymentPgCompany pgCompany,
-													   @RequestParam("paymentId") Long paymentId) {
-		paymentService.setStrategy(pgCompany);
+		@RequestParam("paymentId") Long paymentId) {
 		paymentService.failPayment(paymentId);
 		return ResponseEntity.ok().body(new ResponseMessage("fail"));
+	}
+
+	@GetMapping("/{pgCompany}")
+	public ResponseEntity<PaymentOrderDetailDto> paymentOrderDetail(
+		@PathVariable PaymentPgCompany pgCompany, @RequestParam String paymentKey) {
+		PaymentOrderDetailDto paymentOrderDetailDto = paymentService.getOrderDetail(paymentKey, pgCompany);
+
+		return ResponseEntity.ok().body(paymentOrderDetailDto);
 	}
 }
 
