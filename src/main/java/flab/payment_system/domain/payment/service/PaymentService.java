@@ -14,47 +14,43 @@ import flab.payment_system.domain.payment.response.PaymentApprovalDto;
 import flab.payment_system.domain.payment.response.PaymentCancelDto;
 import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
 import flab.payment_system.domain.payment.response.PaymentReadyDto;
-import flab.payment_system.domain.payment.service.kakao.PaymentStrategyKaKaoService;
-import flab.payment_system.domain.payment.service.toss.PaymentStrategyTossService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationContext;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.annotation.RequestScope;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-
 @Service
 @RequiredArgsConstructor
-@RequestScope
 public class PaymentService {
 
-	private PaymentStrategy paymentStrategy;
-	private final ApplicationContext applicationContext;
+	private final Map<PaymentPgCompany, PaymentStrategy> paymentStrategies;
 	private final PaymentRepository paymentRepository;
 	private final PaymentAdapter paymentAdapter;
 
-	public void setStrategy(PaymentPgCompany paymentPgCompany) {
-		if (paymentPgCompany == PaymentPgCompany.TOSS) {
-			this.paymentStrategy = applicationContext.getBean(PaymentStrategyTossService.class);
-		}
-		if (paymentPgCompany == PaymentPgCompany.KAKAO) {
-			this.paymentStrategy = applicationContext.getBean(PaymentStrategyKaKaoService.class);
-		}
+	private PaymentStrategy getStrategy(PaymentPgCompany paymentPgCompany) {
+		return paymentStrategies.get(paymentPgCompany);
 	}
 
 	@Transactional
 	public PaymentReadyDto createPayment(PaymentCreateDto paymentCreateDto,
-										 String requestUrl, Long userId, PaymentPgCompany paymentPgCompany) {
+		String requestUrl, Long userId, PaymentPgCompany pgCompany) {
+		PaymentStrategy paymentStrategy = getStrategy(pgCompany);
+
 		Optional<Payment> optionalPayment = paymentRepository.findByOrderProduct_OrderId(paymentCreateDto.orderId());
 
 		Payment payment = optionalPayment.orElseGet(() -> paymentRepository.save(
-			Payment.builder().orderProduct(paymentAdapter.getOrderProductByOrderId(paymentCreateDto.orderId())).state(PaymentStateConstant.ONGOING.getValue())
-				.pgCompany(paymentPgCompany.getValue()).totalAmount(paymentCreateDto.totalAmount())
+			Payment.builder()
+				.orderProduct(paymentAdapter.getOrderProductByOrderId(paymentCreateDto.orderId()))
+				.state(PaymentStateConstant.ONGOING.getValue())
+				.pgCompany(pgCompany.getValue())
+				.totalAmount(paymentCreateDto.totalAmount())
 				.taxFreeAmount(paymentCreateDto.taxFreeAmount())
-				.installMonth(paymentCreateDto.installMonth()).build()));
+				.installMonth(paymentCreateDto.installMonth())
+				.build()));
 
 		if (Objects.equals(payment.getState(), PaymentStateConstant.APPROVED.getValue()))
 			throw new PaymentAlreadyApprovedConflictException();
@@ -70,7 +66,9 @@ public class PaymentService {
 	}
 
 	@Transactional
-	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId, Long paymentId, Long productId, Integer quantity) {
+	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId, Long paymentId, Long productId,
+		Integer quantity, PaymentPgCompany pgCompany) {
+		PaymentStrategy paymentStrategy = getStrategy(pgCompany);
 
 		PaymentApprovalDto paymentApprovalDto = paymentStrategy.approvePayment(pgToken, orderId,
 			userId, paymentId);
@@ -99,8 +97,11 @@ public class PaymentService {
 	}
 
 	@Transactional
-	public PaymentCancelDto cancelPayment(OrderCancelDto orderCancelDto) {
-		Payment payment = paymentRepository.findByOrderProduct_OrderId(orderCancelDto.orderId()).orElseThrow(PaymentNotExistBadRequestException::new);
+	public PaymentCancelDto cancelPayment(OrderCancelDto orderCancelDto, PaymentPgCompany pgCompany) {
+		PaymentStrategy paymentStrategy = getStrategy(pgCompany);
+
+		Payment payment = paymentRepository.findByOrderProduct_OrderId(orderCancelDto.orderId())
+			.orElseThrow(PaymentNotExistBadRequestException::new);
 		if (!payment.getState().equals(PaymentStateConstant.APPROVED.getValue()))
 			throw new PaymentNotApprovedConflictException();
 
@@ -114,7 +115,8 @@ public class PaymentService {
 		return paymentCancelDto;
 	}
 
-	public PaymentOrderDetailDto getOrderDetail(String paymentKey) {
+	public PaymentOrderDetailDto getOrderDetail(String paymentKey, PaymentPgCompany pgCompany) {
+		PaymentStrategy paymentStrategy = getStrategy(pgCompany);
 		return paymentStrategy.getOrderDetail(paymentKey);
 	}
 
