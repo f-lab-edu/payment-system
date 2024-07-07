@@ -63,7 +63,7 @@ public class CompensationItemProcessor {
 		Integer dbState = payment.getState();
 		if (pgState.equals(PaymentStateConstant.APPROVED.getValue())) {
 			if (!dbState.equals(PaymentStateConstant.APPROVED.getValue())) {
-				inconsistentPayments.add(payment);
+				payment.setState(pgState);
 				log.error("Payment state inconsistent dbState {} and pgState {} for paymentKey: {}", dbState, pgState,
 					payment.getPaymentKey());
 			}
