@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 public enum PGManageName {
 	KAKAO("KAKAO", "not_found_corrections_kakao_", "inconsistent_corrections_kakao_", "not_found_kakao",
 		"inconsistent_kakao"),
-	TOSS("TOSS", "not_found_corrections_toss_", "inconsistent_corrections_toss_", "not_found_kakao",
+	TOSS("TOSS", "not_found_corrections_toss_", "inconsistent_corrections_toss_", "not_found_toss",
 		"inconsistent_toss");
 
 	private final String pgCompanyName;

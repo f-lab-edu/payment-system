@@ -59,8 +59,9 @@ public class CompensationItemProcessor {
 	private void updatePaymentState(Payment payment, Integer pgState, PaymentPgCompany pgCompany) {
 		PGManageName pgManageName = PGManageName.valueOf(pgCompany.getName().toUpperCase());
 		List<Payment> inconsistentPayments = getExecutionContextList(getStepExecutionContext(),
-			pgManageName.getBatchContextNotFoundName());
+			pgManageName.getBatchContextInconsistentName());
 		Integer dbState = payment.getState();
+
 		if (pgState.equals(PaymentStateConstant.APPROVED.getValue())) {
 			if (!dbState.equals(PaymentStateConstant.APPROVED.getValue())) {
 				payment.setState(pgState);
