@@ -9,11 +9,9 @@ import flab.payment_system.domain.compensation.batch.correction.CorrectionFileWr
 import flab.payment_system.domain.compensation.enums.PGManageName;
 import flab.payment_system.domain.payment.dto.PaymentCompensationDto;
 import flab.payment_system.domain.payment.entity.Payment;
-import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.scope.context.StepSynchronizationManager;
