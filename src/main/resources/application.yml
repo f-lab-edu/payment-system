@@ -36,6 +36,9 @@ spring:
   batch:
     jdbc:
       initialize-schema: always
+    job:
+      enabled: false
+
 
 server:
   shutdown: graceful
@@ -55,5 +58,6 @@ kakao-adminkey: ${KAKAO_ADMIN_KEY}
 toss-host: https://api.tosspayments.com/v1/payments
 toss-client-key: ${TOSS_CLIENT_KEY}
 toss-secret-key: ${TOSS_SECRET_KEY}
+compensation-path: ${COMPENSATION_PATH}
 
 
