@@ -1,5 +1,8 @@
 package flab.payment_system.domain.payment.entity;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import flab.payment_system.common.data.BaseEntity;
 import flab.payment_system.domain.order.entity.OrderProduct;
 import jakarta.annotation.Nonnull;
@@ -8,13 +11,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import org.checkerframework.checker.nullness.qual.NonNull;
 
 @Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "payment")
-public class Payment extends BaseEntity {
+public class Payment extends BaseEntity implements Serializable {
+	@Serial
 	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -43,13 +48,12 @@ public class Payment extends BaseEntity {
 	@Nonnull
 	private Integer installMonth;
 
-
 	@Column(columnDefinition = "VARCHAR(200)")
 	private String paymentKey;
 
 	@Builder
 	public Payment(OrderProduct orderProduct, Integer state, Integer pgCompany, Integer totalAmount,
-				   Integer taxFreeAmount, Integer installMonth, String paymentKey) {
+		Integer taxFreeAmount, Integer installMonth, String paymentKey) {
 		this.orderProduct = orderProduct;
 		this.state = state;
 		this.pgCompany = pgCompany;

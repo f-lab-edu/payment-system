@@ -1,5 +1,8 @@
 package flab.payment_system.domain.payment.dto;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import lombok.Getter;
 import lombok.Setter;
 
