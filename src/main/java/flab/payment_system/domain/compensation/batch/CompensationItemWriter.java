@@ -53,13 +53,17 @@ public class CompensationItemWriter {
 
 			List<PaymentCompensationDto> notFoundDtos = getExecutionContextList(getStepExecutionContext(),
 				PGManageName.KAKAO.getBatchContextNotFoundName());
+
 			List<Payment> inconsistentPayments = getExecutionContextList(getStepExecutionContext(),
 				PGManageName.KAKAO.getBatchContextInconsistentName());
-
-			correctionFileWriter.writeNotFoundPaymentForCorrection(notFoundDtos,
-				PGManageName.KAKAO.getNotFoundFileName() + timestamp + ".csv");
-			correctionFileWriter.writeInconsistentPaymentForCorrection(inconsistentPayments,
-				PGManageName.KAKAO.getInconsistentFileName() + timestamp + ".csv");
+			if (notFoundDtos.size() != 0) {
+				correctionFileWriter.writeNotFoundPaymentForCorrection(notFoundDtos,
+					PGManageName.KAKAO.getNotFoundFileName() + timestamp + ".csv");
+			}
+			if (inconsistentPayments.size() != 0) {
+				correctionFileWriter.writeInconsistentPaymentForCorrection(inconsistentPayments,
+					PGManageName.KAKAO.getInconsistentFileName() + timestamp + ".csv");
+			}
 
 			notFoundDtos.clear();
 			inconsistentPayments.clear();
@@ -77,11 +81,14 @@ public class CompensationItemWriter {
 				PGManageName.TOSS.getBatchContextNotFoundName());
 			List<Payment> inconsistentPayments = getExecutionContextList(getStepExecutionContext(),
 				PGManageName.TOSS.getBatchContextInconsistentName());
-
-			correctionFileWriter.writeNotFoundPaymentForCorrection(notFoundDtos,
-				PGManageName.TOSS.getNotFoundFileName() + timestamp + ".csv");
-			correctionFileWriter.writeInconsistentPaymentForCorrection(inconsistentPayments,
-				PGManageName.TOSS.getInconsistentFileName() + timestamp + ".csv");
+			if (notFoundDtos.size() != 0) {
+				correctionFileWriter.writeNotFoundPaymentForCorrection(notFoundDtos,
+					PGManageName.TOSS.getNotFoundFileName() + timestamp + ".csv");
+			}
+			if (inconsistentPayments.size() != 0) {
+				correctionFileWriter.writeInconsistentPaymentForCorrection(inconsistentPayments,
+					PGManageName.TOSS.getInconsistentFileName() + timestamp + ".csv");
+			}
 
 			notFoundDtos.clear();
 			inconsistentPayments.clear();
