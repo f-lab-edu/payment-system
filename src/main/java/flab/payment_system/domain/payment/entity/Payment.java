@@ -15,7 +15,7 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 @Entity
 @Table(name = "payment")
 public class Payment extends BaseEntity {
-
+	private static final long serialVersionUID = 1L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "payment_id", columnDefinition = "BIGINT UNSIGNED")
