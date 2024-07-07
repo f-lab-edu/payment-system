@@ -1,4 +1,8 @@
 spring:
+  batch:
+    job:
+      enabled: false
+
   profiles:
     active: test
   data:
@@ -50,6 +54,10 @@ kakao-adminkey: ${KAKAO_ADMIN_KEY}
 toss-host: https://api.tosspayments.com/v1/payments
 toss-client-key: ${TOSS_CLIENT_KEY}
 toss-secret-key: ${TOSS_SECRET_KEY}
-test-url : ${TEST_URL}
+test-url: ${TEST_URL}
+compensation-path: ${COMPENSATION_PATH}
+test-file-path: ${TEST_FILE_PATH}
+target-path: ${TARGET_PATH}
+
 
 
