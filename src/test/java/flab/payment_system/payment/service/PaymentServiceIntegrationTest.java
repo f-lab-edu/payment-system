@@ -3,12 +3,18 @@ package flab.payment_system.payment.service;
 import flab.payment_system.config.DatabaseCleanUp;
 import flab.payment_system.domain.order.dto.OrderDto;
 import flab.payment_system.domain.order.dto.OrderProductDto;
+import flab.payment_system.domain.payment.client.kakao.PaymentKakaoClient;
+import flab.payment_system.domain.payment.client.toss.PaymentTossClient;
 import flab.payment_system.domain.payment.dto.PaymentCreateDto;
 import flab.payment_system.domain.order.service.OrderService;
 import flab.payment_system.domain.payment.entity.Payment;
 import flab.payment_system.domain.payment.enums.PaymentPgCompany;
 import flab.payment_system.domain.payment.exception.PaymentNotExistBadRequestException;
 import flab.payment_system.domain.payment.repository.PaymentRepository;
+import flab.payment_system.domain.payment.repository.kakao.KakaoPaymentRepository;
+import flab.payment_system.domain.payment.repository.toss.TossPaymentRepository;
+import flab.payment_system.domain.payment.request.kakao.PaymentKakaoRequestBodyFactory;
+import flab.payment_system.domain.payment.request.toss.PaymentTossRequestBodyFactory;
 import flab.payment_system.domain.payment.response.kakao.PaymentKakaoReadyDtoImpl;
 import flab.payment_system.domain.payment.response.toss.PaymentTossDtoImpl;
 import flab.payment_system.domain.payment.service.PaymentService;
@@ -22,11 +28,11 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.context.TestConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Primary;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.when;
 
 @SpringBootTest(properties = {"spring.config.location=classpath:application-test.yml"})
 public class PaymentServiceIntegrationTest {
