@@ -30,10 +30,6 @@ import static org.mockito.Mockito.when;
 
 @SpringBootTest(properties = {"spring.config.location=classpath:application-test.yml"})
 public class PaymentServiceIntegrationTest {
-	@MockBean
-	private PaymentStrategyKaKaoService paymentStrategyKaKaoService;
-	@MockBean
-	private PaymentStrategyTossService paymentStrategyTossService;
 	private final PaymentService paymentService;
 	private final OrderService orderService;
 	private final PaymentRepository paymentRepository;
@@ -54,7 +50,6 @@ public class PaymentServiceIntegrationTest {
 		this.requestUrl = requestUrl;
 		this.paymentRepository = paymentRepository;
 		this.databaseCleanUp = databaseCleanUp;
-
 	}
 
 	@BeforeEach
@@ -77,14 +72,6 @@ public class PaymentServiceIntegrationTest {
 		OrderProductDto orderProductDto = new OrderProductDto(product.getProductId(), quantity);
 		OrderDto orderDto = orderService.orderProduct(orderProductDto, userId);
 		paymentCreateDto = new PaymentCreateDto(orderDto.orderId(), product.getName(), product.getProductId(), quantity, totalAmount, totalFreeAmount, installMonth);
-
-
-		when(paymentStrategyKaKaoService.createPayment(eq(paymentCreateDto), eq(userId), eq(requestUrl), anyLong()))
-			.thenReturn(new PaymentKakaoReadyDtoImpl());
-
-		when(paymentStrategyTossService.createPayment(eq(paymentCreateDto), eq(userId), eq(requestUrl), anyLong()))
-			.thenReturn(new PaymentTossDtoImpl());
-
 	}
 
 	@AfterEach
@@ -102,7 +89,6 @@ public class PaymentServiceIntegrationTest {
 			PaymentPgCompany pgCompany = PaymentPgCompany.KAKAO;
 
 			// when
-			paymentService.setStrategy(pgCompany);
 			PaymentKakaoReadyDtoImpl paymentReadyDto = (PaymentKakaoReadyDtoImpl) paymentService.createPayment(paymentCreateDto, requestUrl, userId, pgCompany);
 			Payment payment = paymentRepository.findById(paymentReadyDto.getPaymentId()).orElseThrow(PaymentNotExistBadRequestException::new);
 
@@ -118,13 +104,53 @@ public class PaymentServiceIntegrationTest {
 			PaymentPgCompany pgCompany = PaymentPgCompany.TOSS;
 
 			// when
-			paymentService.setStrategy(pgCompany);
 			PaymentTossDtoImpl paymentReadyDto = (PaymentTossDtoImpl) paymentService.createPayment(paymentCreateDto, requestUrl, userId, pgCompany);
 			Payment payment = paymentRepository.findById(paymentReadyDto.getPaymentId()).orElseThrow(PaymentNotExistBadRequestException::new);
 
 			// then
 			assertEquals(paymentReadyDto.getPaymentId(), payment.getPaymentId());
 			assertNotNull(payment);
+		}
+	}
+
+	@TestConfiguration
+	static class TestConfig {
+		@Bean
+		@Primary
+		public PaymentStrategyKaKaoService paymentStrategyKaKaoServiceStub(KakaoPaymentRepository kakaoPaymentRepository, PaymentKakaoRequestBodyFactory paymentKakaoRequestBodyFactory, PaymentKakaoClient paymentKakaoClient, PaymentService paymentService) {
+			return new PaymentStrategyKaKaoServiceStub("kakaoHost", kakaoPaymentRepository, paymentKakaoRequestBodyFactory, paymentKakaoClient, paymentService);
+		}
+
+		@Bean
+		@Primary
+		public PaymentStrategyTossService paymentStrategyTossServiceStub(TossPaymentRepository tossPaymentRepository, PaymentTossRequestBodyFactory paymentTossRequestBodyFactory, PaymentTossClient paymentTossClient, PaymentService paymentService) {
+			return new PaymentStrategyTossServiceStub("tossHost", tossPaymentRepository, paymentTossRequestBodyFactory, paymentTossClient, paymentService);
+		}
+	}
+
+	private static class PaymentStrategyKaKaoServiceStub extends PaymentStrategyKaKaoService {
+		public PaymentStrategyKaKaoServiceStub(String kakaoHost, KakaoPaymentRepository kakaoPaymentRepository, PaymentKakaoRequestBodyFactory paymentKakaoRequestBodyFactory, PaymentKakaoClient paymentKakaoClient, PaymentService paymentService) {
+			super(kakaoHost, kakaoPaymentRepository, paymentKakaoRequestBodyFactory, paymentKakaoClient, paymentService);
+		}
+
+		@Override
+		public PaymentKakaoReadyDtoImpl createPayment(PaymentCreateDto paymentCreateDto, Long userId, String requestUrl, Long orderId) {
+			PaymentKakaoReadyDtoImpl response = new PaymentKakaoReadyDtoImpl();
+			response.setPaymentId(1L); // Stub 응답 설정
+			return response;
+		}
+	}
+
+	private static class PaymentStrategyTossServiceStub extends PaymentStrategyTossService {
+		public PaymentStrategyTossServiceStub(String tossHost, TossPaymentRepository tossPaymentRepository, PaymentTossRequestBodyFactory paymentTossRequestBodyFactory, PaymentTossClient paymentTossClient, PaymentService paymentService) {
+			super(tossHost, tossPaymentRepository, paymentTossRequestBodyFactory, paymentTossClient, paymentService);
+		}
+
+		@Override
+		public PaymentTossDtoImpl createPayment(PaymentCreateDto paymentCreateDto, Long userId, String requestUrl, Long orderId) {
+			PaymentTossDtoImpl response = new PaymentTossDtoImpl();
+			response.setPaymentId(2L); // Stub 응답 설정
+			return response;
 		}
 	}
 }
