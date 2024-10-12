@@ -102,7 +102,6 @@ public class PaymentServiceIntegrationTest {
 			PaymentPgCompany pgCompany = PaymentPgCompany.KAKAO;
 
 			// when
-			paymentService.setStrategy(pgCompany);
 			PaymentKakaoReadyDtoImpl paymentReadyDto = (PaymentKakaoReadyDtoImpl) paymentService.createPayment(paymentCreateDto, requestUrl, userId, pgCompany);
 			Payment payment = paymentRepository.findById(paymentReadyDto.getPaymentId()).orElseThrow(PaymentNotExistBadRequestException::new);
 
@@ -118,7 +117,6 @@ public class PaymentServiceIntegrationTest {
 			PaymentPgCompany pgCompany = PaymentPgCompany.TOSS;
 
 			// when
-			paymentService.setStrategy(pgCompany);
 			PaymentTossDtoImpl paymentReadyDto = (PaymentTossDtoImpl) paymentService.createPayment(paymentCreateDto, requestUrl, userId, pgCompany);
 			Payment payment = paymentRepository.findById(paymentReadyDto.getPaymentId()).orElseThrow(PaymentNotExistBadRequestException::new);
 
