@@ -14,6 +14,7 @@ import flab.payment_system.domain.payment.response.PaymentApprovalDto;
 import flab.payment_system.domain.payment.response.PaymentCancelDto;
 import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
 import flab.payment_system.domain.payment.response.PaymentReadyDto;
+import flab.payment_system.domain.payment.response.toss.Settlement;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.stereotype.Service;
@@ -37,7 +38,7 @@ public class PaymentService {
 
 	@Transactional
 	public PaymentReadyDto createPayment(PaymentCreateDto paymentCreateDto,
-		String requestUrl, Long userId, PaymentPgCompany pgCompany) {
+										 String requestUrl, Long userId, PaymentPgCompany pgCompany) {
 		PaymentStrategy paymentStrategy = getStrategy(pgCompany);
 
 		Optional<Payment> optionalPayment = paymentRepository.findByOrderProduct_OrderId(paymentCreateDto.orderId());
@@ -67,7 +68,7 @@ public class PaymentService {
 
 	@Transactional
 	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId, Long paymentId, Long productId,
-		Integer quantity, PaymentPgCompany pgCompany) {
+											 Integer quantity, PaymentPgCompany pgCompany) {
 		PaymentStrategy paymentStrategy = getStrategy(pgCompany);
 
 		PaymentApprovalDto paymentApprovalDto = paymentStrategy.approvePayment(pgToken, orderId,
@@ -122,6 +123,11 @@ public class PaymentService {
 
 	public Payment getPaymentByPaymentId(Long paymentId) {
 		return paymentRepository.findById(paymentId).orElseThrow(PaymentNotExistBadRequestException::new);
+	}
+
+	public Settlement[] getSettlementList(PaymentPgCompany pgCompany) {
+		PaymentStrategy paymentStrategy = getStrategy(pgCompany);
+		return paymentStrategy.getSettlementList();
 	}
 }
 
