@@ -6,6 +6,7 @@ import flab.payment_system.domain.payment.response.PaymentApprovalDto;
 import flab.payment_system.domain.payment.response.PaymentCancelDto;
 import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
 import flab.payment_system.domain.payment.response.PaymentReadyDto;
+import flab.payment_system.domain.payment.response.toss.Settlement;
 
 public interface PaymentStrategy {
 
@@ -16,4 +17,6 @@ public interface PaymentStrategy {
 	PaymentCancelDto cancelPayment(OrderCancelDto orderCancelDto);
 
 	PaymentOrderDetailDto getOrderDetail(String paymentKey);
+
+	Settlement[] getSettlementList();
 }

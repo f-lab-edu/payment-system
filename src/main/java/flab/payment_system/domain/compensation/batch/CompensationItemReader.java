@@ -1,51 +1,71 @@
 package flab.payment_system.domain.compensation.batch;
 
-import flab.payment_system.domain.payment.dto.PaymentCompensationDto;
 
+import flab.payment_system.domain.payment.enums.PaymentPgCompany;
+import flab.payment_system.domain.payment.response.toss.Settlement;
+import flab.payment_system.domain.payment.service.PaymentService;
+import flab.payment_system.domain.payment.service.PaymentStrategy;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.batch.core.configuration.annotation.StepScope;
-import org.springframework.batch.item.file.FlatFileItemReader;
-import org.springframework.batch.item.file.mapping.BeanWrapperFieldSetMapper;
-import org.springframework.batch.item.file.mapping.DefaultLineMapper;
-import org.springframework.batch.item.file.transform.DelimitedLineTokenizer;
+import org.springframework.batch.core.scope.context.StepSynchronizationManager;
+import org.springframework.batch.item.ExecutionContext;
+import org.springframework.batch.item.ItemReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.ClassPathResource;
 
+import java.util.Map;
+
+@Log4j2
 @Configuration
+@RequiredArgsConstructor
 public class CompensationItemReader {
-	// pg사 API 를 이용해 데이터를 가져올 것이라고 가정
-	@Bean
-	@StepScope
-	public FlatFileItemReader<PaymentCompensationDto> paymentKakaoItemReader() {
-		return getItemReader("payment_kakao.csv");
-	}
+	private final Map<PaymentPgCompany, PaymentStrategy> paymentStrategies;
+	private final PaymentService paymentService;
 
 	@Bean
 	@StepScope
-	public FlatFileItemReader<PaymentCompensationDto> paymentTossItemReader() {
-		return getItemReader("payment_toss.csv");
+	public ItemReader<Settlement> paymentStrategyItemReader() {
+		return new PaymentStrategyExecutionContextItemReader(paymentStrategies, paymentService);
 	}
 
-	private FlatFileItemReader<PaymentCompensationDto> getItemReader(String fileName) {
-		FlatFileItemReader<PaymentCompensationDto> flatFileItemReader = new FlatFileItemReader<>();
-		flatFileItemReader.setResource(new ClassPathResource(fileName));
-		flatFileItemReader.setLinesToSkip(1);
-		flatFileItemReader.setEncoding("UTF-8");
+	public static class PaymentStrategyExecutionContextItemReader implements ItemReader<Settlement> {
+		private final Map<PaymentPgCompany, PaymentStrategy> paymentStrategies;
+		private final PaymentService paymentService;
 
-		DefaultLineMapper<PaymentCompensationDto> defaultLineMapper = new DefaultLineMapper<>();
+		public PaymentStrategyExecutionContextItemReader(Map<PaymentPgCompany, PaymentStrategy> paymentStrategies,
+														 PaymentService paymentService) {
+			this.paymentStrategies = paymentStrategies;
+			this.paymentService = paymentService;
+		}
 
-		DelimitedLineTokenizer delimitedLineTokenizer = new DelimitedLineTokenizer(",");
-		delimitedLineTokenizer.setNames("orderId", "paymentKey", "totalAmount", "paymentState", "taxFreeAmount",
-			"installMonth");
-		defaultLineMapper.setLineTokenizer(delimitedLineTokenizer);
+		@Override
+		public Settlement read() {
+			ExecutionContext executionContext = StepSynchronizationManager.getContext().getStepExecution().getExecutionContext();
 
-		BeanWrapperFieldSetMapper<PaymentCompensationDto> beanWrapperFieldSetMapper = new BeanWrapperFieldSetMapper<>();
-		beanWrapperFieldSetMapper.setTargetType(PaymentCompensationDto.class);
+			int currentPgCompanyIndex = executionContext.getInt("currentPgCompanyIndex", 0);
+			int currentSettlementIndex = executionContext.getInt("currentSettlementIndex", 0);
 
-		defaultLineMapper.setFieldSetMapper(beanWrapperFieldSetMapper);
+			PaymentPgCompany[] pgCompanies = paymentStrategies.keySet().toArray(new PaymentPgCompany[0]);
 
-		flatFileItemReader.setLineMapper(defaultLineMapper);
+			if (currentPgCompanyIndex >= pgCompanies.length) {
+				return null;
+			}
 
-		return flatFileItemReader;
+			PaymentPgCompany currentPgCompany = pgCompanies[currentPgCompanyIndex];
+			Settlement[] settlements = paymentService.getSettlementList(currentPgCompany);
+
+			if (settlements != null && currentSettlementIndex < settlements.length) {
+
+				executionContext.putInt("currentSettlementIndex", currentSettlementIndex + 1);
+
+				if (currentSettlementIndex + 1 >= settlements.length) {
+					executionContext.putInt("currentPgCompanyIndex", currentPgCompanyIndex + 1);
+					executionContext.putInt("currentSettlementIndex", 0);  // 다음 PG사의 Settlement 인덱스를 0으로 초기화
+				}
+				return settlements[currentSettlementIndex];
+			}
+			return null;
+		}
 	}
 }

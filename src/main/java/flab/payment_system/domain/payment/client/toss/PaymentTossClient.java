@@ -5,8 +5,11 @@ import flab.payment_system.domain.payment.response.PaymentCancelDto;
 import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
 import flab.payment_system.domain.payment.response.PaymentReadyDto;
 import flab.payment_system.domain.payment.response.toss.PaymentTossDtoImpl;
+
 import java.util.Map;
 import java.util.Optional;
+
+import flab.payment_system.domain.payment.response.toss.Settlement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -44,6 +47,12 @@ public class PaymentTossClient {
 	public PaymentOrderDetailDto getOrderDetail(String url, HttpEntity<Void> requestEntity) {
 		ResponseEntity<PaymentTossDtoImpl> response = restTemplate.exchange(
 			url, HttpMethod.GET, requestEntity, PaymentTossDtoImpl.class);
+		return response.getBody();
+	}
+
+	public Settlement[] getSettlementList(String url, HttpEntity<Void> requestEntity) {
+		ResponseEntity<Settlement[]> response = restTemplate.exchange(
+			url, HttpMethod.GET, requestEntity, Settlement[].class);
 		return response.getBody();
 	}
 }

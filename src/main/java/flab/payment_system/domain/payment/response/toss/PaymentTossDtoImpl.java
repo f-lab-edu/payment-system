@@ -63,6 +63,8 @@ public class PaymentTossDtoImpl implements PaymentApprovalDto, PaymentReadyDto,
 	private Checkout checkout;
 	private Long paymentId;
 
+	private String transactionKey;
+
 	public void setPaymentId(Long paymentId) {
 		this.paymentId = paymentId;
 	}

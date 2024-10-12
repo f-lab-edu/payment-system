@@ -4,6 +4,7 @@ import flab.payment_system.domain.order.dto.OrderCancelDto;
 import flab.payment_system.domain.payment.dto.PaymentCreateDto;
 import flab.payment_system.domain.payment.client.kakao.PaymentKakaoClient;
 import flab.payment_system.domain.payment.entity.kakao.KakaoPayment;
+import flab.payment_system.domain.payment.enums.PaymentKakaoEndpoint;
 import flab.payment_system.domain.payment.repository.kakao.KakaoPaymentRepository;
 import flab.payment_system.domain.payment.request.kakao.PaymentKakaoRequestBodyFactory;
 import flab.payment_system.domain.payment.response.PaymentApprovalDto;
@@ -11,6 +12,7 @@ import flab.payment_system.domain.payment.response.PaymentCancelDto;
 import flab.payment_system.domain.payment.response.PaymentOrderDetailDto;
 import flab.payment_system.domain.payment.response.PaymentReadyDto;
 import flab.payment_system.domain.payment.response.kakao.PaymentKakaoApprovalDtoImpl;
+import flab.payment_system.domain.payment.response.toss.Settlement;
 import flab.payment_system.domain.payment.service.PaymentService;
 import flab.payment_system.domain.payment.service.PaymentStrategy;
 
@@ -42,23 +44,23 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 
 	@Override
 	public PaymentReadyDto createPayment(PaymentCreateDto paymentCreateDto, Long userId, String requestUrl,
-		Long paymentId) {
+										 Long paymentId) {
 
 		HttpEntity<MultiValueMap<String, String>> body = paymentKakaoRequestBodyFactory.getBodyForCreatePayment(
 			paymentCreateDto, userId, requestUrl, paymentId);
 
-		return paymentKakaoClient.createPayment(kakaoHost + "/ready", body);
+		return paymentKakaoClient.createPayment(kakaoHost + PaymentKakaoEndpoint.READY.getEndpoint(), body);
 	}
 
 	@Override
 	public PaymentApprovalDto approvePayment(String pgToken, Long orderId, Long userId,
-		Long paymentId) {
+											 Long paymentId) {
 		HttpEntity<MultiValueMap<String, String>> body = paymentKakaoRequestBodyFactory.getBodyForApprovePayment(
 			pgToken, orderId,
 			userId, paymentId);
 
 		PaymentKakaoApprovalDtoImpl paymentApprovalDto = paymentKakaoClient.approvePayment(
-			kakaoHost + "/approve", body);
+			kakaoHost + PaymentKakaoEndpoint.APPROVE.getEndpoint(), body);
 
 		kakaoPaymentRepository.save(KakaoPayment.builder().payment(paymentService.getPaymentByPaymentId(paymentId))
 			.paymentMethodType(paymentApprovalDto.getPaymentMethodType()).aid(
@@ -74,7 +76,7 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 		HttpEntity<MultiValueMap<String, String>> body = paymentKakaoRequestBodyFactory.getBodyForCancelPayment(
 			orderCancelDto);
 
-		return paymentKakaoClient.cancelPayment(kakaoHost + "/cancel",
+		return paymentKakaoClient.cancelPayment(kakaoHost + PaymentKakaoEndpoint.CANCEL.getEndpoint(),
 			body);
 	}
 
@@ -83,6 +85,12 @@ public class PaymentStrategyKaKaoService implements PaymentStrategy {
 		HttpEntity<MultiValueMap<String, String>> body = paymentKakaoRequestBodyFactory.getBodyForOrderDetail(
 			tid);
 
-		return paymentKakaoClient.getOrderDetail(kakaoHost + "/order", body);
+		return paymentKakaoClient.getOrderDetail(kakaoHost + PaymentKakaoEndpoint.ORDER.getEndpoint(), body);
+	}
+
+	@Override
+	public Settlement[] getSettlementList() {
+		// 카카오에서는 실제 현금이 오가야 정산 API 제공해서 연동x
+		return null;
 	}
 }
