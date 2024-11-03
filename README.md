@@ -34,7 +34,7 @@
 
 ### 📌 데이터베이스 설계
 
-- db diagram 이용해서 테이블 설계
+- erd cloud 이용해서 테이블 설계
 
 :clipboard: [테이블과 테이블 구성요소](https://closed-glade-095.notion.site/ERD-12a05418296180749115c05f3ea76b50?pvs=4)
 
