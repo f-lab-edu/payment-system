@@ -23,7 +23,7 @@ public class CompensationConfig {
 
     private final Job paymentSyncJob;
 
-    @Scheduled(fixedDelay = 600000)
+	@Scheduled(cron = "0 0 0 * * *")
     public void runJob() {
         try {
             JobParameters parameters = new JobParametersBuilder()
